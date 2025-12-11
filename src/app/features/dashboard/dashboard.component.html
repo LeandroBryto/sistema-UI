@@ -1,0 +1,112 @@
+<div class="dashboard">
+  <header class="top">
+    <div class="avatar">{{ (username || 'U').charAt(0).toUpperCase() }}</div>
+    <div class="hello">
+      <span>Bem-vindo,</span>
+      <h2>{{ username || 'Usuário' }}</h2>
+    </div>
+    <div class="actions">
+      <button class="icon">🔍</button>
+      <button class="icon">🔔</button>
+    </div>
+  </header>
+
+  <section class="balance">
+    <div class="left">
+      <div class="label">Saldo Corporativo Total</div>
+      <div class="value">R$ 0,00</div>
+      <div class="trend">+ 12% este mês</div>
+    </div>
+    <div class="right">
+      <a class="details" routerLink="/relatorios">Ver Detalhes</a>
+    </div>
+    <button class="refresh" (click)="loadData()" [disabled]="loading">
+      {{ loading ? '...' : '⟳' }}
+    </button>
+  </section>
+
+  <section class="quick">
+    <a class="qcard" routerLink="/receitas">📦 Receita</a>
+    <a class="qcard" routerLink="/despesas">💳 Despesa</a>
+    <a class="qcard" routerLink="/relatorios">📊 Relatórios</a>
+    <a class="qcard" routerLink="/metas">🎯 Metas</a>
+  </section>
+
+  <section class="flow">
+    <div class="flow-header">
+      <h3>Fluxo de Caixa</h3>
+      <span class="period">Este Mês</span>
+    </div>
+    <div class="bars">
+      <div class="bar">
+        <div class="fill" style="height: 40%"></div>
+        <span>Sem 1</span>
+      </div>
+      <div class="bar">
+        <div class="fill" style="height: 55%"></div>
+        <span>Sem 2</span>
+      </div>
+      <div class="bar">
+        <div class="fill" style="height: 75%"></div>
+        <span>Sem 3</span>
+      </div>
+      <div class="bar">
+        <div class="fill" style="height: 65%"></div>
+        <span>Sem 4</span>
+      </div>
+      <div class="bar">
+        <div class="fill" style="height: 85%"></div>
+        <span>Sem 5</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="goals">
+    <div class="goals-header">
+      <h3>Metas Financeiras</h3>
+      <a routerLink="/metas" class="view-all">Ver todas</a>
+    </div>
+    <div class="goal-card">
+      <div class="head">
+        <span class="icon">🛟</span>
+        <div>
+          <div class="title">Reserva de Emergência</div>
+          <div class="meta">Prazo: Dez 2024</div>
+        </div>
+        <span class="state ok">Em dia</span>
+      </div>
+      <div class="track">
+        <div class="progress" style="width: 75%"></div>
+      </div>
+      <div class="caption">R$ 150k de R$ 200k • 75%</div>
+    </div>
+
+    <div class="goal-card">
+      <div class="head">
+        <span class="icon">📉</span>
+        <div>
+          <div class="title">Redução de Custos</div>
+          <div class="meta">Operacional - Q3</div>
+        </div>
+        <span class="state warn">Atenção</span>
+      </div>
+      <div class="track">
+        <div class="progress warn" style="width: 40%"></div>
+      </div>
+      <div class="caption">R$ 12k de R$ 30k • 40%</div>
+    </div>
+  </section>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <section class="debug">
+    <div class="card">
+      <h4>Carteira</h4>
+      <pre>{{ carteira | json }}</pre>
+    </div>
+    <div class="card">
+      <h4>Resumo</h4>
+      <pre>{{ resumo | json }}</pre>
+    </div>
+  </section>
+</div>

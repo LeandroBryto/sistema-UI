@@ -1,0 +1,56 @@
+<div class="container">
+  <h2>Registrar</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="seu@email.com"
+      />
+    </div>
+
+    <div class="field">
+      <label for="username">Usuário</label>
+      <input
+        id="username"
+        type="text"
+        formControlName="username"
+        placeholder="Digite seu usuário"
+      />
+    </div>
+
+    <div class="field">
+      <label for="telefone">Telefone</label>
+      <input
+        id="telefone"
+        type="tel"
+        formControlName="telefone"
+        placeholder="DDD + número"
+      />
+    </div>
+
+    <div class="field">
+      <label for="senha">Senha</label>
+      <input
+        id="senha"
+        type="password"
+        formControlName="senha"
+        placeholder="Digite sua senha"
+      />
+    </div>
+
+    <button type="submit" [disabled]="form.invalid || loading">
+      {{ loading ? 'Registrando...' : 'Registrar' }}
+    </button>
+
+    <p class="success" *ngIf="success">Cadastro realizado com sucesso.</p>
+    <p class="error" *ngIf="error">{{ error }}</p>
+  </form>
+
+  <p class="link">
+    Já possui conta?
+    <a routerLink="/">Entrar</a>
+  </p>
+</div>

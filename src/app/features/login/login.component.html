@@ -1,0 +1,56 @@
+<div class="login-page">
+  <div class="brand">
+    <div class="brand-icon">
+      <span>$</span>
+    </div>
+    <h1>Áreo Veybost</h1>
+    <p class="subtitle">Gestão Financeira Inteligente</p>
+  </div>
+
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label for="username">E-mail corporativo</label>
+        <div class="input-wrapper">
+          <span class="leading-icon" aria-hidden="true">✉️</span>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            placeholder="nome@empresa.com.br"
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="senha">Senha</label>
+        <div class="input-wrapper">
+          <span class="leading-icon" aria-hidden="true">🔒</span>
+          <input
+            id="senha"
+            type="password"
+            formControlName="senha"
+            placeholder="Digite sua senha"
+          />
+          <span class="trailing-icon" aria-hidden="true">👁️</span>
+        </div>
+        <a class="recover" href="#">Recuperar Senha?</a>
+      </div>
+
+      <button class="primary" type="submit" [disabled]="form.invalid || loading">
+        {{ loading ? 'Entrando...' : 'Entrar' }} <span class="arrow">→</span>
+      </button>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </form>
+
+    <div class="extras">
+      <div class="secure">🛡️ Ambiente Seguro SSL</div>
+    </div>
+  </div>
+
+  <p class="register">
+    Não possui conta?
+    <a routerLink="/register">Criar conta</a>
+  </p>
+</div>

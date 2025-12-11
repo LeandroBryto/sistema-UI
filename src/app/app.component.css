@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+.nav {
+  display: flex;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 8px;
+}
+.nav a {
+  color: #1976d2;
+  text-decoration: none;
+}
+.nav a:hover {
+  text-decoration: underline;
+}
