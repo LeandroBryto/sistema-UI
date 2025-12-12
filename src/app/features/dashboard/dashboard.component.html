@@ -6,8 +6,6 @@
       <h2>{{ username || 'Usuário' }}</h2>
     </div>
     <div class="actions">
-      <button class="icon">🔍</button>
-      <button class="icon">🔔</button>
       <button class="logout" (click)="logout()">Sair</button>
     </div>
   </header>
@@ -23,7 +21,7 @@
     </div>
     <div class="right">
       <span [class]="estadoClass(carteira?.saudeFinanceira)">{{ carteira?.saudeFinanceira || '—' }}</span>
-      <a class="details" routerLink="/relatorios">Ver Detalhes</a>
+      
     </div>
     <button class="refresh" (click)="loadData()" [disabled]="loading">
       {{ loading ? '...' : '⟳' }}
@@ -31,10 +29,10 @@
   </section>
 
   <section class="quick">
-    <a class="qcard" routerLink="/receitas">📦 Receita</a>
-    <a class="qcard" routerLink="/despesas">💳 Despesa</a>
-    <a class="qcard" routerLink="/relatorios">📊 Relatórios</a>
-    <a class="qcard" routerLink="/metas">🎯 Metas</a>
+    <a class="qcard" routerLink="/receitas">Receita</a>
+    <a class="qcard" routerLink="/despesas">Despesa</a>
+    <a class="qcard" routerLink="/relatorios">Relatórios</a>
+    <a class="qcard" routerLink="/metas">Metas</a>
   </section>
 
   <section class="flow">
