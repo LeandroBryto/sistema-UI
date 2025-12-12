@@ -25,10 +25,8 @@ export class ReceitaService {
 
   constructor(private http: HttpClient) {}
 
-  list(startDate?: string, endDate?: string): Observable<ReceitaResponse[]> {
-    let params = new HttpParams();
-    if (startDate) params = params.set('startDate', startDate);
-    if (endDate) params = params.set('endDate', endDate);
+  list(startDate: string, endDate: string): Observable<ReceitaResponse[]> {
+    const params = new HttpParams().set('startDate', startDate).set('endDate', endDate);
     return this.http.get<ReceitaResponse[]>(this.baseUrl, { params });
   }
 

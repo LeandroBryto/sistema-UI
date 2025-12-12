@@ -27,8 +27,8 @@ export class ReceitasComponent {
   editingId: number | null = null;
 
   filtros = this.fb.nonNullable.group({
-    startDate: [''],
-    endDate: [''],
+    startDate: ['', [Validators.required]],
+    endDate: ['', [Validators.required]],
   });
 
   form = this.fb.nonNullable.group({
@@ -56,19 +56,21 @@ export class ReceitasComponent {
   }
 
   load(): void {
+    if (this.filtros.invalid) {
+      this.error = 'Informe início e fim do período (yyyy-MM-dd).';
+      return;
+    }
     this.loading = true;
     this.error = null;
     const { startDate, endDate } = this.filtros.getRawValue();
-    this.api.list(startDate || undefined, endDate || undefined).subscribe({
+    this.api.list(startDate, endDate).subscribe({
       next: (list) => {
         this.itens = list;
         this.loading = false;
       },
       error: (e) => {
         this.loading = false;
-        this.error =
-          e?.error?.message ||
-          'Erro ao listar receitas. Ajuste os filtros e tente novamente.';
+        this.error = this.errorMsg(e) || 'Erro ao listar receitas. Ajuste os filtros e tente novamente.';
       },
     });
   }
@@ -114,8 +116,7 @@ export class ReceitasComponent {
       },
       error: (e) => {
         this.loading = false;
-        this.error =
-          e?.error?.message || 'Falha ao remover a receita. Tente novamente.';
+        this.error = this.errorMsg(e) || 'Falha ao remover a receita. Tente novamente.';
       },
     });
   }
@@ -143,10 +144,17 @@ export class ReceitasComponent {
       },
       error: (e) => {
         this.loading = false;
-        this.error =
-          e?.error?.message ||
-          'Falha ao salvar a receita. Verifique os campos e tente novamente.';
+        this.error = this.errorMsg(e) || 'Falha ao salvar a receita. Verifique os campos e tente novamente.';
       },
     });
+  }
+
+  private errorMsg(e: any): string | null {
+    const status = e?.status;
+    if (status === 401) return 'Não autenticado. Entre novamente.';
+    if (status === 403) return 'Acesso negado.';
+    if (status === 404) return 'Item não encontrado.';
+    if (status === 400) return e?.error?.message || 'Dados inválidos.';
+    return e?.error?.message || null;
   }
 }
