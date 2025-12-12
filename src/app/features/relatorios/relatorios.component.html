@@ -1,5 +1,91 @@
-<div class="container">
-  <h2>Relatórios</h2>
-  <p>Central de relatórios (em breve gráficos e exportação).</p>
-  <a routerLink="/dashboard">Voltar ao Dashboard</a>
+<div class="page">
+  <header class="header">
+    <div>
+      <p class="muted">Central de relatórios e análises mensais</p>
+    </div>
+    <div class="actions">
+      <a class="secondary link" routerLink="/dashboard">Voltar ao Dashboard</a>
+    </div>
+  </header>
+
+  <section class="filters card">
+    <div class="row">
+      <label>Mês</label>
+      <input type="month" [formControl]="filtro.controls.yearMonth" />
+    </div>
+    <div class="row actions">
+      <button class="primary" (click)="load()" [disabled]="loading || filtro.invalid">
+        {{ loading ? 'Carregando...' : 'Aplicar' }}
+      </button>
+    </div>
+  </section>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <div class="grid two" *ngIf="report">
+    <section class="card">
+      <div class="metrics">
+        <div class="metric">
+          <span class="label">Período</span>
+          <span class="value">{{ report.periodo || filtro.value.yearMonth }}</span>
+        </div>
+        <div class="metric">
+          <span class="label">Total Receitas</span>
+          <span class="value green">R$ {{ report.totalReceitas | number:'1.2-2' }}</span>
+        </div>
+        <div class="metric">
+          <span class="label">Total Despesas</span>
+          <span class="value red">R$ {{ report.totalDespesas | number:'1.2-2' }}</span>
+        </div>
+        <div class="metric">
+          <span class="label">Saldo</span>
+          <span class="value">R$ {{ report.saldo | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 class="title">Anomalias</h3>
+      <p class="muted" *ngIf="!report.analiseAnomalias">Sem registros</p>
+      <p *ngIf="report.analiseAnomalias">{{ report.analiseAnomalias }}</p>
+    </section>
+  </div>
+
+  <div class="grid two" *ngIf="report">
+    <section class="card">
+      <h3 class="title">Ranking Receitas por Categoria</h3>
+      <div *ngIf="report.rankingReceitasPorCategoria; else noRec">
+        <div class="bar-row" *ngFor="let kv of (report.rankingReceitasPorCategoria | keyvalue)">
+          <span class="cat">{{ kv.key }}</span>
+          <div class="bar"><div class="fill green" [style.width.%]="calcWidth(kv.value, report.totalReceitas)"></div></div>
+          <span class="val">R$ {{ kv.value | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <ng-template #noRec><p class="muted">Sem dados de categorias de receita</p></ng-template>
+    </section>
+
+    <section class="card">
+      <h3 class="title">Ranking Despesas por Categoria</h3>
+      <div *ngIf="report.rankingDespesasPorCategoria; else noDesp">
+        <div class="bar-row" *ngFor="let kv of (report.rankingDespesasPorCategoria | keyvalue)">
+          <span class="cat">{{ kv.key }}</span>
+          <div class="bar"><div class="fill red" [style.width.%]="calcWidth(kv.value, report.totalDespesas)"></div></div>
+          <span class="val">R$ {{ kv.value | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <ng-template #noDesp><p class="muted">Sem dados de categorias de despesa</p></ng-template>
+    </section>
+  </div>
+
+  <section class="card" *ngIf="report">
+    <h3 class="title">Média de Gastos por Categoria</h3>
+    <div *ngIf="report.mediaGastosPorCategoria; else noMed">
+      <div class="bar-row" *ngFor="let kv of (report.mediaGastosPorCategoria | keyvalue)">
+        <span class="cat">{{ kv.key }}</span>
+        <div class="bar"><div class="fill" [style.width.%]="calcWidth(kv.value, report.totalDespesas)"></div></div>
+        <span class="val">R$ {{ kv.value | number:'1.2-2' }}</span>
+      </div>
+    </div>
+    <ng-template #noMed><p class="muted">Sem dados de médias</p></ng-template>
+  </section>
 </div>
