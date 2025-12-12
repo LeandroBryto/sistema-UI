@@ -1,6 +1,6 @@
 <div class="status" [class.ok]="loggedIn" [class.bad]="!loggedIn">
   <span *ngIf="loggedIn; else notAuth">
-    Autenticado<span *ngIf="username"> como {{ username }}</span>
+    Autenticado
   </span>
   <ng-template #notAuth>
     Não autenticado

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SummaryService } from '../../services/summary.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -17,7 +17,11 @@ export class DashboardComponent implements OnInit {
   carteira: unknown = null;
   resumo: unknown = null;
 
-  constructor(private summary: SummaryService, private auth: AuthService) {}
+  constructor(
+    private summary: SummaryService,
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -56,5 +60,10 @@ export class DashboardComponent implements OnInit {
           'Erro ao carregar carteira. Tente novamente mais tarde.';
       },
     });
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigateByUrl('/');
   }
 }
