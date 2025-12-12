@@ -13,6 +13,24 @@ export interface RelatorioMensalDTO {
   analiseAnomalias?: string;
 }
 
+export interface CarteiraFinanceiraDTO {
+  saldoAtual: number;
+  saldoPrevistoDoMes: number;
+  percentualComprometido: number;
+  saudeFinanceira: 'OK' | 'ATENCAO' | 'CRITICA';
+  graficoReceitasVsDespesasJson: string;
+}
+
+export interface ResumoFinanceiroDTO {
+  totalReceitas: number;
+  totalDespesas: number;
+  saldoAtual: number;
+  saldoPrevisto: number;
+  rankingMaioresDespesas?: Record<string, number>;
+  sugestaoAutomatica?: string;
+  saudeFinanceira: 'OK' | 'ATENCAO' | 'CRITICA';
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -22,12 +40,12 @@ export class SummaryService {
 
   constructor(private http: HttpClient) {}
 
-  getCarteira(): Observable<unknown> {
-    return this.http.get(`${this.baseUrl}/carteira`);
+  getCarteira(): Observable<CarteiraFinanceiraDTO> {
+    return this.http.get<CarteiraFinanceiraDTO>(`${this.baseUrl}/carteira`);
   }
 
-  getResumo(): Observable<unknown> {
-    return this.http.get(`${this.baseUrl}/resumo`);
+  getResumo(): Observable<ResumoFinanceiroDTO> {
+    return this.http.get<ResumoFinanceiroDTO>(`${this.baseUrl}/resumo`);
   }
 
   getRelatorioMensal(yearMonth: string): Observable<RelatorioMensalDTO> {

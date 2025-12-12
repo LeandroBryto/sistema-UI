@@ -14,11 +14,15 @@
 
   <section class="balance">
     <div class="left">
-      <div class="label">Saldo Corporativo Total</div>
-      <div class="value">R$ 0,00</div>
-      <div class="trend">+ 12% este mês</div>
+      <div class="label">Saldo Atual</div>
+      <div class="value">R$ {{ carteira?.saldoAtual | number:'1.2-2' }}</div>
+      <div class="trend">
+        Comprometimento: {{ carteira?.percentualComprometido | number:'1.0-1' }}%
+      </div>
+      <div class="trend">Previsto no mês: R$ {{ carteira?.saldoPrevistoDoMes | number:'1.2-2' }}</div>
     </div>
     <div class="right">
+      <span [class]="estadoClass(carteira?.saudeFinanceira)">{{ carteira?.saudeFinanceira || '—' }}</span>
       <a class="details" routerLink="/relatorios">Ver Detalhes</a>
     </div>
     <button class="refresh" (click)="loadData()" [disabled]="loading">
@@ -35,76 +39,58 @@
 
   <section class="flow">
     <div class="flow-header">
-      <h3>Fluxo de Caixa</h3>
-      <span class="period">Este Mês</span>
+      <h3>Receitas vs Despesas</h3>
+      <span class="period">Mês atual</span>
     </div>
     <div class="bars">
       <div class="bar">
-        <div class="fill" style="height: 40%"></div>
-        <span>Sem 1</span>
+        <div class="fill" [style.height.%]="barHeight('receitas')"></div>
+        <span>Receitas</span>
       </div>
       <div class="bar">
-        <div class="fill" style="height: 55%"></div>
-        <span>Sem 2</span>
+        <div class="fill" [style.height.%]="barHeight('despesas')"></div>
+        <span>Despesas</span>
       </div>
-      <div class="bar">
-        <div class="fill" style="height: 75%"></div>
-        <span>Sem 3</span>
-      </div>
-      <div class="bar">
-        <div class="fill" style="height: 65%"></div>
-        <span>Sem 4</span>
-      </div>
-    
     </div>
   </section>
 
   <section class="goals">
     <div class="goals-header">
-      <h3>Metas Financeiras</h3>
-      <a routerLink="/metas" class="view-all">Ver todas</a>
+      <h3>Resumo do mês</h3>
+      <a routerLink="/relatorios" class="view-all">Ver detalhes</a>
     </div>
     <div class="goal-card">
       <div class="head">
-        <span class="icon">🛟</span>
+        <span class="icon">🏆</span>
         <div>
-          <div class="title">Reserva de Emergência</div>
-          <div class="meta">Prazo: Dez 2024</div>
+          <div class="title">Maiores despesas</div>
+          <div class="meta">Top 5 do mês</div>
         </div>
-        <span class="state ok">Em dia</span>
+        <span [class]="estadoClass(resumo?.saudeFinanceira)">{{ resumo?.saudeFinanceira || '—' }}</span>
       </div>
-      <div class="track">
-        <div class="progress" style="width: 75%"></div>
+      <div *ngIf="resumo?.rankingMaioresDespesas; else noRank">
+        <div class="bar-row" *ngFor="let kv of (resumo?.rankingMaioresDespesas | keyvalue)">
+          <span class="cat">{{ kv.key }}</span>
+          <div class="track"><div class="progress warn" [style.width.%]="barWidth(kv.value, resumo?.totalDespesas)"></div></div>
+          <span class="val">R$ {{ kv.value | number:'1.2-2' }}</span>
+        </div>
       </div>
-      <div class="caption">R$ 150k de R$ 200k • 75%</div>
+      <ng-template #noRank><p class="caption">Sem ranking disponível</p></ng-template>
     </div>
 
     <div class="goal-card">
       <div class="head">
-        <span class="icon">📉</span>
+        <span class="icon">💡</span>
         <div>
-          <div class="title">Redução de Custos</div>
-          <div class="meta">Operacional - Q3</div>
+          <div class="title">Sugestão automática</div>
+          <div class="meta">Baseada na saúde financeira</div>
         </div>
-        <span class="state warn">Atenção</span>
       </div>
-      <div class="track">
-        <div class="progress warn" style="width: 40%"></div>
-      </div>
-      <div class="caption">R$ 12k de R$ 30k • 40%</div>
+      <p class="caption">{{ resumo?.sugestaoAutomatica || '—' }}</p>
     </div>
   </section>
 
   <p class="error" *ngIf="error">{{ error }}</p>
 
-  <section class="debug">
-    <div class="card">
-      <h4>Carteira</h4>
-      <pre>{{ carteira | json }}</pre>
-    </div>
-    <div class="card">
-      <h4>Resumo</h4>
-      <pre>{{ resumo | json }}</pre>
-    </div>
-  </section>
+  
 </div>
