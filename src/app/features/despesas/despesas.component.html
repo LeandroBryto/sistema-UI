@@ -1,129 +1,156 @@
-<div class="container">
-  <h2>Despesas</h2>
+<div class="page">
+  <header class="header">
+    <div>
+      <p class="muted">Gerencie e acompanhe seus gastos</p>
+    </div>
+    <div class="summary">
+      <div class="chip">Itens: {{ itens.length }}</div>
+      <button class="primary" (click)="resetForm()">Nova despesa</button>
+      <a class="secondary link" routerLink="/dashboard">Voltar ao Dashboard</a>
+    </div>
+  </header>
 
-  <div class="filters">
-    <label>
-      Início
+  <section class="filters card">
+    <div class="row">
+      <label>Início</label>
       <input type="date" [formControl]="filtros.controls.startDate" />
-    </label>
-    <label>
-      Fim
+    </div>
+    <div class="row">
+      <label>Fim</label>
       <input type="date" [formControl]="filtros.controls.endDate" />
-    </label>
-    <button (click)="load()" [disabled]="loading">
-      {{ loading ? 'Carregando...' : 'Aplicar Filtros' }}
-    </button>
-  </div>
+    </div>
+    <div class="row actions">
+      <button class="primary" (click)="load()" [disabled]="loading">
+        {{ loading ? 'Carregando...' : 'Aplicar Filtros' }}
+      </button>
+    </div>
+  </section>
 
   <p class="error" *ngIf="error">{{ error }}</p>
   <p class="success" *ngIf="success">{{ success }}</p>
 
-  <div class="grid">
-    <div class="card">
+  <div class="grid two">
+    <section class="card form-card">
       <h3>{{ editingId ? 'Editar Despesa' : 'Nova Despesa' }}</h3>
       <form [formGroup]="form" (ngSubmit)="save()">
-        <div class="row">
-          <label>Descrição</label>
-          <input type="text" formControlName="descricao" />
+        <div class="form-grid">
+          <div class="row">
+            <label>Descrição</label>
+            <input type="text" formControlName="descricao" />
+          </div>
+          <div class="row">
+            <label>Categoria</label>
+            <select formControlName="categoria">
+              <option value="" disabled>Selecione</option>
+              <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Valor</label>
+            <input type="number" step="0.01" formControlName="valor" />
+          </div>
+          <div class="row">
+            <label>Data</label>
+            <input type="date" formControlName="data" />
+          </div>
+          <div class="row">
+            <label>Forma de Pagamento</label>
+            <select formControlName="formaPagamento">
+              <option value="" disabled>Selecione</option>
+              <option *ngFor="let f of formas" [value]="f">{{ f }}</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Status</label>
+            <select formControlName="statusPagamento">
+              <option value="" disabled>Selecione</option>
+              <option *ngFor="let s of status" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+          <div class="row checkbox">
+            <label>
+              <input type="checkbox" formControlName="recorrente" />
+              Recorrente
+            </label>
+          </div>
+          <div class="row">
+            <label>Notificar antes (dias)</label>
+            <input type="number" formControlName="notificarAntesVencimento" />
+          </div>
+          <div class="row wide">
+            <label>Observações</label>
+            <textarea rows="3" formControlName="observacoes"></textarea>
+          </div>
         </div>
-        <div class="row">
-          <label>Categoria</label>
-          <select formControlName="categoria">
-            <option value="" disabled>Selecione</option>
-            <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
-          </select>
-        </div>
-        <div class="row">
-          <label>Valor</label>
-          <input type="number" step="0.01" formControlName="valor" />
-        </div>
-        <div class="row">
-          <label>Data</label>
-          <input type="date" formControlName="data" />
-        </div>
-        <div class="row">
-          <label>Forma de Pagamento</label>
-          <select formControlName="formaPagamento">
-            <option value="" disabled>Selecione</option>
-            <option *ngFor="let f of formas" [value]="f">{{ f }}</option>
-          </select>
-        </div>
-        <div class="row">
-          <label>Status</label>
-          <select formControlName="statusPagamento">
-            <option value="" disabled>Selecione</option>
-            <option *ngFor="let s of status" [value]="s">{{ s }}</option>
-          </select>
-        </div>
-        <div class="row">
-          <label>
-            <input type="checkbox" formControlName="recorrente" />
-            Recorrente
-          </label>
-        </div>
-        <div class="row">
-          <label>Notificar antes (dias)</label>
-          <input type="number" formControlName="notificarAntesVencimento" />
-        </div>
-        <div class="row">
-          <label>Observações</label>
-          <textarea rows="3" formControlName="observacoes"></textarea>
-        </div>
-        <div class="actions">
-          <button type="submit" [disabled]="form.invalid || loading">
+        <div class="form-actions">
+          <button class="primary" type="submit" [disabled]="form.invalid || loading">
             {{ editingId ? 'Salvar Alterações' : 'Criar' }}
           </button>
-          <button type="button" class="secondary" (click)="resetForm()">
-            Limpar
-          </button>
+          <button type="button" class="secondary" (click)="resetForm()">Limpar</button>
         </div>
       </form>
-    </div>
+    </section>
 
-    <div class="card">
-      <h3>Lista</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Descrição</th>
-            <th>Categoria</th>
-            <th>Valor</th>
-            <th>Data</th>
-            <th>Forma</th>
-            <th>Status</th>
-            <th>Recorrente</th>
-            <th>Observações</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of itens">
-            <td>{{ item.descricao }}</td>
-            <td>{{ item.categoria }}</td>
-            <td>R$ {{ item.valor | number : '1.2-2' }}</td>
-            <td>{{ item.data }}</td>
-            <td>{{ item.formaPagamento }}</td>
-            <td>
-              <span class="badge" [class.pago]="item.statusPagamento==='PAGO'"
-                [class.pendente]="item.statusPagamento==='PENDENTE'"
-                [class.atrasado]="item.statusPagamento==='ATRASADO'">
-                {{ item.statusPagamento }}
-              </span>
-            </td>
-            <td>{{ item.recorrente ? 'Sim' : 'Não' }}</td>
-            <td>
-              {{ item.observacoes }}
-              <span class="notify" *ngIf="item.notificarAntesVencimento">
-                {{ item.notificarAntesVencimento }}d
-              </span>
-            </td>
-            <td class="actions">
-              <button (click)="edit(item)">Editar</button>
-              <button class="danger" (click)="remove(item)">Excluir</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <section class="card list-card">
+      <div class="list-head">
+        <h3>Lista</h3>
+        <div class="legend">
+          <span class="badge pago">Pago</span>
+          <span class="badge pendente">Pendente</span>
+          <span class="badge atrasado">Atrasado</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Categoria</th>
+              <th>Valor</th>
+              <th>Data</th>
+              <th>Forma</th>
+              <th>Status</th>
+              <th>Recorrente</th>
+              <th>Observações</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of itens; let i = index" [class.alt]="i % 2 === 1">
+              <td>{{ item.descricao }}</td>
+              <td>{{ item.categoria }}</td>
+              <td>R$ {{ item.valor | number : '1.2-2' }}</td>
+              <td>{{ item.data }}</td>
+              <td>{{ item.formaPagamento }}</td>
+              <td>
+                <span class="badge" [class.pago]="item.statusPagamento==='PAGO'"
+                  [class.pendente]="item.statusPagamento==='PENDENTE'"
+                  [class.atrasado]="item.statusPagamento==='ATRASADO'">
+                  {{ item.statusPagamento }}
+                </span>
+              </td>
+              <td>
+                <span class="chip" [class.ok]="item.recorrente" [class.muted]="!item.recorrente">
+                  {{ item.recorrente ? 'Sim' : 'Não' }}
+                </span>
+              </td>
+              <td>
+                {{ item.observacoes }}
+                <span class="notify" *ngIf="item.notificarAntesVencimento">
+                  {{ item.notificarAntesVencimento }}d
+                </span>
+              </td>
+              <td class="actions">
+                <button (click)="edit(item)">Editar</button>
+                <button class="danger" (click)="remove(item)">Excluir</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="empty" *ngIf="itens.length === 0">
+          Nenhuma despesa encontrada para o período.
+        </div>
+      </div>
+    </section>
   </div>
 </div>

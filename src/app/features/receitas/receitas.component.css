@@ -1,5 +1,121 @@
-.container {
-  max-width: 960px;
+.page {
+  max-width: 1100px;
   margin: 24px auto;
-  padding: 16px;
+  padding: 8px 16px 24px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 12px;
+}
+.muted { color: #666; margin: 0; }
+.summary { display: flex; gap: 8px; align-items: center; }
+.chip {
+  padding: 6px 10px;
+  border: 1px solid #eee;
+  border-radius: 999px;
+  background: #fff;
+}
+.card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 14px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+}
+.grid.two {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px;
+}
+.filters.card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+input, select, textarea {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+}
+.primary {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 999px;
+  background: #1e50ff;
+  color: #fff;
+  cursor: pointer;
+}
+button.secondary {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 999px;
+  background: #777;
+  color: #fff;
+  cursor: pointer;
+}
+button.danger {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #c62828;
+  color: #fff;
+  cursor: pointer;
+}
+.error { color: #b00020; }
+.success { color: #1b5e20; }
+.form-card h3, .list-card h3 { margin: 0 0 8px; }
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 12px;
+}
+.row.wide { grid-column: 1 / -1; }
+.row.checkbox { align-self: end; }
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.table-wrap {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table thead {
+  background: #f7f7fb;
+  position: sticky;
+  top: 0;
+}
+.table th, .table td {
+  border-bottom: 1px solid #eee;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+tr.alt { background: #fcfcff; }
+.chip.ok { background: #e8f5e9; color: #1b5e20; border-color: #dcedd9; }
+.chip.muted { background: #f5f5f5; color: #666; border-color: #eee; }
+.empty {
+  padding: 12px;
+  color: #666;
+  text-align: center;
 }
