@@ -1,7 +1,10 @@
 <div class="admin-page">
   <header class="head">
     <h2>Painel de Controle</h2>
-    <span class="badge">ADMIN</span>
+    <div class="actions">
+      <a class="secondary link" routerLink="/dashboard">Voltar ao Dashboard</a>
+      <span class="badge">ADMIN</span>
+    </div>
   </header>
 
 <p class="error" *ngIf="error">{{ error }}</p>
