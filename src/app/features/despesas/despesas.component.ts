@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { DespesaService, DespesaRequest, DespesaResponse } from '../../services/despesa.service';
+import { DespesaService } from '../../services/despesa.service';
+import { DespesaRequest, DespesaResponse } from '../../models/despesa.models';
 
 @Component({
   selector: 'app-despesas',

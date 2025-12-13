@@ -2,20 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
-
-export interface ReceitaRequest {
-  descricao: string;
-  categoria: string;
-  valor: number;
-  data: string;
-  formaRecebimento: string;
-  recorrente?: boolean;
-  observacoes?: string;
-}
-
-export interface ReceitaResponse extends ReceitaRequest {
-  id: number;
-}
+import { ReceitaRequest, ReceitaResponse } from '../models/receita.models';
 
 @Injectable({
   providedIn: 'root',

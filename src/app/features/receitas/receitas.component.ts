@@ -6,11 +6,8 @@ import {
   FormBuilder,
   Validators,
 } from '@angular/forms';
-import {
-  ReceitaService,
-  ReceitaRequest,
-  ReceitaResponse,
-} from '../../services/receita.service';
+import { ReceitaService } from '../../services/receita.service';
+import { ReceitaRequest, ReceitaResponse } from '../../models/receita.models';
 
 @Component({
   selector: 'app-receitas',

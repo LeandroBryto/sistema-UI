@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { SummaryService, CarteiraFinanceiraDTO, ResumoFinanceiroDTO } from '../../services/summary.service';
+import { SummaryService } from '../../services/summary.service';
+import { CarteiraFinanceiraDTO, ResumoFinanceiroDTO } from '../../models/summary.models';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
