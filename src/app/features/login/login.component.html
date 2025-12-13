@@ -1,16 +1,16 @@
 <div class="login-page">
   <div class="brand">
     <div class="brand-icon">
-      <span>$</span>
+      <span>💼</span>
     </div>
-    <h1>Áreo Veybost</h1>
-    <p class="subtitle">Gestão Financeira Inteligente</p>
+    <h1>Sistema Financeiro Inteligente</h1>
+    <!-- <p class="subtitle">Gestão Financeira Inteligente</p> -->
   </div>
 
   <div class="card">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="field">
-        <label for="username">E-mail corporativo</label>
+        <label for="username">E-mail </label>
         <div class="input-wrapper">
           <span class="leading-icon" aria-hidden="true">✉️</span>
           <input
@@ -32,7 +32,7 @@
             formControlName="senha"
             placeholder="Digite sua senha"
           />
-          <span class="trailing-icon" aria-hidden="true">👁️</span>
+          <span class="trailing-icon" aria-hidden="true"></span>
         </div>
         <a class="recover" routerLink="/esqueci-senha">Recuperar Senha?</a>
       </div>
