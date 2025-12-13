@@ -61,7 +61,7 @@ export class AuthService {
   }
 
   resetPassword(payload: PasswordResetPayload): Observable<unknown> {
-    return this.http.post(`${this.apiBase()}/api/v1/auth/reset-password`, payload);
+    return this.http.post(`${this.apiBase()}/api/v1/auth/reset-password-direct`, payload);
   }
 
   // Produção: https://sistema-financeiro-zaovxq.fly.dev

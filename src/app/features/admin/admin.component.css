@@ -25,4 +25,28 @@
 }
 .error { color: #b00020; }
 .loading { color: #666; }
+.grid.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+.table .thead,
+.table .row {
+  display: grid;
+  grid-template-columns: 60px 1fr 1.2fr 100px 80px 1.6fr;
+  align-items: center;
+  gap: 8px;
+}
+.table .thead { font-weight: 700; padding: 6px 0; }
+.table .row { padding: 8px 0; border-top: 1px dashed #eee; }
+.actions { display: flex; gap: 6px; align-items: center; }
+.inline { display: inline-flex; gap: 6px; align-items: center; }
+.sm { font-size: 12px; padding: 4px 8px; }
+.warn { color: #b00020; }
+.list { margin: 0; padding-left: 18px; }
+.list li { margin-bottom: 6px; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.label { color: #666; font-size: 12px; display: inline-block; min-width: 80px; }
+.value { font-weight: 700; }
 

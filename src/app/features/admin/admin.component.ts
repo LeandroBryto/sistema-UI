@@ -1,27 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../services/auth.service';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { AdminService } from '../../services/admin.service';
+import { AdminUserResponseDTO, MetricsSummaryDTO, AuditLogResponseDTO, ApplicationStatusDTO } from '../../models/admin.models';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })
 export class AdminComponent implements OnInit {
   loading = false;
   error: string | null = null;
-  data: any = null;
+  users: AdminUserResponseDTO[] = [];
+  metrics: MetricsSummaryDTO | null = null;
+  last: AdminUserResponseDTO[] = [];
+  audit: AuditLogResponseDTO[] = [];
+  status: ApplicationStatusDTO | null = null;
 
-  // Produção: https://sistema-financeiro-zaovxq.fly.dev/api/v1/admin
-  // Local:    http://localhost:8080/api/v1/admin
-  private url(): string {
-    return `${this.auth.apiBase()}/api/v1/admin`;
-  }
+  roleForm = this.fb.nonNullable.group({
+    role: ['USER' as 'ADMIN' | 'USER', [Validators.required]],
+  });
 
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(private admin: AdminService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.load();
@@ -30,11 +33,34 @@ export class AdminComponent implements OnInit {
   load(): void {
     this.loading = true;
     this.error = null;
-    this.data = null;
-    this.http.get(`${this.url()}/dashboard`).subscribe({
-      next: (res) => {
-        this.data = res;
-        this.loading = false;
+    this.users = [];
+    this.metrics = null;
+    this.last = [];
+    this.audit = [];
+    this.status = null;
+
+    this.admin.listUsers().subscribe({
+      next: (u) => {
+        this.users = u;
+        this.admin.metricsSummary().subscribe({
+          next: (m) => {
+            this.metrics = m;
+          },
+          error: (e) => {
+            this.error = e?.error?.message || 'Erro ao carregar métricas';
+          },
+        });
+        this.admin.lastLogins(10).subscribe({
+          next: (l) => (this.last = l),
+        });
+        this.admin.audit(50).subscribe({
+          next: (a) => (this.audit = a),
+        });
+        this.admin.status().subscribe({
+          next: (s) => (this.status = s),
+          complete: () => (this.loading = false),
+          error: () => (this.loading = false),
+        });
       },
       error: (e) => {
         this.loading = false;
@@ -43,8 +69,27 @@ export class AdminComponent implements OnInit {
             ? 'Acesso negado (ADMIN apenas).'
             : e?.status === 401
             ? 'Sessão expirada. Faça login novamente.'
-            : e?.error?.message || 'Erro ao carregar Painel de Controle.';
+            : e?.error?.message || 'Erro ao carregar usuários.';
       },
     });
+  }
+
+  activate(u: AdminUserResponseDTO): void {
+    this.admin.activateUser(u.id).subscribe({ next: () => this.load() });
+  }
+
+  deactivate(u: AdminUserResponseDTO): void {
+    this.admin.deactivateUser(u.id).subscribe({ next: () => this.load() });
+  }
+
+  changeRole(u: AdminUserResponseDTO): void {
+    const role = this.roleForm.getRawValue().role;
+    this.admin.changeRole(u.id, role).subscribe({ next: () => this.load() });
+  }
+
+  resetPassword(u: AdminUserResponseDTO): void {
+    const nova = prompt(`Nova senha para ${u.username}`) || '';
+    if (!nova || nova.length < 6) return;
+    this.admin.resetPassword(u.id, nova).subscribe({ next: () => this.load() });
   }
 }
