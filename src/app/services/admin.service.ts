@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
+import { EnvService } from './env.service';
 import {
   AdminUserResponseDTO,
   MetricsSummaryDTO,
@@ -11,10 +11,10 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(private http: HttpClient, private env: EnvService) {}
 
   private url(): string {
-    return `${this.auth.apiBase()}/api/v1/admin`;
+    return `${this.env.apiBase()}/api/v1/admin`;
   }
 
   listUsers(): Observable<AdminUserResponseDTO[]> {
