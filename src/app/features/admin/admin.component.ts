@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { AdminUserResponseDTO, MetricsSummaryDTO, AuditLogResponseDTO, ApplicationStatusDTO } from '../../models/admin.models';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })
@@ -24,7 +25,7 @@ export class AdminComponent implements OnInit {
     role: ['USER' as 'ADMIN' | 'USER', [Validators.required]],
   });
 
-  constructor(private admin: AdminService, private fb: FormBuilder) {}
+  constructor(private admin: AdminService, private fb: FormBuilder, private router: Router) {}
 
   ngOnInit(): void {
     this.load();
@@ -91,5 +92,9 @@ export class AdminComponent implements OnInit {
     const nova = prompt(`Nova senha para ${u.username}`) || '';
     if (!nova || nova.length < 6) return;
     this.admin.resetPassword(u.id, nova).subscribe({ next: () => this.load() });
+  }
+
+  goDashboard(): void {
+    this.router.navigateByUrl('/dashboard');
   }
 }

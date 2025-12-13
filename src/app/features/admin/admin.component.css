@@ -49,4 +49,12 @@
 .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 .label { color: #666; font-size: 12px; display: inline-block; min-width: 80px; }
 .value { font-weight: 700; }
+.secondary.link {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #eee;
+  background: #fff;
+  color: #333;
+  text-decoration: none;
+}
 
