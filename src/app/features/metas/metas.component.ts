@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { GoalService, GoalRequest, GoalResponse } from '../../services/goal.service';
+import { GoalService } from '../../services/goal.service';
+import { GoalRequest, GoalResponse } from '../../models/goal.models';
 
 @Component({
   selector: 'app-metas',

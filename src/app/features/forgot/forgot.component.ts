@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService, PasswordResetPayload } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
+import { PasswordResetPayload } from '../../models/auth.models';
 
 @Component({
   selector: 'app-forgot',

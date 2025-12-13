@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { SummaryService, RelatorioMensalDTO } from '../../services/summary.service';
+import { SummaryService } from '../../services/summary.service';
+import { RelatorioMensalDTO } from '../../models/summary.models';
 
 @Component({
   selector: 'app-relatorios',

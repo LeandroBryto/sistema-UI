@@ -57,8 +57,8 @@
       <div *ngIf="report.rankingReceitasPorCategoria; else noRec">
         <div class="bar-row" *ngFor="let kv of (report.rankingReceitasPorCategoria | keyvalue)">
           <span class="cat">{{ kv.key }}</span>
-          <div class="bar"><div class="fill green" [style.width.%]="calcWidth(kv.value, report.totalReceitas)"></div></div>
-          <span class="val">R$ {{ kv.value | number:'1.2-2' }}</span>
+          <div class="bar"><div class="fill green" [style.width.%]="calcWidth($any(kv.value), report.totalReceitas)"></div></div>
+          <span class="val">R$ {{ $any(kv.value) | number:'1.2-2' }}</span>
         </div>
       </div>
       <ng-template #noRec><p class="muted">Sem dados de categorias de receita</p></ng-template>
@@ -69,8 +69,8 @@
       <div *ngIf="report.rankingDespesasPorCategoria; else noDesp">
         <div class="bar-row" *ngFor="let kv of (report.rankingDespesasPorCategoria | keyvalue)">
           <span class="cat">{{ kv.key }}</span>
-          <div class="bar"><div class="fill red" [style.width.%]="calcWidth(kv.value, report.totalDespesas)"></div></div>
-          <span class="val">R$ {{ kv.value | number:'1.2-2' }}</span>
+          <div class="bar"><div class="fill red" [style.width.%]="calcWidth($any(kv.value), report.totalDespesas)"></div></div>
+          <span class="val">R$ {{ $any(kv.value) | number:'1.2-2' }}</span>
         </div>
       </div>
       <ng-template #noDesp><p class="muted">Sem dados de categorias de despesa</p></ng-template>
@@ -82,8 +82,8 @@
     <div *ngIf="report.mediaGastosPorCategoria; else noMed">
       <div class="bar-row" *ngFor="let kv of (report.mediaGastosPorCategoria | keyvalue)">
         <span class="cat">{{ kv.key }}</span>
-        <div class="bar"><div class="fill" [style.width.%]="calcWidth(kv.value, report.totalDespesas)"></div></div>
-        <span class="val">R$ {{ kv.value | number:'1.2-2' }}</span>
+        <div class="bar"><div class="fill" [style.width.%]="calcWidth($any(kv.value), report.totalDespesas)"></div></div>
+        <span class="val">R$ {{ $any(kv.value) | number:'1.2-2' }}</span>
       </div>
     </div>
     <ng-template #noMed><p class="muted">Sem dados de médias</p></ng-template>

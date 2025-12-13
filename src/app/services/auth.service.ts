@@ -1,24 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-
-export interface LoginPayload {
-  username: string;
-  senha: string;
-}
-
-export interface RegisterPayload {
-  email: string;
-  username: string;
-  telefone: string;
-  senha: string;
-}
-
-export interface PasswordResetPayload {
-  email: string;
-  novaSenha: string;
-  confirmarSenha: string;
-}
+import { LoginPayload, RegisterPayload, PasswordResetPayload } from '../models/auth.models';
 
 @Injectable({
   providedIn: 'root',

@@ -2,22 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
-
-export interface DespesaRequest {
-  descricao: string;
-  categoria: string;
-  valor: number;
-  data: string;
-  formaPagamento: string;
-  recorrente?: boolean;
-  notificarAntesVencimento?: number;
-  statusPagamento: string;
-  observacoes?: string;
-}
-
-export interface DespesaResponse extends DespesaRequest {
-  id: number;
-}
+import { DespesaRequest, DespesaResponse } from '../models/despesa.models';
 
 @Injectable({
   providedIn: 'root',
