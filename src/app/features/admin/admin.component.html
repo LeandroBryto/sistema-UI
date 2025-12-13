@@ -7,7 +7,7 @@
     </div>
   </header>
 
-  <section class="card filters">
+  <!-- <section class="card filters">
     <div class="row">
       <label>Últimos logins</label>
       <select [formControl]="filterForm.controls.lastLimit" (change)="refresh()">
@@ -34,7 +34,7 @@
         <option value="RESET_PASSWORD">Resetar senha</option>
       </select>
     </div>
-  </section>
+  </section> -->
 
 <p class="error" *ngIf="error">{{ error }}</p>
 <div class="loading" *ngIf="loading">Carregando...</div>
@@ -67,7 +67,7 @@
       </div>
     </div>
   </div>
-
+<!-- 
   <div class="card">
     <h3>Métricas</h3>
     <div *ngIf="metrics; else noMetrics" class="metrics">
@@ -76,7 +76,7 @@
       <div><span class="label">Admins</span><span class="value">{{ metrics.administradores }}</span></div>
     </div>
     <ng-template #noMetrics><p class="muted">Sem métricas</p></ng-template>
-  </div>
+  </div> -->
 </section>
 
 <section class="grid two" *ngIf="!loading">
@@ -92,7 +92,34 @@
     <p *ngIf="!status" class="muted">Sem status</p>
   </div>
 </section>
-
+<section class="card filters">
+    <div class="row">
+      <label>Últimos logins</label>
+      <select [formControl]="filterForm.controls.lastLimit" (change)="refresh()">
+        <option [value]="5">5</option>
+        <option [value]="10">10</option>
+        <option [value]="20">20</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>Auditoria</label>
+      <select [formControl]="filterForm.controls.auditLimit" (change)="refresh()">
+        <option [value]="20">20</option>
+        <option [value]="50">50</option>
+        <option [value]="100">100</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>Filtrar ação</label>
+      <select [formControl]="filterForm.controls.action" (change)="applyAuditFilter()">
+        <option value="ALL">Todas</option>
+        <option value="ACTIVATE">Ativar</option>
+        <option value="DEACTIVATE">Desativar</option>
+        <option value="CHANGE_ROLE">Alterar role</option>
+        <option value="RESET_PASSWORD">Resetar senha</option>
+      </select>
+    </div>
+  </section>
 <section class="card" *ngIf="!loading">
   <h3>Auditoria</h3>
   <div class="table audit">
