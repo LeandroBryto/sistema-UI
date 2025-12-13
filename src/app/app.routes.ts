@@ -8,9 +8,11 @@ import { authGuard } from './guards/auth.guard';
 import { ReceitasComponent } from './features/receitas/receitas.component';
 import { RelatoriosComponent } from './features/relatorios/relatorios.component';
 import { MetasComponent } from './features/metas/metas.component';
+import { ForgotComponent } from './features/forgot/forgot.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
+  { path: 'esqueci-senha', component: ForgotComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'despesas', component: DespesasComponent, canActivate: [authGuard] },
   { path: 'receitas', component: ReceitasComponent, canActivate: [authGuard] },

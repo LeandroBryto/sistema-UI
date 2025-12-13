@@ -14,6 +14,12 @@ export interface RegisterPayload {
   senha: string;
 }
 
+export interface PasswordResetPayload {
+  email: string;
+  novaSenha: string;
+  confirmarSenha: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -22,7 +28,7 @@ export class AuthService {
     'https://sistema-financeiro-zaovxq.fly.dev/api/v1/auth/login';
   private readonly registerUrl =
     'https://sistema-financeiro-zaovxq.fly.dev/api/v1/auth/register';
-
+  
   constructor(private http: HttpClient) {}
 
   login(payload: LoginPayload): Observable<unknown> {
@@ -53,5 +59,19 @@ export class AuthService {
 
   register(payload: RegisterPayload): Observable<unknown> {
     return this.http.post(this.registerUrl, payload);
+  }
+
+  resetPassword(payload: PasswordResetPayload): Observable<unknown> {
+    return this.http.post(`${this.apiBase()}/api/v1/auth/reset-password`, payload);
+  }
+
+  private apiBase(): string {
+    try {
+      const host = window?.location?.hostname || '';
+      if (host.includes('localhost') || host.includes('127.0.0.1')) {
+        // return 'http://localhost:8080';
+      }
+    } catch {}
+    return 'https://sistema-financeiro-zaovxq.fly.dev';
   }
 }

@@ -12,7 +12,11 @@ function readToken(): string | null {
 }
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  if (req.url.includes('/api/v1/auth/login') || req.url.includes('/api/v1/auth/register')) {
+  if (
+    req.url.includes('/api/v1/auth/login') ||
+    req.url.includes('/api/v1/auth/register') ||
+    req.url.includes('/api/v1/auth/reset-password')
+  ) {
     return next(req);
   }
   const token = readToken();

@@ -1,0 +1,66 @@
+<div class="forgot-page">
+  <div class="brand">
+    <div class="brand-icon">
+      <span>🔒</span>
+    </div>
+    <h1>Recuperar Senha</h1>
+    <p class="subtitle">Informe seu e-mail e defina uma nova senha</p>
+  </div>
+
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label for="email">E-mail</label>
+        <div class="input-wrapper">
+          <span class="leading-icon" aria-hidden="true">✉️</span>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="nome@empresa.com.br"
+          />
+        </div>
+        <p class="error" *ngIf="fieldErrors.email">{{ fieldErrors.email }}</p>
+      </div>
+
+      <div class="field">
+        <label for="novaSenha">Nova Senha</label>
+        <div class="input-wrapper">
+          <span class="leading-icon" aria-hidden="true">🔒</span>
+          <input
+            id="novaSenha"
+            type="password"
+            formControlName="novaSenha"
+            placeholder="Mínimo 6 caracteres"
+          />
+        </div>
+        <p class="error" *ngIf="fieldErrors.novaSenha">{{ fieldErrors.novaSenha }}</p>
+      </div>
+
+      <div class="field">
+        <label for="confirmarSenha">Confirmar Senha</label>
+        <div class="input-wrapper">
+          <span class="leading-icon" aria-hidden="true">🔒</span>
+          <input
+            id="confirmarSenha"
+            type="password"
+            formControlName="confirmarSenha"
+            placeholder="Repita a nova senha"
+          />
+        </div>
+        <p class="error" *ngIf="fieldErrors.confirmarSenha">{{ fieldErrors.confirmarSenha }}</p>
+      </div>
+
+      <button class="primary" type="submit" [disabled]="form.invalid || loading || passwordsMismatch()">
+        {{ loading ? 'Processando...' : 'Atualizar senha' }}
+      </button>
+
+      <p class="success" *ngIf="success">{{ success }}</p>
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </form>
+
+    <div class="extras">
+      <a routerLink="/">Voltar para login</a>
+    </div>
+  </div>
+</div>
