@@ -2,20 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { LoginPayload, RegisterPayload, PasswordResetPayload } from '../models/auth.models';
+import { EnvService } from './env.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly loginUrl =
-    'https://sistema-financeiro-zaovxq.fly.dev/api/v1/auth/login';
-  private readonly registerUrl =
-    'https://sistema-financeiro-zaovxq.fly.dev/api/v1/auth/register';
-  
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private env: EnvService) {}
 
   login(payload: LoginPayload): Observable<unknown> {
-    return this.http.post(`${this.apiBase()}/api/v1/auth/login`, payload).pipe(
+    return this.http.post(`${this.env.apiAuthBase()}/api/v1/auth/login`, payload).pipe(
       tap((res) => {
         try {
           localStorage.setItem('auth', JSON.stringify(res));
@@ -57,21 +53,14 @@ export class AuthService {
   }
 
   register(payload: RegisterPayload): Observable<unknown> {
-    return this.http.post(`${this.apiBase()}/api/v1/auth/register`, payload);
+    return this.http.post(`${this.env.apiAuthBase()}/api/v1/auth/register`, payload);
   }
 
   resetPassword(payload: PasswordResetPayload): Observable<unknown> {
-    return this.http.post(`${this.apiBase()}/api/v1/auth/reset-password-direct`, payload);
+    return this.http.post(`${this.env.apiAuthBase()}/api/v1/auth/reset-password-direct`, payload);
   }
 
-  // Produção: https://sistema-financeiro-zaovxq.fly.dev
-  // Local:    http://localhost:8080
-  apiBase(): string {
-    // apontando para PRODUÇÃO agora
-    return 'https://sistema-financeiro-zaovxq.fly.dev';
-    // para usar LOCAL, descomente a linha abaixo e comente a de cima
-    // return 'http://localhost:8080';
-  }
+  
 
   private readTokenFromAuth(): string | null {
     try {

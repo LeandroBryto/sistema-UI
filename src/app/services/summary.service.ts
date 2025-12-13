@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AuthService } from './auth.service';
+import { EnvService } from './env.service';
 import { Observable } from 'rxjs';
 import { RelatorioMensalDTO, CarteiraFinanceiraDTO, ResumoFinanceiroDTO } from '../models/summary.models';
 
@@ -8,12 +8,12 @@ import { RelatorioMensalDTO, CarteiraFinanceiraDTO, ResumoFinanceiroDTO } from '
   providedIn: 'root',
 })
 export class SummaryService {
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(private http: HttpClient, private env: EnvService) {}
 
   // Produção: https://sistema-financeiro-zaovxq.fly.dev/api/v1/summary
   // Local:    http://localhost:8080/api/v1/summary
   private url(): string {
-    return `${this.auth.apiBase()}/api/v1/summary`;
+    return `${this.env.apiBase()}/api/v1/summary`;
   }
 
   getCarteira(): Observable<CarteiraFinanceiraDTO> {
