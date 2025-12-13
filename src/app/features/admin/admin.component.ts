@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { AdminUserResponseDTO, MetricsSummaryDTO, AuditLogResponseDTO, ApplicationStatusDTO } from '../../models/admin.models';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })
