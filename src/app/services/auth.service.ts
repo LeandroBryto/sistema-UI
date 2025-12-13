@@ -69,7 +69,7 @@ export class AuthService {
     try {
       const host = window?.location?.hostname || '';
       if (host.includes('localhost') || host.includes('127.0.0.1')) {
-        // return 'http://localhost:8080';
+         return 'http://localhost:8080';
       }
     } catch {}
     return 'https://sistema-financeiro-zaovxq.fly.dev';
