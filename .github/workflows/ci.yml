@@ -9,7 +9,8 @@ on:
       - main
 
 jobs:
-  build:
+  typecheck:
+    name: Typecheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,16 +18,83 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-      - name: Install dependencies (npm ci if lockfile exists)
+      - name: Install dependencies (npm ci)
         if: ${{ hashFiles('**/package-lock.json') != '' }}
         run: npm ci --no-audit --no-fund
-      - name: Install dependencies (npm install fallback)
+      - name: Install dependencies (npm install)
         if: ${{ hashFiles('**/package-lock.json') == '' }}
         run: npm install --no-audit --no-fund
-      - name: Build
+      - name: Run TypeScript typecheck
+        run: npx tsc -p tsconfig.app.json --noEmit
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: typecheck
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      - name: Install dependencies (npm ci)
+        if: ${{ hashFiles('**/package-lock.json') != '' }}
+        run: npm ci --no-audit --no-fund
+      - name: Install dependencies (npm install)
+        if: ${{ hashFiles('**/package-lock.json') == '' }}
+        run: npm install --no-audit --no-fund
+      - name: Angular build (production)
         run: npm run build
-      - name: Upload artifact
+
+  artifact:
+    name: Artifact
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/sistema-web
+
+  sanity:
+    name: Sanity Checks
+    runs-on: ubuntu-latest
+    needs: artifact
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - name: Show Node and npm versions
+        run: |
+          node -v
+          npm -v
+      - name: Verify Angular CLI
+        run: |
+          npm ci --no-audit --no-fund
+          npx ng version || true
+      - name: List build output (if present)
+        run: |
+          ls -lah dist/sistema-web || echo "Build artifact will be available from previous job"
+
+  audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      - name: Install dependencies (npm ci)
+        if: ${{ hashFiles('**/package-lock.json') != '' }}
+        run: npm ci --no-audit --no-fund
+      - name: Install dependencies (npm install)
+        if: ${{ hashFiles('**/package-lock.json') == '' }}
+        run: npm install --no-audit --no-fund
+      - name: Run npm audit (non-blocking)
+        run: |
+          npm audit --audit-level=high || true
