@@ -20,9 +20,16 @@ export class AdminComponent implements OnInit {
   last: AdminUserResponseDTO[] = [];
   audit: AuditLogResponseDTO[] = [];
   status: ApplicationStatusDTO | null = null;
+  auditFiltered: AuditLogResponseDTO[] = [];
 
   roleForm = this.fb.nonNullable.group({
     role: ['USER' as 'ADMIN' | 'USER', [Validators.required]],
+  });
+
+  filterForm = this.fb.nonNullable.group({
+    action: ['ALL'],
+    lastLimit: [10],
+    auditLimit: [50],
   });
 
   constructor(private admin: AdminService, private fb: FormBuilder, private router: Router) {}
@@ -51,11 +58,15 @@ export class AdminComponent implements OnInit {
             this.error = e?.error?.message || 'Erro ao carregar métricas';
           },
         });
-        this.admin.lastLogins(10).subscribe({
-          next: (l) => (this.last = l),
+        const { lastLimit, auditLimit } = this.filterForm.getRawValue();
+        this.admin.lastLogins(lastLimit).subscribe({
+          next: (l) => (this.last = [...l].sort((a, b) => new Date(b.ultimaAtualizacao).getTime() - new Date(a.ultimaAtualizacao).getTime())),
         });
-        this.admin.audit(50).subscribe({
-          next: (a) => (this.audit = a),
+        this.admin.audit(auditLimit).subscribe({
+          next: (a) => {
+            this.audit = [...a].sort((x, y) => new Date(y.timestamp).getTime() - new Date(x.timestamp).getTime());
+            this.applyAuditFilter();
+          },
         });
         this.admin.status().subscribe({
           next: (s) => (this.status = s),
@@ -96,5 +107,46 @@ export class AdminComponent implements OnInit {
 
   goDashboard(): void {
     this.router.navigateByUrl('/dashboard');
+  }
+
+  formatDate(s: string | undefined | null): string {
+    if (!s) return '—';
+    const d = new Date(s);
+    if (isNaN(d.getTime())) return s;
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    const HH = String(d.getHours()).padStart(2, '0');
+    const MM = String(d.getMinutes()).padStart(2, '0');
+    const SS = String(d.getSeconds()).padStart(2, '0');
+    return `${dd}/${mm}/${yyyy} ${HH}:${MM}:${SS}`;
+  }
+
+  actionClass(a: string | undefined | null): string {
+    const x = (a || '').toUpperCase();
+    if (x.includes('ACTIVATE')) return 'ok';
+    if (x.includes('DEACTIVATE')) return 'warn';
+    if (x.includes('RESET')) return 'info';
+    if (x.includes('CHANGE') || x.includes('ROLE')) return 'info';
+    return '';
+  }
+
+  applyAuditFilter(): void {
+    const { action } = this.filterForm.getRawValue();
+    const key = String(action || 'ALL').toUpperCase();
+    this.auditFiltered = key === 'ALL' ? this.audit : this.audit.filter((x) => String(x.action || '').toUpperCase().includes(key));
+  }
+
+  refresh(): void {
+    const { lastLimit, auditLimit } = this.filterForm.getRawValue();
+    this.admin.lastLogins(lastLimit).subscribe({
+      next: (l) => (this.last = [...l].sort((a, b) => new Date(b.ultimaAtualizacao).getTime() - new Date(a.ultimaAtualizacao).getTime())),
+    });
+    this.admin.audit(auditLimit).subscribe({
+      next: (a) => {
+        this.audit = [...a].sort((x, y) => new Date(y.timestamp).getTime() - new Date(x.timestamp).getTime());
+        this.applyAuditFilter();
+      },
+    });
   }
 }
