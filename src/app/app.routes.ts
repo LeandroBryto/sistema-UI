@@ -9,6 +9,8 @@ import { ReceitasComponent } from './features/receitas/receitas.component';
 import { RelatoriosComponent } from './features/relatorios/relatorios.component';
 import { MetasComponent } from './features/metas/metas.component';
 import { ForgotComponent } from './features/forgot/forgot.component';
+import { AdminComponent } from './features/admin/admin.component';
+import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -18,6 +20,7 @@ export const routes: Routes = [
   { path: 'receitas', component: ReceitasComponent, canActivate: [authGuard] },
   { path: 'relatorios', component: RelatoriosComponent, canActivate: [authGuard] },
   { path: 'metas', component: MetasComponent, canActivate: [authGuard] },
+  { path: 'admin', component: AdminComponent, canActivate: [authGuard, roleGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' },

@@ -32,6 +32,10 @@ export class DashboardComponent implements OnInit {
     return this.auth.getUsername();
   }
 
+  isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+
   loadData(): void {
     this.loading = true;
     this.error = null;

@@ -4,6 +4,7 @@
     <div class="hello">
       <span>Bem-vindo,</span>
       <h2>{{ username || 'Usuário' }}</h2>
+      <span class="role-badge" *ngIf="isAdmin()">ADMIN</span>
     </div>
     <div class="actions">
       <button class="logout" (click)="logout()">Sair</button>
@@ -29,6 +30,7 @@
   </section>
 
   <section class="quick">
+    <a class="qcard" *ngIf="isAdmin()" routerLink="/admin">Painel de Controle</a>
     <a class="qcard" routerLink="/receitas">Receita</a>
     <a class="qcard" routerLink="/despesas">Despesa</a>
     <a class="qcard" routerLink="/relatorios">Relatórios</a>

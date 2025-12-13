@@ -1,0 +1,15 @@
+<div class="admin-page">
+  <header class="head">
+    <h2>Painel de Controle</h2>
+    <span class="badge">ADMIN</span>
+  </header>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+  <div class="loading" *ngIf="loading">Carregando...</div>
+
+  <section class="card" *ngIf="data">
+    <h3>Resumo</h3>
+    <pre>{{ data | json }}</pre>
+  </section>
+</div>
+

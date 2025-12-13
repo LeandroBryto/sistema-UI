@@ -1,0 +1,28 @@
+.admin-page {
+  max-width: 980px;
+  margin: 24px auto;
+  padding: 8px 16px 24px;
+}
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #1e50ff10;
+  color: #1e50ff;
+  font-size: 12px;
+  border: 1px solid #c8d3ff;
+}
+.card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+}
+.error { color: #b00020; }
+.loading { color: #666; }
+

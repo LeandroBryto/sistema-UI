@@ -29,6 +29,15 @@
   margin: 0;
   font-size: 22px;
 }
+.role-badge {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid #c8d3ff;
+  color: #1e50ff;
+  font-size: 12px;
+  background: #f2f6ff;
+}
 .actions .icon {
   width: 36px;
   height: 36px;
