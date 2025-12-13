@@ -245,20 +245,12 @@
 .quick .qcard:nth-child(3)::before { content: "📊"; }
 .quick .qcard:nth-child(4)::before { content: "🎯"; }
 
-.quick .qcard:nth-child(1) { border-color: #d1fae5; background: #f0fdf4; }
-.quick .qcard:nth-child(2) { border-color: #fee2e2; background: #fff1f2; }
-.quick .qcard:nth-child(3) { border-color: #dbeafe; background: #f0f9ff; }
-.quick .qcard:nth-child(4) { border-color: #ede9fe; background: #f5f3ff; }
+.quick .qcard:nth-child(1) { border-color: #d1fae5; }
+.quick .qcard:nth-child(2) { border-color: #fee2e2; }
+.quick .qcard:nth-child(3) { border-color: #dbeafe; }
+.quick .qcard:nth-child(4) { border-color: #ede9fe; }
 
-.quick .qcard:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 26px rgba(0,0,0,0.10);
-}
 
-.quick .qcard:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(30,80,255,0.25);
-}
 
 @media (max-width: 768px) {
   .quick { grid-template-columns: repeat(2, 1fr); gap: 10px; }
