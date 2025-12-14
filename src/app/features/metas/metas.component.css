@@ -1,7 +1,9 @@
 .page {
-  max-width: 1100px;
-  margin: 24px auto;
-  padding: 8px 16px 24px;
+  width: 100%;
+  max-width: clamp(960px, 92vw, 1440px);
+  margin: 0 auto;
+  padding: clamp(12px, 2vw, 32px);
+  min-height: 100vh;
 }
 .header {
   display: flex;
@@ -26,7 +28,7 @@
 }
 .grid.two {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 16px;
 }
 .row {
@@ -58,7 +60,7 @@ button.secondary {
 .table-wrap {
   border: 1px solid #eee;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: auto;
 }
 .table {
   width: 100%;
@@ -98,4 +100,15 @@ tr.alt { background: #fcfcff; }
   background: #fff;
   color: #333;
   text-decoration: none;
+}
+
+@media (max-width: 1200px) {
+  .table th, .table td { padding: 8px; }
+}
+@media (max-width: 768px) {
+  .page { padding: 12px; }
+  .table th, .table td { padding: 6px; }
+}
+@media (min-width: 1920px) {
+  .page { max-width: clamp(1200px, 85vw, 1680px); }
 }
