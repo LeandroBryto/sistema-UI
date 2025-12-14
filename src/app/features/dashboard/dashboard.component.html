@@ -45,6 +45,28 @@
     </div>
   </section>
 
+  <section class="assistant card">
+    <div class="assistant-head">
+      <div class="ai-icon">🤖</div>
+      <div>
+        <div class="title">Assistente Financeiro</div>
+        <div class="meta">Olá 👋 Posso te ajudar a entender suas finanças?</div>
+      </div>
+      <button class="toggle" (click)="aiToggle()">{{ aiOpen ? 'Esconder' : 'Mostrar' }}</button>
+    </div>
+    <div *ngIf="aiOpen" class="assistant-body">
+      <form [formGroup]="aiForm" (ngSubmit)="aiAsk()" class="assistant-form">
+        <input type="text" placeholder="Digite sua pergunta" formControlName="message" />
+        <button class="send" type="submit" [disabled]="aiForm.invalid || aiLoading">{{ aiLoading ? '...' : 'Perguntar' }}</button>
+      </form>
+      <p class="error" *ngIf="aiError">{{ aiError }}</p>
+      <div class="assistant-reply" *ngIf="aiResponse">
+        <span class="ai-icon small">🤖</span>
+        <p>{{ aiResponse }}</p>
+      </div>
+    </div>
+  </section>
+
   <section class="goals">
     <div class="goals-header">
       <h3>Resumo do mês</h3>

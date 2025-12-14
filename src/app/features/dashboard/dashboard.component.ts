@@ -4,11 +4,13 @@ import { Router, RouterLink } from '@angular/router';
 import { SummaryService } from '../../services/summary.service';
 import { CarteiraFinanceiraDTO, ResumoFinanceiroDTO } from '../../models/summary.models';
 import { AuthService } from '../../services/auth.service';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { AiAssistantService } from '../../services/ai-assistant.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -31,7 +33,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private summary: SummaryService,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private ai: AiAssistantService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -156,4 +160,38 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (e?.status === 500) return 'Erro no servidor. Tente mais tarde.';
     return e?.error?.message || 'Falha ao carregar dados do Dashboard.';
   }
+
+  // Assistente IA
+  aiOpen = true;
+  aiLoading = false;
+  aiError: string | null = null;
+  aiResponse: string | null = null;
+  aiForm = this.fb.nonNullable.group({
+    message: ['', [Validators.required, Validators.minLength(2)]],
+  });
+
+  aiAsk(): void {
+    if (this.aiForm.invalid) return;
+    const { message } = this.aiForm.getRawValue();
+    this.aiLoading = true;
+    this.aiError = null;
+    this.aiResponse = null;
+    this.ai.ask({ message }).subscribe({
+      next: (res) => {
+        this.aiLoading = false;
+        this.aiResponse = res.response;
+      },
+      error: (e) => {
+        this.aiLoading = false;
+        if (e?.status === 401) {
+          this.auth.logout();
+          this.router.navigateByUrl('/');
+          return;
+        }
+        this.aiError = 'Não foi possível obter a resposta. Tente novamente mais tarde.';
+      },
+    });
+  }
+
+  aiToggle(): void { this.aiOpen = !this.aiOpen; }
 }
