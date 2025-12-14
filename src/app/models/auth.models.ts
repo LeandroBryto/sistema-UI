@@ -16,3 +16,7 @@ export interface PasswordResetPayload {
   confirmarSenha: string;
 }
 
+export interface ForgotPasswordRequestDTO {
+  email: string;
+}
+

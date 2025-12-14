@@ -4,7 +4,7 @@
       <span>🔒</span>
     </div>
     <h1>Recuperar Senha</h1>
-    <p class="subtitle">Informe seu e-mail e defina uma nova senha</p>
+    <p class="subtitle">Informe seu e-mail para receber uma senha temporária</p>
   </div>
 
   <div class="card">
@@ -23,37 +23,10 @@
         <p class="error" *ngIf="fieldErrors.email">{{ fieldErrors.email }}</p>
       </div>
 
-      <div class="field">
-        <label for="novaSenha">Nova Senha</label>
-        <div class="input-wrapper">
-          <span class="leading-icon" aria-hidden="true">🔒</span>
-          <input
-            id="novaSenha"
-            type="password"
-            formControlName="novaSenha"
-            placeholder="Mínimo 6 caracteres"
-          />
-        </div>
-        <p class="error" *ngIf="fieldErrors.novaSenha">{{ fieldErrors.novaSenha }}</p>
-      </div>
-
-      <div class="field">
-        <label for="confirmarSenha">Confirmar Senha</label>
-        <div class="input-wrapper">
-          <span class="leading-icon" aria-hidden="true">🔒</span>
-          <input
-            id="confirmarSenha"
-            type="password"
-            formControlName="confirmarSenha"
-            placeholder="Repita a nova senha"
-          />
-        </div>
-        <p class="error" *ngIf="fieldErrors.confirmarSenha">{{ fieldErrors.confirmarSenha }}</p>
-      </div>
-
-      <button class="primary" type="submit" [disabled]="form.invalid || loading || passwordsMismatch()">
-        {{ loading ? 'Processando...' : 'Atualizar senha' }}
+      <button class="primary" type="submit" [disabled]="form.invalid || loading || inCooldown()">
+        {{ loading ? 'Enviando...' : (inCooldown() ? 'Aguarde...' : 'Enviar') }}
       </button>
+      <p class="caption" *ngIf="inCooldown()">Evite múltiplos envios. Aguarde alguns segundos.</p>
 
       <p class="success" *ngIf="success">{{ success }}</p>
       <p class="error" *ngIf="error">{{ error }}</p>

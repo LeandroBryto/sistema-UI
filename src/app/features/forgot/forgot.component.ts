@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { PasswordResetPayload } from '../../models/auth.models';
+import { ForgotPasswordRequestDTO } from '../../models/auth.models';
 
 @Component({
   selector: 'app-forgot',
@@ -16,34 +16,28 @@ export class ForgotComponent {
   loading = false;
   success: string | null = null;
   error: string | null = null;
-  fieldErrors: { email?: string; novaSenha?: string; confirmarSenha?: string } = {};
+  fieldErrors: { email?: string } = {};
+  cooldownUntil = 0;
+  cooldownMs = 12000;
 
   form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    novaSenha: ['', [Validators.required, Validators.minLength(6)]],
-    confirmarSenha: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {}
 
   onSubmit(): void {
-    if (this.form.invalid || this.loading) return;
+    if (this.form.invalid || this.loading || this.inCooldown()) return;
     this.loading = true;
     this.success = null;
     this.error = null;
     this.fieldErrors = {};
-    const { novaSenha, confirmarSenha } = this.form.getRawValue();
-    if (novaSenha !== confirmarSenha) {
-      this.loading = false;
-      this.fieldErrors.confirmarSenha = 'Nova senha e confirmação não conferem.';
-      return;
-    }
-    const payload = this.form.getRawValue() as PasswordResetPayload;
-    this.auth.resetPassword(payload).subscribe({
+    const payload = this.form.getRawValue() as ForgotPasswordRequestDTO;
+    this.auth.forgotPassword(payload).subscribe({
       next: () => {
         this.loading = false;
-        this.success = 'Senha atualizada com sucesso.';
-        this.router.navigateByUrl('/');
+        this.success = 'Senha temporária enviada para seu e-mail.';
+        this.startCooldown();
       },
       error: (e) => {
         this.loading = false;
@@ -52,11 +46,11 @@ export class ForgotComponent {
           return;
         }
         if (e?.status === 404) {
-          this.error = 'Usuário não encontrado';
+          this.error = 'E-mail não encontrado.';
           return;
         }
         if (e?.status === 500) {
-          this.error = 'Nova senha e confirmação não conferem.';
+          this.error = 'Falha ao enviar e-mail. Tente novamente.';
           return;
         }
         if (e?.status === 400) {
@@ -64,14 +58,19 @@ export class ForgotComponent {
           this.error = e?.error?.message || 'Verifique os campos informados.';
           return;
         }
-        this.error = e?.error?.message || 'Falha ao resetar a senha.';
+        this.error = e?.error?.message || 'Falha ao recuperar a senha.';
       },
     });
   }
 
-  passwordsMismatch(): boolean {
-    const { novaSenha, confirmarSenha } = this.form.getRawValue();
-    return !!novaSenha && !!confirmarSenha && novaSenha !== confirmarSenha;
+  inCooldown(): boolean {
+    return Date.now() < this.cooldownUntil;
+  }
+  startCooldown(): void {
+    this.cooldownUntil = Date.now() + this.cooldownMs;
+    setTimeout(() => {
+      this.cooldownUntil = 0;
+    }, this.cooldownMs);
   }
 
   private mapValidationErrors(body: any): void {
@@ -93,15 +92,11 @@ export class ForgotComponent {
         else if (Array.isArray(v) && v.length) fieldErrs[k] = String(v[0]);
       }
     } else {
-      ['email', 'novaSenha', 'confirmarSenha'].forEach((k) => {
+      ['email'].forEach((k) => {
         const v = body?.[k];
         if (typeof v === 'string') fieldErrs[k] = v;
       });
     }
-    this.fieldErrors = {
-      email: fieldErrs['email'],
-      novaSenha: fieldErrs['novaSenha'],
-      confirmarSenha: fieldErrs['confirmarSenha'],
-    };
+    this.fieldErrors = { email: fieldErrs['email'] };
   }
 }
