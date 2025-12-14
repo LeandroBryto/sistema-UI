@@ -260,21 +260,19 @@
   gap: 10px;
   padding: 14px 16px;
   border-radius: 16px;
-  border: 1px solid #e3e8f2;
-  background: #fff;
-  color: #0f172a;
+  border: 1px solid #222;
+  background: #111;
+  color: #fff;
   text-decoration: none;
   font-weight: 600;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
 }
 .quick .qcard::before {
   content: none;
 }
 
-.quick .qcard:nth-child(1) { border-color: #d1fae5; }
-.quick .qcard:nth-child(2) { border-color: #fee2e2; }
-.quick .qcard:nth-child(3) { border-color: #dbeafe; }
-.quick .qcard:nth-child(4) { border-color: #ede9fe; }
+.quick .qcard:hover { background: #1a1a1a; border-color: #333; }
+.quick .qcard:focus-visible { outline: 2px solid rgba(255,255,255,0.25); outline-offset: 2px; }
 
 
 
