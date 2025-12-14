@@ -38,10 +38,10 @@
   font-size: 22px;
 }
 .brand-svg {
-  width: 72px;
-  height: 72px;
+  width: clamp(96px, 14vw, 180px);
+  height: clamp(96px, 14vw, 180px);
   display: block;
-  margin: 0 auto 12px;
+  margin: 0 auto 14px;
 }
 .brand h1 {
   font-size: 28px;

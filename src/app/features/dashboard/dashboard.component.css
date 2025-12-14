@@ -248,13 +248,8 @@
   box-shadow: 0 8px 18px rgba(0,0,0,0.06);
 }
 .quick .qcard::before {
-  font-size: 18px;
-  line-height: 1;
+  content: none;
 }
-.quick .qcard:nth-child(1)::before { content: "💰"; }
-.quick .qcard:nth-child(2)::before { content: "🧾"; }
-.quick .qcard:nth-child(3)::before { content: "📊"; }
-.quick .qcard:nth-child(4)::before { content: "🎯"; }
 
 .quick .qcard:nth-child(1) { border-color: #d1fae5; }
 .quick .qcard:nth-child(2) { border-color: #fee2e2; }
