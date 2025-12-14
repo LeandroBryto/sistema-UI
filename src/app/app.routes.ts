@@ -11,6 +11,11 @@ import { MetasComponent } from './features/metas/metas.component';
 import { ForgotComponent } from './features/forgot/forgot.component';
 import { AdminComponent } from './features/admin/admin.component';
 import { roleGuard } from './guards/role.guard';
+import { AccountSettingsComponent } from './features/settings/account-settings.component';
+import { EmailNotificationsComponent } from './features/settings/email-notifications.component';
+import { CotacaoAlertsComponent } from './features/settings/cotacao-alerts.component';
+import { SecuritySettingsComponent } from './features/settings/security-settings.component';
+import { NotificationsHistoryComponent } from './features/settings/notifications-history.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -21,6 +26,11 @@ export const routes: Routes = [
   { path: 'relatorios', component: RelatoriosComponent, canActivate: [authGuard] },
   { path: 'metas', component: MetasComponent, canActivate: [authGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard, roleGuard] },
+  { path: 'config/conta', component: AccountSettingsComponent, canActivate: [authGuard] },
+  { path: 'config/notificacoes-email', component: EmailNotificationsComponent, canActivate: [authGuard] },
+  { path: 'config/alertas-cotacao', component: CotacaoAlertsComponent, canActivate: [authGuard] },
+  { path: 'config/seguranca', component: SecuritySettingsComponent, canActivate: [authGuard] },
+  { path: 'config/historico-notificacoes', component: NotificationsHistoryComponent, canActivate: [authGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' },

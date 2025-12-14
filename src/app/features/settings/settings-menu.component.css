@@ -1,0 +1,43 @@
+.settings-rail {
+  position: relative;
+  display: inline-block;
+  z-index: 1000;
+}
+.gear {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #e3e8f2;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  cursor: pointer;
+}
+.panel {
+  position: absolute;
+  right: 0;
+  top: 44px;
+  width: 280px;
+  transform: translateY(-8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  border: 1px solid #e3e8f2;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+}
+.panel.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.panel .head {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f2f7;
+  font-weight: 700;
+}
+.panel .menu { display: grid; }
+.panel .menu a {
+  padding: 10px 12px;
+  text-decoration: none;
+  color: #0f172a;
+  border-bottom: 1px solid #f7f7fb;
+}
+.panel .menu a:last-child { border-bottom: none; }
+.panel .menu a:hover { background: #f7f9ff; }

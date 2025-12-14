@@ -1,0 +1,31 @@
+<div class="settings-page">
+  <header class="head">
+    <h2>Histórico de Notificações</h2>
+    <a class="secondary link" routerLink="/dashboard">Voltar</a>
+  </header>
+  <section class="filters card">
+    <div class="row">
+      <label>Início</label>
+      <input type="date" [(ngModel)]="filtro.inicio" />
+    </div>
+    <div class="row">
+      <label>Fim</label>
+      <input type="date" [(ngModel)]="filtro.fim" />
+    </div>
+  </section>
+  <section class="card">
+    <table class="table">
+      <thead>
+        <tr><th>Tipo</th><th>Data/Hora</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of rows">
+          <td>{{ r.tipo }}</td>
+          <td>{{ r.dataHora }}</td>
+          <td>{{ r.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="caption">Dados ilustrativos. Integração com backend será adicionada.</p>
+  </section>
+</div>

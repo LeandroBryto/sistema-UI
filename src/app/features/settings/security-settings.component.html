@@ -1,0 +1,12 @@
+<div class="settings-page">
+  <header class="head">
+    <h2>Segurança</h2>
+    <a class="secondary link" routerLink="/dashboard">Voltar</a>
+  </header>
+  <form [formGroup]="form" class="form-grid">
+    <label class="row"><input type="checkbox" formControlName="alertaLogin" /> Receber alertas de login</label>
+    <label class="row"><input type="checkbox" formControlName="alertaResetSenha" /> Receber e-mail de redefinição de senha</label>
+    <button class="primary" type="button" (click)="save()" [disabled]="saving">{{ saving ? 'Salvando...' : 'Salvar' }}</button>
+    <p class="success" *ngIf="saved">Preferências atualizadas (UI). Integração de backend será adicionada.</p>
+  </form>
+</div>

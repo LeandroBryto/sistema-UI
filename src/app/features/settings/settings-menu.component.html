@@ -1,0 +1,13 @@
+<div class="settings-rail">
+  <button class="gear" (click)="toggle()" title="Configurações">⚙️</button>
+  <div class="panel" [class.open]="open" (click)="$event.stopPropagation()">
+    <div class="head">Configurações</div>
+    <nav class="menu">
+      <a routerLink="/config/conta">👤 Configurações da Conta</a>
+      <a routerLink="/config/notificacoes-email">📧 Notificações por E-mail</a>
+      <a routerLink="/config/alertas-cotacao">💱 Alertas de Cotação</a>
+      <a routerLink="/config/seguranca">🔒 Segurança</a>
+      <a routerLink="/config/historico-notificacoes">🧾 Histórico de Notificações</a>
+    </nav>
+  </div>
+</div>

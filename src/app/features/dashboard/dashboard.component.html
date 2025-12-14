@@ -7,6 +7,7 @@
       <span class="role-badge" *ngIf="isAdmin()">ADMIN</span>
     </div>
     <div class="actions">
+      <app-settings-menu *ngIf="isAdmin()" />
       <button class="logout" (click)="logout()">Sair</button>
     </div>
   </header>

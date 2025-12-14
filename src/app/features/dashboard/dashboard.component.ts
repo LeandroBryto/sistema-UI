@@ -6,11 +6,12 @@ import { CarteiraFinanceiraDTO, ResumoFinanceiroDTO } from '../../models/summary
 import { AuthService } from '../../services/auth.service';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AiAssistantService } from '../../services/ai-assistant.service';
+import { SettingsMenuComponent } from '../settings/settings-menu.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, SettingsMenuComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })

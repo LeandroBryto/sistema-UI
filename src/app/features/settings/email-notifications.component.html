@@ -1,0 +1,24 @@
+<div class="settings-page">
+  <header class="head">
+    <h2>Notificações por E-mail</h2>
+    <a class="secondary link" routerLink="/dashboard">Voltar</a>
+  </header>
+  <form [formGroup]="form" class="form-grid">
+    <label class="row">
+      <input type="checkbox" formControlName="enabled" /> Receber alerta diário de cotação do dólar por e‑mail
+    </label>
+    <div class="row">
+      <label><input type="checkbox" formControlName="diarioCotacao" [disabled]="true" /> Alerta diário de cotação do dólar (controlado pelo toggle acima)</label>
+    </div>
+    <div class="row">
+      <label><input type="checkbox" formControlName="variacaoPct" [disabled]="!form.get('enabled')?.value" /> Alerta de variação (%)</label>
+    </div>
+    <div class="row">
+      <label><input type="checkbox" formControlName="semanalCotacao" [disabled]="!form.get('enabled')?.value" /> Cotação semanal</label>
+    </div>
+    <button class="primary" type="button" (click)="save()" [disabled]="saving">{{ saving ? 'Salvando...' : 'Salvar' }}</button>
+    <p class="success" *ngIf="saved">Preferência integrada ao backend.</p>
+    <p class="error" *ngIf="error">{{ error }}</p>
+  </form>
+  <p class="caption">O alerta diário usa o agendador do backend às 09:00.</p>
+</div>

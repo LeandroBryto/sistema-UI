@@ -1,0 +1,10 @@
+.settings-page { max-width: 860px; margin: 0 auto; padding: 16px; }
+.head { display: flex; justify-content: space-between; align-items: center; }
+.caption { font-size: 12px; color: #666; }
+.form-grid { display: grid; gap: 10px; margin-top: 10px; }
+.row { display: grid; gap: 6px; }
+.primary { width: fit-content; padding: 10px 14px; border: none; border-radius: 999px; background: #1e50ff; color: #fff; cursor: pointer; }
+.success { color: #1b5e20; margin-top: 8px; }
+.filters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; }
