@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { EnvService } from './env.service';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -25,12 +25,9 @@ export class GoalService {
     return this.http.post<GoalResponse>(this.url(), body);
   }
 
-  cotacaoDolar(dataInicial?: string, dataFinal?: string): Observable<CotacaoDolarDTO | null> {
+  cotacaoDolar(): Observable<CotacaoDolarDTO | null> {
     const url = `${this.env.apiBase()}/api/v1/meta/cotacao-dolar`;
-    let params = new HttpParams();
-    if (dataInicial) params = params.set('dataInicial', dataInicial);
-    if (dataFinal) params = params.set('dataFinal', dataFinal);
-    return this.http.get<CotacaoDolarDTO>(url, { observe: 'response', params }).pipe(
+    return this.http.get<CotacaoDolarDTO>(url, { observe: 'response' }).pipe(
       map((resp) => (resp.status === 200 ? resp.body! : null)),
       catchError(() => of(null))
     );

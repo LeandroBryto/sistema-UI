@@ -19,7 +19,7 @@ export class MetasComponent {
   itens: GoalResponse[] = [];
   cotacao: CotacaoDolarDTO | null = null;
   cotacaoMsg: string | null = null;
-  cotacaoData = this.fb.nonNullable.control('');
+  cotacaoLoading = false;
 
   form = this.fb.nonNullable.group({
     meta: ['', [Validators.required]],
@@ -50,6 +50,7 @@ export class MetasComponent {
   }
 
   loadCotacao(): void {
+    this.cotacaoLoading = true;
     this.api.cotacaoDolar().subscribe({
       next: (data) => {
         if (data) {
@@ -59,37 +60,19 @@ export class MetasComponent {
           this.cotacao = null;
           this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
         }
+        this.cotacaoLoading = false;
       },
       error: () => {
         this.cotacao = null;
         this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
+        this.cotacaoLoading = false;
       },
     });
   }
 
-  private toBR(d?: string): string | undefined {
-    if (!d) return undefined;
-    // input ISO: yyyy-MM-dd -> dd/MM/yyyy
-    const [y, m, day] = d.split('-');
-    if (!y || !m || !day) return undefined;
-    return `${day}/${m}/${y}`;
-  }
-
-  private toBRNextDay(d?: string): string | undefined {
-    if (!d) return undefined;
-    const dt = new Date(d + 'T00:00:00');
-    if (isNaN(dt.getTime())) return undefined;
-    dt.setDate(dt.getDate() + 1);
-    const day = String(dt.getDate()).padStart(2, '0');
-    const month = String(dt.getMonth() + 1).padStart(2, '0');
-    const year = String(dt.getFullYear());
-    return `${day}/${month}/${year}`;
-  }
-
   updateCotacao(): void {
-    const di = this.toBR(this.cotacaoData.value || undefined);
-    const df = this.toBRNextDay(this.cotacaoData.value || undefined);
-    this.api.cotacaoDolar(di, df).subscribe({
+    this.cotacaoLoading = true;
+    this.api.cotacaoDolar().subscribe({
       next: (data) => {
         if (data) {
           this.cotacao = data;
@@ -98,10 +81,12 @@ export class MetasComponent {
           this.cotacao = null;
           this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
         }
+        this.cotacaoLoading = false;
       },
       error: () => {
         this.cotacao = null;
         this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
+        this.cotacaoLoading = false;
       },
     });
   }
