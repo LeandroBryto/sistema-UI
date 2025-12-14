@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { GoalService } from '../../services/goal.service';
-import { GoalRequest, GoalResponse } from '../../models/goal.models';
+import { GoalRequest, GoalResponse, CotacaoDolarDTO } from '../../models/goal.models';
 
 @Component({
   selector: 'app-metas',
@@ -17,6 +17,9 @@ export class MetasComponent {
   error: string | null = null;
   success: string | null = null;
   itens: GoalResponse[] = [];
+  cotacao: CotacaoDolarDTO | null = null;
+  cotacaoMsg: string | null = null;
+  cotacaoData = this.fb.nonNullable.control('');
 
   form = this.fb.nonNullable.group({
     meta: ['', [Validators.required]],
@@ -26,6 +29,7 @@ export class MetasComponent {
 
   constructor(private fb: FormBuilder, private api: GoalService) {
     this.load();
+    this.loadCotacao();
   }
 
   load(): void {
@@ -41,6 +45,63 @@ export class MetasComponent {
         this.error =
           e?.error?.message ||
           'Erro ao listar metas. Tente novamente mais tarde.';
+      },
+    });
+  }
+
+  loadCotacao(): void {
+    this.api.cotacaoDolar().subscribe({
+      next: (data) => {
+        if (data) {
+          this.cotacao = data;
+          this.cotacaoMsg = null;
+        } else {
+          this.cotacao = null;
+          this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
+        }
+      },
+      error: () => {
+        this.cotacao = null;
+        this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
+      },
+    });
+  }
+
+  private toBR(d?: string): string | undefined {
+    if (!d) return undefined;
+    // input ISO: yyyy-MM-dd -> dd/MM/yyyy
+    const [y, m, day] = d.split('-');
+    if (!y || !m || !day) return undefined;
+    return `${day}/${m}/${y}`;
+  }
+
+  private toBRNextDay(d?: string): string | undefined {
+    if (!d) return undefined;
+    const dt = new Date(d + 'T00:00:00');
+    if (isNaN(dt.getTime())) return undefined;
+    dt.setDate(dt.getDate() + 1);
+    const day = String(dt.getDate()).padStart(2, '0');
+    const month = String(dt.getMonth() + 1).padStart(2, '0');
+    const year = String(dt.getFullYear());
+    return `${day}/${month}/${year}`;
+  }
+
+  updateCotacao(): void {
+    const di = this.toBR(this.cotacaoData.value || undefined);
+    const df = this.toBRNextDay(this.cotacaoData.value || undefined);
+    this.api.cotacaoDolar(di, df).subscribe({
+      next: (data) => {
+        if (data) {
+          this.cotacao = data;
+          this.cotacaoMsg = null;
+        } else {
+          this.cotacao = null;
+          this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
+        }
+      },
+      error: () => {
+        this.cotacao = null;
+        this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
       },
     });
   }

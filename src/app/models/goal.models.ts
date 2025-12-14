@@ -14,3 +14,8 @@ export interface GoalResponse {
   percentualConcluido: number;
 }
 
+export interface CotacaoDolarDTO {
+  data: string;
+  valor: number;
+}
+

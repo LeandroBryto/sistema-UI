@@ -13,6 +13,19 @@
 }
 .muted { color: #666; margin: 0; }
 .summary { display: flex; gap: 8px; align-items: center; }
+.alert.cotacao {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fcfcff;
+  margin-bottom: 12px;
+}
+.cotacao-filter {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
 .chip {
   padding: 6px 10px;
   border: 1px solid #eee;

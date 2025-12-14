@@ -9,6 +9,26 @@
     </div>
   </header>
 
+  <section class="filters card cotacao-filter">
+    <div class="row">
+      <label>Data da cotação</label>
+      <input type="date" [formControl]="cotacaoData" />
+    </div>
+    <div class="row actions">
+      <button class="primary" (click)="updateCotacao()">Atualizar cotação</button>
+    </div>
+  </section>
+
+  <section class="alert cotacao">
+    <ng-container *ngIf="cotacao; else cotacaoEmpty">
+      <strong>🔔 Cotação do Dólar</strong>
+      <p class="muted">Dólar comercial em {{ cotacao.data }}: R$ {{ cotacao.valor | number:'1.2-2' }}</p>
+    </ng-container>
+    <ng-template #cotacaoEmpty>
+      <p class="muted">Cotação do dólar indisponível no momento.</p>
+    </ng-template>
+  </section>
+
   <p class="error" *ngIf="error">{{ error }}</p>
   <p class="success" *ngIf="success">{{ success }}</p>
 

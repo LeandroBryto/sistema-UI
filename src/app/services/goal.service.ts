@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { EnvService } from './env.service';
-import { Observable } from 'rxjs';
-import { GoalRequest, GoalResponse } from '../models/goal.models';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { GoalRequest, GoalResponse, CotacaoDolarDTO } from '../models/goal.models';
 
 @Injectable({
   providedIn: 'root',
@@ -22,5 +23,16 @@ export class GoalService {
 
   create(body: GoalRequest): Observable<GoalResponse> {
     return this.http.post<GoalResponse>(this.url(), body);
+  }
+
+  cotacaoDolar(dataInicial?: string, dataFinal?: string): Observable<CotacaoDolarDTO | null> {
+    const url = `${this.env.apiBase()}/api/v1/meta/cotacao-dolar`;
+    let params = new HttpParams();
+    if (dataInicial) params = params.set('dataInicial', dataInicial);
+    if (dataFinal) params = params.set('dataFinal', dataFinal);
+    return this.http.get<CotacaoDolarDTO>(url, { observe: 'response', params }).pipe(
+      map((resp) => (resp.status === 200 ? resp.body! : null)),
+      catchError(() => of(null))
+    );
   }
 }
