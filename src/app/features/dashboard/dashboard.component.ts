@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { SummaryService } from '../../services/summary.service';
@@ -12,12 +12,21 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   loading = false;
   error: string | null = null;
   carteira: CarteiraFinanceiraDTO | null = null;
   resumo: ResumoFinanceiroDTO | null = null;
   grafico: { receitas: number; despesas: number } | null = null;
+  ads: string[] = [
+    '/assets/ads/ad1.svg',
+    '/assets/ads/ad2.svg',
+    '/assets/ads/ad3.svg',
+    '/assets/ads/ad4.svg',
+  ];
+  currentAd = 0;
+  adTimer: any;
+  adIntervalMs = 2000;
 
   constructor(
     private summary: SummaryService,
@@ -27,6 +36,37 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    this.startAdTimer();
+  }
+
+  ngOnDestroy(): void {
+    this.stopAdTimer();
+  }
+
+  onAdError(): void {
+    this.currentAd = (this.currentAd + 1) % this.ads.length;
+  }
+
+  startAdTimer(): void {
+    this.stopAdTimer();
+    this.adTimer = setInterval(() => this.nextAd(), this.adIntervalMs);
+  }
+
+  stopAdTimer(): void {
+    if (this.adTimer) {
+      clearInterval(this.adTimer);
+      this.adTimer = null;
+    }
+  }
+
+  nextAd(): void {
+    if (!this.ads.length) return;
+    this.currentAd = (this.currentAd + 1) % this.ads.length;
+  }
+
+  prevAd(): void {
+    if (!this.ads.length) return;
+    this.currentAd = (this.currentAd - 1 + this.ads.length) % this.ads.length;
   }
 
   get username(): string | null {

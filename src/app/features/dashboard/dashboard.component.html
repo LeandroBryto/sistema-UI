@@ -37,20 +37,11 @@
     <a class="qcard" routerLink="/metas">Metas</a>
   </section>
 
-  <section class="flow">
-    <div class="flow-header">
-      <h3>Receitas vs Despesas</h3>
-      <span class="period">Mês atual</span>
-    </div>
-    <div class="bars">
-      <div class="bar">
-        <div class="fill" [style.height.%]="barHeight('receitas')"></div>
-        <span>Receitas</span>
-      </div>
-      <div class="bar">
-        <div class="fill" [style.height.%]="barHeight('despesas')"></div>
-        <span>Despesas</span>
-      </div>
+  <section class="ad">
+    <div class="ad-frame" (mouseenter)="stopAdTimer()" (mouseleave)="startAdTimer()">
+      <img [src]="ads[currentAd]" alt="Publicidade" class="ad-img" (error)="onAdError()" />
+      <button class="ad-nav left" (click)="prevAd()" aria-label="Anterior">‹</button>
+      <button class="ad-nav right" (click)="nextAd()" aria-label="Próximo">›</button>
     </div>
   </section>
 
