@@ -1,0 +1,70 @@
+<div class="invest-container">
+  <header class="page-header">
+    <div class="header-content">
+      <a routerLink="/dashboard" class="back-btn">
+        <i class="pi pi-arrow-left"></i>
+        <span>Voltar</span>
+      </a>
+      <h1>Investimentos</h1>
+    </div>
+  </header>
+
+  <section class="actions-area">
+    <a routerLink="/metas" class="meta-card">
+      <div class="meta-icon">🎯</div>
+      <div class="meta-info">
+        <h3>Minhas Metas</h3>
+        <p>Acompanhe e planeje seus objetivos financeiros</p>
+      </div>
+      <i class="pi pi-chevron-right"></i>
+    </a>
+  </section>
+
+  <div class="invest-content">
+    <section class="market-indicators">
+      <h3>Indicadores de Mercado</h3>
+      <div class="indicators-grid">
+        <div class="indicator-card">
+          <span class="label">Selic</span>
+          <span class="value">{{ taxasLoading ? '...' : (taxas?.selic | number:'1.2-2') + '%' }}</span>
+          <span class="desc">Taxa básica de juros</span>
+        </div>
+        <div class="indicator-card">
+          <span class="label">CDI</span>
+          <span class="value">{{ taxasLoading ? '...' : (taxas?.cdi | number:'1.2-2') + '%' }}</span>
+          <span class="desc">Referência renda fixa</span>
+        </div>
+        <div class="indicator-card">
+          <span class="label">IPCA</span>
+          <span class="value">{{ taxasLoading ? '...' : (taxas?.ipca | number:'1.2-2') + '%' }}</span>
+          <span class="desc">Inflação acumulada 12m</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid-layout-invest">
+      <section class="profitability">
+        <h3>Comparativo (12 meses)</h3>
+        <div class="chart-placeholder">
+          <div class="bar-group">
+            <div class="bar user" style="height: 60%"><span>Você (8.5%)</span></div>
+            <div class="bar cdi" style="height: 80%"><span>CDI (10.65%)</span></div>
+            <div class="bar ipca" style="height: 40%"><span>IPCA (4.5%)</span></div>
+          </div>
+          <div class="chart-base"></div>
+        </div>
+        <p class="chart-note">Simulação visual.</p>
+      </section>
+
+      <section class="tips">
+        <h3>Dicas de Economia</h3>
+        <div class="tips-list">
+          <div class="tip-item" *ngFor="let dica of dicas">
+            <h4><i class="pi pi-lightbulb"></i> {{ dica.title }}</h4>
+            <p>{{ dica.content }}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

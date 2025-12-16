@@ -16,6 +16,7 @@ import { EmailNotificationsComponent } from './features/settings/email-notificat
 import { CotacaoAlertsComponent } from './features/settings/cotacao-alerts.component';
 import { SecuritySettingsComponent } from './features/settings/security-settings.component';
 import { NotificationsHistoryComponent } from './features/settings/notifications-history.component';
+import { InvestimentosComponent } from './features/investimentos/investimentos.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -25,6 +26,7 @@ export const routes: Routes = [
   { path: 'receitas', component: ReceitasComponent, canActivate: [authGuard] },
   { path: 'relatorios', component: RelatoriosComponent, canActivate: [authGuard] },
   { path: 'metas', component: MetasComponent, canActivate: [authGuard] },
+  { path: 'investimentos', component: InvestimentosComponent, canActivate: [authGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard, roleGuard] },
   { path: 'config/conta', component: AccountSettingsComponent, canActivate: [authGuard] },
   { path: 'config/notificacoes-email', component: EmailNotificationsComponent, canActivate: [authGuard] },

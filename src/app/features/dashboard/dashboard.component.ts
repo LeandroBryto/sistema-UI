@@ -36,6 +36,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   carteira: CarteiraFinanceiraDTO | null = null;
   resumo: ResumoFinanceiroDTO | null = null;
   grafico: { receitas: number; despesas: number } | null = null;
+  
   ads: string[] = [
     '/assets/ads/ad1.svg',
     '/assets/ads/ad2.svg',

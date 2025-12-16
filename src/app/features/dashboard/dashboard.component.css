@@ -373,3 +373,5 @@
 @media (min-width: 1920px) {
   .dashboard { max-width: clamp(1200px, 85vw, 1680px); }
 }
+
+/* Investimentos Dialog Styles removed to styles.css to avoid budget error */

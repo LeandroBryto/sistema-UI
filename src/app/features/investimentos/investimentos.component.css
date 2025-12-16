@@ -1,0 +1,262 @@
+.invest-container {
+  width: 100%;
+  max-width: clamp(960px, 92vw, 1440px);
+  margin: 0 auto;
+  padding: clamp(12px, 2vw, 32px);
+  min-height: 100vh;
+  background: #f7f8fc;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #1e50ff;
+  font-weight: 600;
+  padding: 8px 16px;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: #f0f4ff;
+  transform: translateX(-2px);
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #0f172a;
+}
+
+.actions-area {
+  margin-bottom: 24px;
+}
+
+.meta-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #e3e8f2;
+}
+
+.meta-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(30,80,255,0.15);
+  border-color: #c8d3ff;
+}
+
+.meta-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #eef2ff;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+}
+
+.meta-info h3 {
+  margin: 0 0 4px 0;
+  color: #1e50ff;
+}
+
+.meta-info p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.meta-card .pi-chevron-right {
+  margin-left: auto;
+  color: #ccc;
+}
+
+/* Indicators */
+.market-indicators {
+  margin-bottom: 24px;
+}
+
+.market-indicators h3,
+.profitability h3,
+.tips h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.indicators-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.indicator-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid #e3e8f2;
+}
+
+.indicator-card .label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.indicator-card .value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e50ff;
+  margin-bottom: 4px;
+}
+
+.indicator-card .desc {
+  font-size: 12px;
+  color: #999;
+}
+
+/* Grid Layout */
+.grid-layout-invest {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .grid-layout-invest {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Profitability Chart Placeholder */
+.profitability {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #e3e8f2;
+}
+
+.chart-placeholder {
+  height: 200px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 20px;
+}
+
+.bar-group {
+  display: flex;
+  gap: 24px;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.bar {
+  width: 40px;
+  background: #eee;
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  transition: height 1s ease-out;
+}
+
+.bar span {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.bar.user { background: #1e50ff; }
+.bar.user span { color: #1e50ff; }
+
+.bar.cdi { background: #22c55e; }
+.bar.cdi span { color: #22c55e; }
+
+.bar.ipca { background: #fb8c00; }
+.bar.ipca span { color: #fb8c00; }
+
+.chart-base {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e3e8f2;
+}
+
+.chart-note {
+  text-align: center;
+  font-size: 11px;
+  color: #999;
+  margin-top: 12px;
+}
+
+/* Tips */
+.tips {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #e3e8f2;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tip-item {
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #1e50ff;
+}
+
+.tip-item h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #1e50ff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tip-item p {
+  margin: 0;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.4;
+}
