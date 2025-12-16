@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
 import { SummaryService } from '../../services/summary.service';
 import { RelatorioMensalDTO } from '../../models/summary.models';
 
 @Component({
   selector: 'app-relatorios',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, ButtonModule],
   templateUrl: './relatorios.component.html',
   styleUrls: ['./relatorios.component.css'],
 })

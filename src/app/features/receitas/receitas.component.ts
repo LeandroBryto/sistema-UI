@@ -8,11 +8,29 @@ import {
 } from '@angular/forms';
 import { ReceitaService } from '../../services/receita.service';
 import { ReceitaRequest, ReceitaResponse } from '../../models/receita.models';
+import { FormsModule } from '@angular/forms';
+import { TableModule } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-receitas',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ReactiveFormsModule,
+    FormsModule,
+    TableModule,
+    PaginatorModule,
+    InputTextModule,
+    ButtonModule,
+    DropdownModule,
+    TagModule,
+  ],
   templateUrl: './receitas.component.html',
   styleUrls: ['./receitas.component.css'],
 })
@@ -22,6 +40,7 @@ export class ReceitasComponent {
   success: string | null = null;
   itens: ReceitaResponse[] = [];
   editingId: number | null = null;
+  globalFilter = '';
 
   filtros = this.fb.nonNullable.group({
     startDate: ['', [Validators.required]],

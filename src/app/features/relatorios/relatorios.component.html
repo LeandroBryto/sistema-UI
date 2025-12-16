@@ -14,9 +14,7 @@
       <input type="month" [formControl]="filtro.controls.yearMonth" />
     </div>
     <div class="row actions">
-      <button class="primary" (click)="load()" [disabled]="loading || filtro.invalid">
-        {{ loading ? 'Carregando...' : 'Aplicar' }}
-      </button>
+      <p-button [label]="loading ? 'Carregando...' : 'Aplicar'" severity="primary" [disabled]="loading || filtro.invalid" [loading]="loading" (onClick)="load()"></p-button>
     </div>
   </section>
 
