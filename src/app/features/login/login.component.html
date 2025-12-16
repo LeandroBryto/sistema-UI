@@ -8,38 +8,22 @@
   <div class="card">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="field">
-        <label for="username">Usuário </label>
-        <div class="input-wrapper">
-          <span class="leading-icon" aria-hidden="true"></span>
-          <input
-            id="username"
-            type="text"
-            formControlName="username"
-            placeholder="Usuário"
-          />
-        </div>
+        <label for="username">Usuário</label>
+        <span class="p-input-icon-left" style="display:block">
+          <i class="pi pi-user"></i>
+          <input id="username" pInputText type="text" formControlName="username" placeholder="Usuário" />
+        </span>
       </div>
 
       <div class="field">
         <label for="senha">Senha</label>
-        <div class="input-wrapper">
-          <span class="leading-icon" aria-hidden="true"></span>
-          <input
-            id="senha"
-            type="password"
-            formControlName="senha"
-            placeholder="Digite sua senha"
-          />
-          <span class="trailing-icon" aria-hidden="true"></span>
-        </div>
+        <p-password inputId="senha" formControlName="senha" [feedback]="false" toggleMask placeholder="Digite sua senha"></p-password>
         <a class="recover" routerLink="/esqueci-senha">Recuperar Senha?</a>
       </div>
 
-      <button class="primary" type="submit" [disabled]="form.invalid || loading">
-        {{ loading ? 'Entrando...' : 'Entrar' }} <span class="arrow">→</span>
-      </button>
+      <p-button type="submit" [label]="loading ? 'Entrando...' : 'Entrar'" severity="primary" [disabled]="form.invalid || loading" [loading]="loading" icon="pi pi-sign-in" iconPos="right"></p-button>
 
-      <p class="error" *ngIf="error">{{ error }}</p>
+      <p-message *ngIf="error" severity="error" [text]="error"></p-message>
     </form>
 
     <div class="extras">

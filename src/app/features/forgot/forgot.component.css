@@ -1,10 +1,10 @@
 :root {
-  --bg: #fbfbf9;
-  --text: #1f1f1f;
-  --muted: #8a8a73;
-  --border: #e6e6dd;
-  --primary: #ffea00;
-  --primary-text: #191900;
+  --bg: #f7f8fc;
+  --text: #0f172a;
+  --muted: #666666;
+  --border: #e3e8f2;
+  --primary: #1e50ff;
+  --primary-text: #ffffff;
 }
 .forgot-page {
   min-height: 100vh;
@@ -15,8 +15,8 @@
   gap: 20px;
   padding: 24px 16px 48px;
   background:
-    radial-gradient(120px 120px at 20% 0%, rgba(255, 234, 0, 0.35), transparent 60%),
-    radial-gradient(200px 200px at 80% 90%, rgba(255, 234, 0, 0.25), transparent 70%),
+    radial-gradient(120px 120px at 20% 0%, rgba(65, 105, 225, 0.15), transparent 60%),
+    radial-gradient(200px 200px at 80% 90%, rgba(30, 80, 255, 0.12), transparent 70%),
     var(--bg);
   color: var(--text);
 }

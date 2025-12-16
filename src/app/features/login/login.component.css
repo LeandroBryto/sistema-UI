@@ -1,10 +1,10 @@
 :root {
-  --bg: #fbfbf9;
-  --text: #1f1f1f;
-  --muted: #8a8a73;
-  --border: #e6e6dd;
-  --primary: #ffea00;
-  --primary-text: #191900;
+  --bg: #f7f8fc;
+  --text: #0f172a;
+  --muted: #666666;
+  --border: #e3e8f2;
+  --primary: #1e50ff;
+  --primary-text: #ffffff;
 }
 .login-page {
   min-height: 100vh;
@@ -15,8 +15,8 @@
   gap: 12px;
   padding: 14px 10px 28px;
   background:
-    radial-gradient(120px 120px at 20% 0%, rgba(255, 234, 0, 0.35), transparent 60%),
-    radial-gradient(200px 200px at 80% 90%, rgba(255, 234, 0, 0.25), transparent 70%),
+    radial-gradient(120px 120px at 20% 0%, rgba(65, 105, 225, 0.15), transparent 60%),
+    radial-gradient(200px 200px at 80% 90%, rgba(30, 80, 255, 0.12), transparent 70%),
     var(--bg);
   color: var(--text);
 }
@@ -61,12 +61,7 @@
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
   padding: 16px 14px;
 }
-.field {
-  margin-bottom: 20px;
-  max-width: 300px;
-  margin-left: auto;
-  margin-right: 80px;
-}
+.field { margin-bottom: 16px; }
 .field label {
   display: block;
   margin-bottom: 8px;
@@ -76,15 +71,8 @@
 .input-wrapper {
   position: relative;
 }
-.input-wrapper input {
+.p-inputtext, .p-password input {
   width: 100%;
-  height: 38px;
-  padding: 0 34px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: #fff;
-  outline: none;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .input-wrapper input::placeholder {
   color: #b0b08f;
@@ -115,31 +103,12 @@
   font-size: 13px;
   text-align: right;
 }
-.primary {
-  width: 100%;
-  height: 42px;
-  margin-top: 6px;
-  border: none;
-  border-radius: 999px;
-  background: var(--primary);
-  color: var(--primary-text);
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 10px 20px rgba(255, 234, 0, 0.42);
-}
-.primary[disabled] {
-  opacity: 0.7;
-  cursor: default;
-}
+.p-button { width: 100%; margin-top: 8px; }
 .arrow {
   display: inline-block;
   margin-left: 8px;
 }
-.error {
-  color: #b00020;
-  margin-top: 12px;
-}
+.p-message { margin-top: 12px; }
 .extras {
   display: grid;
   place-items: center;
