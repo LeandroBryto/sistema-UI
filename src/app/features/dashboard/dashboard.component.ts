@@ -7,11 +7,26 @@ import { AuthService } from '../../services/auth.service';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AiAssistantService } from '../../services/ai-assistant.service';
 import { SettingsMenuComponent } from '../settings/settings-menu.component';
+import { PanelModule } from 'primeng/panel';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, SettingsMenuComponent],
+  imports: [
+    CommonModule, 
+    RouterLink, 
+    ReactiveFormsModule, 
+    SettingsMenuComponent, 
+    PanelModule,
+    DialogModule,
+    ButtonModule,
+    InputTextModule,
+    AvatarModule
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -163,24 +178,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   // Assistente IA
-  aiOpen = true;
+  aiVisible = false;
   aiLoading = false;
-  aiError: string | null = null;
-  aiResponse: string | null = null;
+  aiChatHistory: { sender: 'user' | 'ai'; text: string }[] = [
+    { sender: 'ai', text: 'Olá 👋 Posso te ajudar a entender suas finanças?' }
+  ];
   aiForm = this.fb.nonNullable.group({
     message: ['', [Validators.required, Validators.minLength(2)]],
   });
 
+  aiToggle(): void {
+    this.aiVisible = !this.aiVisible;
+  }
+
   aiAsk(): void {
     if (this.aiForm.invalid) return;
     const { message } = this.aiForm.getRawValue();
+    
+    // Adiciona mensagem do usuário ao histórico
+    this.aiChatHistory.push({ sender: 'user', text: message });
+    this.aiForm.reset();
+
     this.aiLoading = true;
-    this.aiError = null;
-    this.aiResponse = null;
+    
     this.ai.ask({ message }).subscribe({
       next: (res) => {
         this.aiLoading = false;
-        this.aiResponse = res.response;
+        this.aiChatHistory.push({ sender: 'ai', text: res.response });
       },
       error: (e) => {
         this.aiLoading = false;
@@ -189,10 +213,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl('/');
           return;
         }
-        this.aiError = 'Não foi possível obter a resposta. Tente novamente mais tarde.';
+        this.aiChatHistory.push({ sender: 'ai', text: 'Não foi possível obter a resposta. Tente novamente mais tarde.' });
       },
     });
   }
-
-  aiToggle(): void { this.aiOpen = !this.aiOpen; }
 }

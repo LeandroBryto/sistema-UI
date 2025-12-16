@@ -46,27 +46,55 @@
     </div>
   </section>
 
-  <section class="assistant card">
-    <div class="assistant-head">
-      <div class="ai-icon">🤖</div>
-      <div>
-        <div class="title">Assistente Financeiro</div>
-        <div class="meta">Olá 👋 Posso te ajudar a entender suas finanças?</div>
+  <!-- Botão Flutuante IA -->
+  <div class="ai-fab-container">
+    <p-button 
+      icon="pi pi-sparkles" 
+      [rounded]="true" 
+      size="large" 
+      (onClick)="aiToggle()" 
+      styleClass="p-button-raised p-button-help p-button-lg shadow-4"
+      pTooltip="Falar com IA"
+      tooltipPosition="left">
+    </p-button>
+  </div>
+
+  <!-- Chat Dialog -->
+  <p-dialog 
+    header="Assistente Financeiro" 
+    [(visible)]="aiVisible" 
+    position="bottomright" 
+    [style]="{ width: '380px', height: '500px', margin: '0 20px 80px 0' }" 
+    [modal]="false"
+    [draggable]="false"
+    [resizable]="false"
+    [closeOnEscape]="true"
+    [dismissableMask]="false"
+    appendTo="body"
+    styleClass="ai-chat-dialog">
+    
+    <div class="chat-content">
+      <div class="chat-messages">
+        <div *ngFor="let msg of aiChatHistory" [class]="'message-row ' + msg.sender">
+          <p-avatar *ngIf="msg.sender === 'ai'" icon="pi pi-android" shape="circle" size="normal" styleClass="mr-2"></p-avatar>
+          <div class="message-bubble">{{ msg.text }}</div>
+        </div>
+        <div *ngIf="aiLoading" class="message-row ai">
+          <p-avatar icon="pi pi-spin pi-spinner" shape="circle" size="normal" styleClass="mr-2"></p-avatar>
+          <div class="message-bubble">Digitando...</div>
+        </div>
       </div>
-      <button class="toggle" (click)="aiToggle()">{{ aiOpen ? 'Esconder' : 'Mostrar' }}</button>
-    </div>
-    <div *ngIf="aiOpen" class="assistant-body">
-      <form [formGroup]="aiForm" (ngSubmit)="aiAsk()" class="assistant-form">
-        <input type="text" placeholder="Digite sua pergunta" formControlName="message" />
-        <button class="send" type="submit" [disabled]="aiForm.invalid || aiLoading">{{ aiLoading ? '...' : 'Perguntar' }}</button>
+      
+      <form [formGroup]="aiForm" (ngSubmit)="aiAsk()" class="chat-input-area">
+        <div class="p-inputgroup">
+          <input pInputText type="text" formControlName="message" placeholder="Pergunte sobre suas finanças..." />
+          <button pButton type="submit" icon="pi pi-send" [disabled]="aiForm.invalid || aiLoading"></button>
+        </div>
       </form>
-      <p class="error" *ngIf="aiError">{{ aiError }}</p>
-      <div class="assistant-reply" *ngIf="aiResponse">
-        <span class="ai-icon small">🤖</span>
-        <p>{{ aiResponse }}</p>
-      </div>
     </div>
-  </section>
+  </p-dialog>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
 
   <section class="goals">
     <div class="goals-header">
