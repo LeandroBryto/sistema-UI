@@ -6,12 +6,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { InputMaskModule } from 'primeng/inputmask';
+import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, InputTextModule, PasswordModule, InputMaskModule, ButtonModule, MessageModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
@@ -24,7 +29,8 @@ export class RegisterComponent {
     email: ['', [Validators.required, Validators.email]],
     username: ['', [Validators.required]],
     telefone: ['', [Validators.required]],
-    senha: ['', [Validators.required]],
+    senha: ['', [Validators.required, Validators.minLength(6)]],
+    confirmSenha: ['', [Validators.required]],
   });
 
   constructor(
@@ -39,7 +45,18 @@ export class RegisterComponent {
     this.error = null;
     this.loading = true;
 
-    const payload = this.form.getRawValue();
+    const raw = this.form.getRawValue();
+    if (raw.senha !== raw.confirmSenha) {
+      this.loading = false;
+      this.error = 'Senhas não coincidem.';
+      return;
+    }
+    const payload = {
+      email: raw.email,
+      username: raw.username,
+      telefone: (raw.telefone || '').replace(/\D/g, ''),
+      senha: raw.senha,
+    };
 
     this.auth.register(payload).subscribe({
       next: () => {

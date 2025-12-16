@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
 import { Router, RouterLink } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { AdminUserResponseDTO, MetricsSummaryDTO, AuditLogResponseDTO, ApplicationStatusDTO } from '../../models/admin.models';
@@ -8,7 +10,7 @@ import { AdminUserResponseDTO, MetricsSummaryDTO, AuditLogResponseDTO, Applicati
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, DropdownModule, ButtonModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })
@@ -148,5 +150,10 @@ export class AdminComponent implements OnInit {
         this.applyAuditFilter();
       },
     });
+    this.admin.status().subscribe({ next: (s) => (this.status = s) });
+  }
+
+  refreshStatus(): void {
+    this.admin.status().subscribe({ next: (s) => (this.status = s) });
   }
 }

@@ -64,10 +64,17 @@
 }
 .filters {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin: 12px 0;
 }
+.filters-inline {
+  grid-template-columns: auto auto auto auto;
+  align-items: end;
+}
+.filters-inline .row { min-width: 180px; }
+.filters-inline .row select,
+.filters-inline .row .p-dropdown { height: 32px; font-size: 12px; }
+.filters-inline .row .p-button { height: 32px; font-size: 12px; }
 .row label { font-size: 12px; color: #666; margin-bottom: 6px; display: block; }
 .row select {
   padding: 8px 10px;
@@ -79,6 +86,10 @@
 .table.audit .row {
   grid-template-columns: 60px 1fr 120px 160px 180px 1.6fr;
 }
+
+.simple-table { width: 100%; border-collapse: collapse; }
+.simple-table th, .simple-table td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; }
+.simple-table th { font-weight: 700; }
 @media (max-width: 1200px) {
   .table .thead,
   .table .row { grid-template-columns: 60px 1fr 1fr 100px 80px 1.2fr; }

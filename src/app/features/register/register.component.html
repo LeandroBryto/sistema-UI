@@ -3,50 +3,47 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="field">
       <label for="email">Email</label>
-      <input
-        id="email"
-        type="email"
-        formControlName="email"
-        placeholder="seu@email.com"
-      />
+      <span class="p-input-icon-left" style="display:block">
+        <i class="pi pi-envelope"></i>
+        <input id="email" pInputText type="email" formControlName="email" placeholder="seu@email.com" />
+      </span>
+      <p-message *ngIf="form.controls.email.touched && form.controls.email.invalid" severity="error" text="Informe um e-mail válido."></p-message>
     </div>
 
     <div class="field">
       <label for="username">Usuário</label>
-      <input
-        id="username"
-        type="text"
-        formControlName="username"
-        placeholder="Digite seu usuário"
-      />
+      <span class="p-input-icon-left" style="display:block">
+        <i class="pi pi-user"></i>
+        <input id="username" pInputText type="text" formControlName="username" placeholder="Digite seu usuário" />
+      </span>
+      <p-message *ngIf="form.controls.username.touched && form.controls.username.invalid" severity="error" text="Usuário é obrigatório."></p-message>
     </div>
 
     <div class="field">
       <label for="telefone">Telefone</label>
-      <input
-        id="telefone"
-        type="tel"
-        formControlName="telefone"
-        placeholder="DDD + número"
-      />
+      <span class="p-input-icon-left" style="display:block">
+        <i class="pi pi-phone"></i>
+        <p-inputMask id="telefone" formControlName="telefone" mask="(99) 99999-9999" placeholder="(00) 00000-0000"></p-inputMask>
+      </span>
+      <p-message *ngIf="form.controls.telefone.touched && form.controls.telefone.invalid" severity="error" text="Telefone é obrigatório."></p-message>
     </div>
 
     <div class="field">
       <label for="senha">Senha</label>
-      <input
-        id="senha"
-        type="password"
-        formControlName="senha"
-        placeholder="Digite sua senha"
-      />
+      <p-password inputId="senha" formControlName="senha" [feedback]="true" toggleMask placeholder="Digite sua senha"></p-password>
+      <p-message *ngIf="form.controls.senha.touched && form.controls.senha.invalid" severity="error" text="Senha deve ter pelo menos 6 caracteres."></p-message>
     </div>
 
-    <button type="submit" [disabled]="form.invalid || loading">
-      {{ loading ? 'Registrando...' : 'Registrar' }}
-    </button>
+    <div class="field">
+      <label for="confirmSenha">Confirmar Senha</label>
+      <p-password inputId="confirmSenha" formControlName="confirmSenha" [feedback]="false" toggleMask placeholder="Repita sua senha"></p-password>
+      <p-message *ngIf="form.controls.confirmSenha.touched && form.controls.confirmSenha.value && form.controls.confirmSenha.value !== form.controls.senha.value" severity="error" text="As senhas não coincidem."></p-message>
+    </div>
 
-    <p class="success" *ngIf="success">Cadastro realizado com sucesso.</p>
-    <p class="error" *ngIf="error">{{ error }}</p>
+    <p-button type="submit" [label]="loading ? 'Registrando...' : 'Registrar'" severity="primary" [disabled]="form.invalid || loading" [loading]="loading" icon="pi pi-user-plus" iconPos="right"></p-button>
+
+    <p-message *ngIf="success" severity="success" text="Cadastro realizado com sucesso."></p-message>
+    <p-message *ngIf="error" severity="error" [text]="error"></p-message>
   </form>
 
   <p class="link">
