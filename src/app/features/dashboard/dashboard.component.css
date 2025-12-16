@@ -263,19 +263,20 @@
   gap: 10px;
   padding: 14px 16px;
   border-radius: 16px;
-  border: 1px solid #222;
-  background: #111;
+  border: none;
+  background: var(--gradient-primary);
   color: #fff;
   text-decoration: none;
   font-weight: 600;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 20px rgba(30,80,255,0.25);
+  transition: all 0.2s ease;
 }
 .quick .qcard::before {
   content: none;
 }
 
-.quick .qcard:hover { background: #1a1a1a; border-color: #333; }
-.quick .qcard:focus-visible { outline: 2px solid rgba(255,255,255,0.25); outline-offset: 2px; }
+.quick .qcard:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 12px 24px rgba(30,80,255,0.35); }
+.quick .qcard:focus-visible { outline: 2px solid rgba(30,80,255,0.5); outline-offset: 2px; }
 
 /* Side Panel - from previous edit */
 .side-panel { position: fixed; top: 80px; right: 16px; width: 300px; z-index: 1000; }
