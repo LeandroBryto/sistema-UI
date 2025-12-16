@@ -8,9 +8,30 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: end;
-  margin-bottom: 12px;
+  align-items: center;
+  margin-bottom: 24px;
 }
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #1e50ff;
+  font-weight: 600;
+  padding: 8px 16px;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+  border: 1px solid #e3e8f2;
+}
+
+.back-btn:hover {
+  background: #f0f4ff;
+  transform: translateX(-2px);
+}
+
 .muted { color: #666; margin: 0; }
 .summary { display: flex; gap: 8px; align-items: center; }
 .alert.cotacao {
