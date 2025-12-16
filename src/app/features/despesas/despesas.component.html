@@ -19,9 +19,7 @@
       <input type="date" [formControl]="filtros.controls.endDate" />
     </div>
     <div class="row actions">
-      <button class="primary" (click)="load()" [disabled]="loading">
-        {{ loading ? 'Carregando...' : 'Aplicar Filtros' }}
-      </button>
+      <p-button [label]="loading ? 'Carregando...' : 'Aplicar Filtros'" severity="primary" [disabled]="loading" [loading]="loading" (onClick)="load()"></p-button>
     </div>
   </section>
 
@@ -93,63 +91,79 @@
     <section class="card list-card">
       <div class="list-head">
         <h3>Lista</h3>
-        <div class="legend">
-          <span class="badge pago">Pago</span>
-          <span class="badge pendente">Pendente</span>
-          <span class="badge atrasado">Atrasado</span>
-        </div>
+        <input pInputText type="text" placeholder="Filtrar..." [(ngModel)]="globalFilter" (input)="dt.filterGlobal(globalFilter, 'contains')" />
       </div>
-      <div class="table-wrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Descrição</th>
-              <th>Categoria</th>
-              <th>Valor</th>
-              <th>Data</th>
-              <th>Forma</th>
-              <th>Status</th>
-              <th>Recorrente</th>
-              <th>Observações</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of itens; let i = index" [class.alt]="i % 2 === 1">
-              <td>{{ item.descricao }}</td>
-              <td>{{ item.categoria }}</td>
-              <td>R$ {{ item.valor | number : '1.2-2' }}</td>
-              <td>{{ item.data }}</td>
-              <td>{{ item.formaPagamento }}</td>
-              <td>
-                <span class="badge" [class.pago]="item.statusPagamento==='PAGO'"
-                  [class.pendente]="item.statusPagamento==='PENDENTE'"
-                  [class.atrasado]="item.statusPagamento==='ATRASADO'">
-                  {{ item.statusPagamento }}
-                </span>
-              </td>
-              <td>
-                <span class="chip" [class.ok]="item.recorrente" [class.muted]="!item.recorrente">
-                  {{ item.recorrente ? 'Sim' : 'Não' }}
-                </span>
-              </td>
-              <td>
-                {{ item.observacoes }}
-                <span class="notify" *ngIf="item.notificarAntesVencimento">
-                  {{ item.notificarAntesVencimento }}d
-                </span>
-              </td>
-              <td class="actions">
-                <button (click)="edit(item)">Editar</button>
-                <button class="danger" (click)="remove(item)">Excluir</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="empty" *ngIf="itens.length === 0">
-          Nenhuma despesa encontrada para o período.
-        </div>
-      </div>
+      <p-table #dt [value]="itens" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]" [responsiveLayout]="'stack'" styleClass="expenses-table">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="descricao">Descrição <p-sortIcon field="descricao"></p-sortIcon>
+              <p-columnFilter field="descricao" type="text" display="menu"></p-columnFilter>
+            </th>
+            <th pSortableColumn="categoria">Categoria <p-sortIcon field="categoria"></p-sortIcon>
+              <p-columnFilter field="categoria" type="text" display="menu"></p-columnFilter>
+            </th>
+            <th pSortableColumn="valor">Valor <p-sortIcon field="valor"></p-sortIcon>
+              <p-columnFilter field="valor" type="numeric" display="menu"></p-columnFilter>
+            </th>
+            <th pSortableColumn="data">Data <p-sortIcon field="data"></p-sortIcon>
+              <p-columnFilter field="data" type="date" display="menu"></p-columnFilter>
+            </th>
+            <th>Forma
+              <p-columnFilter field="formaPagamento" display="menu">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [options]="formas" [ngModel]="value" (onChange)="filter($event.value)" placeholder="Qualquer"></p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>Status
+              <p-columnFilter field="statusPagamento" matchMode="equals" [showMatchModes]="false" display="menu">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [options]="status" [ngModel]="value" (onChange)="filter($event.value)" placeholder="Qualquer"></p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>Recorrente
+              <p-columnFilter field="recorrente" matchMode="equals" [showMatchModes]="false" display="menu">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [options]="[{label: 'Sim', value: true}, {label: 'Não', value: false}]" [ngModel]="value" (onChange)="filter($event.value)" placeholder="Qualquer"></p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>Observações
+              <p-columnFilter field="observacoes" type="text" display="menu"></p-columnFilter>
+            </th>
+            <th>Ações</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>{{ item.descricao }}</td>
+            <td>{{ item.categoria }}</td>
+            <td>R$ {{ item.valor | number : '1.2-2' }}</td>
+            <td>{{ item.data }}</td>
+            <td>{{ item.formaPagamento }}</td>
+            <td>
+              <p-tag [value]="item.statusPagamento" [severity]="item.statusPagamento==='PAGO' ? 'success' : (item.statusPagamento==='ATRASADO' ? 'danger' : 'warning')"></p-tag>
+            </td>
+            <td>
+              <p-tag [value]="item.recorrente ? 'Sim' : 'Não'" [severity]="item.recorrente ? 'success' : 'secondary'"></p-tag>
+            </td>
+            <td>
+              {{ item.observacoes }}
+              <span class="notify" *ngIf="item.notificarAntesVencimento">{{ item.notificarAntesVencimento }}d</span>
+            </td>
+            <td class="actions">
+              <button pButton type="button" label="Editar" (click)="edit(item)"></button>
+              <button pButton type="button" severity="danger" label="Excluir" (click)="remove(item)"></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="9">Nenhuma despesa encontrada para o período.</td>
+          </tr>
+        </ng-template>
+      </p-table>
     </section>
   </div>
 </div>

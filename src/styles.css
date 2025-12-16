@@ -1,1 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'primeng/resources/themes/lara-light-blue/theme.css';
+@import 'primeng/resources/primeng.min.css';
+@import 'primeicons/primeicons.css';
+:root {
+  --bg: #f7f8fc;
+  --text: #0f172a;
+  --muted: #666666;
+  --border: #e3e8f2;
+  --primary: #1e50ff;
+  --primary-alt: #4169e1;
+  --primary-text: #ffffff;
+  --gradient-primary: linear-gradient(135deg, #4169e1, #1e50ff 70%);
+  --success: #1b5e20;
+  --warn: #e65100;
+  --danger: #b71c1c;
+  --surface: #ffffff;
+}

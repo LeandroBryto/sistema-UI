@@ -4,11 +4,31 @@ import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { DespesaService } from '../../services/despesa.service';
 import { DespesaRequest, DespesaResponse } from '../../models/despesa.models';
+import { FormsModule } from '@angular/forms';
+import { TableModule } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { TagModule } from 'primeng/tag';
+import { CalendarModule } from 'primeng/calendar';
 
 @Component({
   selector: 'app-despesas',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    FormsModule,
+    TableModule,
+    PaginatorModule,
+    InputTextModule,
+    ButtonModule,
+    DropdownModule,
+    TagModule,
+    CalendarModule,
+  ],
   templateUrl: './despesas.component.html',
   styleUrls: ['./despesas.component.css'],
 })
@@ -18,6 +38,7 @@ export class DespesasComponent {
   success: string | null = null;
   itens: DespesaResponse[] = [];
   editingId: number | null = null;
+  globalFilter = '';
 
   filtros = this.fb.nonNullable.group({
     startDate: [''],
