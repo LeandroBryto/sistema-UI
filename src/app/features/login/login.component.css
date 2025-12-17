@@ -101,7 +101,8 @@
   color: var(--muted);
   text-decoration: none;
   font-size: 13px;
-  text-align: right;
+  text-align: left;
+  width: 100%; /* Garante que ocupe a largura para o text-align funcionar */
 }
 .form-actions {
   display: flex;
