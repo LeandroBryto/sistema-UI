@@ -17,7 +17,10 @@
 
       <div class="field">
         <label for="senha">Senha</label>
-        <p-password inputId="senha" formControlName="senha" [feedback]="false" toggleMask placeholder="Digite sua senha"></p-password>
+        <span class="p-input-icon-left" style="display:block">
+          <i class="pi pi-lock"></i>
+          <p-password inputId="senha" formControlName="senha" [feedback]="false" [toggleMask]="true" placeholder="Senha" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%', 'padding-left': '2.5rem'}"></p-password>
+        </span>
         <a class="recover" routerLink="/esqueci-senha">Recuperar Senha?</a>
       </div>
 
