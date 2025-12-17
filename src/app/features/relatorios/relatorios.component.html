@@ -49,41 +49,13 @@
     </section>
   </div>
 
-  <div class="grid two" *ngIf="report">
-    <section class="card">
-      <h3 class="title">Ranking Receitas por Categoria</h3>
-      <div *ngIf="report.rankingReceitasPorCategoria; else noRec">
-        <div class="bar-row" *ngFor="let kv of (report.rankingReceitasPorCategoria | keyvalue)">
-          <span class="cat">{{ kv.key }}</span>
-          <div class="bar"><div class="fill green" [style.width.%]="calcWidth($any(kv.value), report.totalReceitas)"></div></div>
-          <span class="val">R$ {{ $any(kv.value) | number:'1.2-2' }}</span>
-        </div>
+  <div class="grid one" *ngIf="report">
+    <section class="card flex flex-column align-items-center">
+      <h3 class="title w-full">Ranking Geral (Receitas e Despesas)</h3>
+      <div *ngIf="mixedChartData; else noData" class="w-full flex justify-content-center" style="position: relative; height: 400px;">
+        <p-chart type="doughnut" [data]="mixedChartData" [options]="doughnutOptions" width="100%" height="100%"></p-chart>
       </div>
-      <ng-template #noRec><p class="muted">Sem dados de categorias de receita</p></ng-template>
-    </section>
-
-    <section class="card">
-      <h3 class="title">Ranking Despesas por Categoria</h3>
-      <div *ngIf="report.rankingDespesasPorCategoria; else noDesp">
-        <div class="bar-row" *ngFor="let kv of (report.rankingDespesasPorCategoria | keyvalue)">
-          <span class="cat">{{ kv.key }}</span>
-          <div class="bar"><div class="fill red" [style.width.%]="calcWidth($any(kv.value), report.totalDespesas)"></div></div>
-          <span class="val">R$ {{ $any(kv.value) | number:'1.2-2' }}</span>
-        </div>
-      </div>
-      <ng-template #noDesp><p class="muted">Sem dados de categorias de despesa</p></ng-template>
+      <ng-template #noData><p class="muted">Sem dados para exibir</p></ng-template>
     </section>
   </div>
-
-  <section class="card" *ngIf="report">
-    <h3 class="title">Média de Gastos por Categoria</h3>
-    <div *ngIf="report.mediaGastosPorCategoria; else noMed">
-      <div class="bar-row" *ngFor="let kv of (report.mediaGastosPorCategoria | keyvalue)">
-        <span class="cat">{{ kv.key }}</span>
-        <div class="bar"><div class="fill" [style.width.%]="calcWidth($any(kv.value), report.totalDespesas)"></div></div>
-        <span class="val">R$ {{ $any(kv.value) | number:'1.2-2' }}</span>
-      </div>
-    </div>
-    <ng-template #noMed><p class="muted">Sem dados de médias</p></ng-template>
-  </section>
 </div>

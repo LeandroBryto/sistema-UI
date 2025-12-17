@@ -103,7 +103,16 @@
   font-size: 13px;
   text-align: right;
 }
-.p-button { width: 100%; margin-top: 8px; }
+.form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+/* Força o botão a não ocupar 100% caso haja estilo global */
+::ng-deep .form-actions .p-button {
+  width: auto !important;
+  min-width: 150px;
+}
 .arrow {
   display: inline-block;
   margin-left: 8px;

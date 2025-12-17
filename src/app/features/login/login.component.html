@@ -21,7 +21,9 @@
         <a class="recover" routerLink="/esqueci-senha">Recuperar Senha?</a>
       </div>
 
-      <p-button type="submit" [label]="loading ? 'Entrando...' : 'Entrar'" severity="primary" [disabled]="form.invalid || loading" [loading]="loading" icon="pi pi-sign-in" iconPos="right"></p-button>
+      <div class="form-actions">
+        <p-button type="submit" [label]="loading ? 'Entrando...' : 'Entrar'" severity="primary" [disabled]="form.invalid || loading" [loading]="loading" icon="pi pi-sign-in" iconPos="right"></p-button>
+      </div>
 
       <p-message *ngIf="error" severity="error" [text]="error"></p-message>
     </form>
