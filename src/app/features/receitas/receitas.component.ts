@@ -72,6 +72,8 @@ export class ReceitasComponent {
   formas = ['PIX', 'TED', 'ESPECIE', 'BOLETO'];
 
   constructor(private fb: FormBuilder, private api: ReceitaService, private toast: MessageService) {
+    const { start, end } = this.currentMonthRange();
+    this.filtros.setValue({ startDate: start, endDate: end });
     this.load();
   }
 
@@ -170,6 +172,20 @@ export class ReceitasComponent {
         this.error = this.errorMsg(e) || 'Falha ao salvar a receita. Verifique os campos e tente novamente.';
       },
     });
+  }
+
+  private formatDate(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  private currentMonthRange(): { start: string; end: string } {
+    const now = new Date();
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    return { start: this.formatDate(startDate), end: this.formatDate(endDate) };
   }
 
   private errorMsg(e: any): string | null {
