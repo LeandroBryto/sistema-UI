@@ -12,6 +12,8 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
 import { CalendarModule } from 'primeng/calendar';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-despesas',
@@ -28,7 +30,9 @@ import { CalendarModule } from 'primeng/calendar';
     DropdownModule,
     TagModule,
     CalendarModule,
+    ToastModule,
   ],
+  providers: [MessageService],
   templateUrl: './despesas.component.html',
   styleUrls: ['./despesas.component.css'],
 })
@@ -70,7 +74,7 @@ export class DespesasComponent {
   formas = ['PIX', 'CARTAO_CREDITO', 'CARTAO_DEBITO', 'DINHEIRO'];
   status = ['PAGO', 'PENDENTE', 'ATRASADO'];
 
-  constructor(private fb: FormBuilder, private api: DespesaService) {
+  constructor(private fb: FormBuilder, private api: DespesaService, private toast: MessageService) {
     this.load();
   }
 
@@ -161,6 +165,9 @@ export class DespesasComponent {
         this.success = this.editingId
           ? 'Despesa atualizada com sucesso.'
           : 'Despesa criada com sucesso.';
+        if (this.editingId == null) {
+          this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Despesa criada com sucesso.' });
+        }
         this.resetForm();
         this.load();
       },

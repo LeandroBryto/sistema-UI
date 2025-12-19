@@ -15,6 +15,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-receitas',
@@ -30,7 +32,9 @@ import { TagModule } from 'primeng/tag';
     ButtonModule,
     DropdownModule,
     TagModule,
+    ToastModule,
   ],
+  providers: [MessageService],
   templateUrl: './receitas.component.html',
   styleUrls: ['./receitas.component.css'],
 })
@@ -67,7 +71,7 @@ export class ReceitasComponent {
   ];
   formas = ['PIX', 'TED', 'ESPECIE', 'BOLETO'];
 
-  constructor(private fb: FormBuilder, private api: ReceitaService) {
+  constructor(private fb: FormBuilder, private api: ReceitaService, private toast: MessageService) {
     this.load();
   }
 
@@ -155,6 +159,9 @@ export class ReceitasComponent {
         this.success = this.editingId
           ? 'Receita atualizada com sucesso.'
           : 'Receita criada com sucesso.';
+        if (this.editingId == null) {
+          this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Receita criada com sucesso.' });
+        }
         this.resetForm();
         this.load();
       },
