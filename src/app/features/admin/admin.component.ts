@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { PasswordModule } from 'primeng/password';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { Router, RouterLink } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { AdminUserResponseDTO, MetricsSummaryDTO, AuditLogResponseDTO, ApplicationStatusDTO } from '../../models/admin.models';
@@ -10,9 +14,10 @@ import { AdminUserResponseDTO, MetricsSummaryDTO, AuditLogResponseDTO, Applicati
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, DropdownModule, ButtonModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, DropdownModule, ButtonModule, DialogModule, PasswordModule, ToastModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
+  providers: [MessageService],
 })
 export class AdminComponent implements OnInit {
   loading = false;
@@ -23,6 +28,12 @@ export class AdminComponent implements OnInit {
   audit: AuditLogResponseDTO[] = [];
   status: ApplicationStatusDTO | null = null;
   auditFiltered: AuditLogResponseDTO[] = [];
+  showResetDialog = false;
+  userToReset: AdminUserResponseDTO | null = null;
+  resetForm = this.fb.nonNullable.group({
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    confirm: ['', [Validators.required, Validators.minLength(6)]],
+  });
 
   roleForm = this.fb.nonNullable.group({
     role: ['USER' as 'ADMIN' | 'USER', [Validators.required]],
@@ -34,7 +45,7 @@ export class AdminComponent implements OnInit {
     auditLimit: [50],
   });
 
-  constructor(private admin: AdminService, private fb: FormBuilder, private router: Router) {}
+  constructor(private admin: AdminService, private fb: FormBuilder, private router: Router, private toast: MessageService) {}
 
   ngOnInit(): void {
     this.load();
@@ -101,10 +112,30 @@ export class AdminComponent implements OnInit {
     this.admin.changeRole(u.id, role).subscribe({ next: () => this.load() });
   }
 
-  resetPassword(u: AdminUserResponseDTO): void {
-    const nova = prompt(`Nova senha para ${u.username}`) || '';
-    if (!nova || nova.length < 6) return;
-    this.admin.resetPassword(u.id, nova).subscribe({ next: () => this.load() });
+  openResetDialog(u: AdminUserResponseDTO): void {
+    this.userToReset = u;
+    this.resetForm.reset({ password: '', confirm: '' });
+    this.showResetDialog = true;
+  }
+
+  confirmReset(): void {
+    if (!this.userToReset) return;
+    const { password, confirm } = this.resetForm.getRawValue();
+    if (!password || password.length < 6) return;
+    if (password !== confirm) return;
+    this.admin.resetPassword(this.userToReset.id, password).subscribe({
+      next: () => {
+        this.showResetDialog = false;
+        this.userToReset = null;
+        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Senha alterada com sucesso.' });
+        this.load();
+      },
+    });
+  }
+
+  closeResetDialog(): void {
+    this.showResetDialog = false;
+    this.userToReset = null;
   }
 
   goDashboard(): void {

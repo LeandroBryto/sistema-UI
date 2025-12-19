@@ -33,7 +33,7 @@
             </select>
             <button class="sm" type="submit">Alterar</button>
           </form>
-          <button class="sm warn" (click)="resetPassword(u)">Resetar Senha</button>
+          <button class="sm warn" (click)="openResetDialog(u)">Resetar Senha</button>
         </span>
       </div>
     </div>
@@ -49,6 +49,28 @@
     <ng-template #noMetrics><p class="muted">Sem métricas</p></ng-template>
   </div> -->
 </section>
+
+<p-toast position="top-right"></p-toast>
+
+<p-dialog [(visible)]="showResetDialog" [modal]="true" [closable]="true" (onHide)="closeResetDialog()" [style]="{ width: '420px' }" header="Resetar Senha">
+  <div *ngIf="userToReset as user">
+    <p class="muted" style="margin-top:0">Usuário: <strong>{{ user.username }}</strong></p>
+    <form [formGroup]="resetForm" (ngSubmit)="confirmReset()" class="form-grid" style="margin-top:8px">
+      <div class="row">
+        <label>Nova senha</label>
+        <p-password formControlName="password" [toggleMask]="true" [feedback]="false"></p-password>
+      </div>
+      <div class="row">
+        <label>Confirmar senha</label>
+        <p-password formControlName="confirm" [toggleMask]="true" [feedback]="false"></p-password>
+      </div>
+      <div class="form-actions" style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end">
+        <p-button type="button" label="Cancelar" severity="secondary" (onClick)="closeResetDialog()"></p-button>
+        <p-button type="submit" label="Confirmar" severity="primary" [disabled]="resetForm.invalid || resetForm.get('password')?.value !== resetForm.get('confirm')?.value"></p-button>
+      </div>
+    </form>
+  </div>
+</p-dialog>
 
 <section class="grid two" *ngIf="!loading">
   <div class="card">
