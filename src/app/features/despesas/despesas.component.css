@@ -135,7 +135,7 @@ button.danger {
 }
 .expenses-table .p-datatable-tbody > tr > td { white-space: normal; }
 .expenses-table .actions button { margin-right: 6px; }
-.expenses-table .actions .p-button { min-width: 120px; }
+.expenses-table .actions .p-button { width: 100px; }
 .table thead {
   background: #f7f7fb;
   position: sticky;

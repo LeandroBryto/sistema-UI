@@ -130,7 +130,7 @@ button.danger {
 }
 .recipes-table .p-datatable-tbody > tr > td { white-space: normal; }
 .recipes-table .actions button { margin-right: 6px; }
-.recipes-table .actions .p-button { min-width: 120px; }
+.recipes-table .actions .p-button { width: 100px; }
 .table {
   width: 100%;
   border-collapse: collapse;

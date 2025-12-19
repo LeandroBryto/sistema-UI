@@ -153,8 +153,8 @@
               <span class="notify" *ngIf="item.notificarAntesVencimento">{{ item.notificarAntesVencimento }}d</span>
             </td>
             <td class="actions">
-              <button pButton type="button" label="Editar" (click)="edit(item)"></button>
-              <button pButton type="button" severity="danger" label="Excluir" (click)="remove(item)"></button>
+              <button pButton type="button" label="Editar" [style.width.px]="110" (click)="edit(item)"></button>
+              <button pButton type="button" severity="danger" label="Excluir" [style.width.px]="110" (click)="remove(item)"></button>
             </td>
           </tr>
         </ng-template>
