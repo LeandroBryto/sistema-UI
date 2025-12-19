@@ -139,6 +139,7 @@ export class DespesasComponent {
       next: () => {
         this.loading = false;
         this.success = 'Despesa removida com sucesso.';
+        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Despesa removida com sucesso.' });
         this.load();
       },
       error: (e) => {
@@ -167,9 +168,7 @@ export class DespesasComponent {
         this.success = this.editingId
           ? 'Despesa atualizada com sucesso.'
           : 'Despesa criada com sucesso.';
-        if (this.editingId == null) {
-          this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Despesa criada com sucesso.' });
-        }
+        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: this.success! });
         this.resetForm();
         this.load();
       },

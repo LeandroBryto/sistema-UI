@@ -134,6 +134,7 @@ export class ReceitasComponent {
       next: () => {
         this.loading = false;
         this.success = 'Receita removida com sucesso.';
+        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Receita removida com sucesso.' });
         this.load();
       },
       error: (e) => {
@@ -161,9 +162,7 @@ export class ReceitasComponent {
         this.success = this.editingId
           ? 'Receita atualizada com sucesso.'
           : 'Receita criada com sucesso.';
-        if (this.editingId == null) {
-          this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Receita criada com sucesso.' });
-        }
+        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: this.success! });
         this.resetForm();
         this.load();
       },
