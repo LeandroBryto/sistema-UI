@@ -303,3 +303,21 @@
   opacity: 1;
   box-shadow: 0 5px 10px rgba(0,0,0,0.3);
 }
+
+@media (max-width: 480px) {
+  .login-card {
+    width: 90%;
+    margin: 0 1rem;
+    padding: 30px 20px;
+  }
+  
+  :host ::ng-deep .custom-input,
+  :host ::ng-deep .login-button {
+    font-size: 16px; /* Prevents iOS zoom and improves readability */
+    padding: 14px; /* Larger touch target */
+  }
+  
+  .brand-title {
+    font-size: 22px;
+  }
+}

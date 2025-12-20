@@ -1,217 +1,210 @@
-<!-- KPI Grid -->
-<div class="kpi-grid mb-4">
-  <div class="card kpi-card">
-    <div class="kpi-content">
-      <span class="kpi-label">Receitas</span>
-      <span class="kpi-value">R$ {{ kpis.receitas.value | number:'1.2-2' }}</span>
-      <div class="kpi-trend ok">
-        <i class="pi pi-arrow-up"></i>
-        <span>12% vs last month</span>
-      </div>
-    </div>
-    <div class="kpi-icon-wrapper bg-green-500/10 text-green-500">
-      <i class="pi pi-dollar text-xl"></i>
-    </div>
-  </div>
-
-  <div class="card kpi-card">
-    <div class="kpi-content">
-      <span class="kpi-label">Despesas</span>
-      <span class="kpi-value">R$ {{ kpis.despesas.value | number:'1.2-2' }}</span>
-      <div class="kpi-trend warn">
-        <i class="pi pi-arrow-down"></i>
-        <span>5% vs last month</span>
-      </div>
-    </div>
-    <div class="kpi-icon-wrapper bg-red-500/10 text-red-500">
-      <i class="pi pi-shopping-cart text-xl"></i>
-    </div>
-  </div>
-
-  <div class="card kpi-card">
-    <div class="kpi-content">
-      <span class="kpi-label">Saldo Atual</span>
-      <span class="kpi-value">R$ {{ kpis.saldo.value | number:'1.2-2' }}</span>
-      <div class="kpi-trend neutral">
-        <span>Updated just now</span>
-      </div>
-    </div>
-    <div class="kpi-icon-wrapper bg-blue-500/10 text-blue-500">
-      <i class="pi pi-wallet text-xl"></i>
-    </div>
-  </div>
-
-  <div class="card kpi-card">
-    <div class="kpi-content">
-      <span class="kpi-label">Investimentos</span>
-      <span class="kpi-value">R$ {{ kpis.investimentos.value | number:'1.2-2' }}</span>
-      <div class="kpi-trend ok">
-        <i class="pi pi-chart-line"></i>
-        <span>+8.5% YTD</span>
-      </div>
-    </div>
-    <div class="kpi-icon-wrapper bg-purple-500/10 text-purple-500">
-      <i class="pi pi-briefcase text-xl"></i>
-    </div>
-  </div>
-</div>
-
-<!-- Middle Section: Charts & Quick Transfer -->
-<div class="middle-grid mb-4">
-  <div class="card">
-    <div class="card-header">
-      <h3 class="card-title">Fluxo de Caixa</h3>
-      <div class="flex gap-2">
-        <button class="btn-outlined text-xs">Semana</button>
-        <button class="btn-primary text-xs">Mês</button>
-      </div>
-    </div>
-    <div class="chart-wrapper">
-      <p-chart type="line" [data]="revenueChart" [options]="chartOptions" height="280px"></p-chart>
-    </div>
-  </div>
-
-  <div class="card flex flex-col justify-between">
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header flex justify-content-between align-items-center mb-5">
     <div>
-      <div class="card-header">
-        <h3 class="card-title">Ações Rápidas</h3>
+      <h1 class="text-3xl font-bold text-white m-0">Dashboard</h1>
+      <p class="text-gray-400 mt-1">Visão geral da sua carteira</p>
+    </div>
+    <div class="header-actions flex gap-3 align-items-center">
+      <button class="btn-outlined" (click)="summaryVisible = true">
+        <i class="pi pi-chart-bar mr-2"></i> Relatórios
+      </button>
+      <p-avatar label="LB" size="large" shape="circle" [style]="{'background-color': 'rgba(59, 130, 246, 0.2)', 'color': '#60a5fa', 'border': '1px solid #3b82f6'}"></p-avatar>
+    </div>
+  </div>
+
+  <!-- KPI Grid -->
+  <div class="kpi-grid">
+    <div class="card kpi-card">
+      <div class="kpi-content">
+        <span class="kpi-label">Receitas</span>
+        <span class="kpi-value">R$ {{ kpis.receitas.value | number:'1.2-2' }}</span>
+        <div class="kpi-trend ok">
+          <i class="pi pi-arrow-up"></i>
+          <span>12% vs mês anterior</span>
+        </div>
       </div>
-      <div class="flex flex-col gap-3">
-        <div class="p-4 rounded-lg border border-dashed border-gray-700 text-center text-gray-400 text-sm">
-          Selecione uma ação abaixo para visualizar detalhes
+      <div class="kpi-icon-wrapper">
+        <i class="pi pi-dollar text-xl text-green-400"></i>
+      </div>
+    </div>
+
+    <div class="card kpi-card">
+      <div class="kpi-content">
+        <span class="kpi-label">Despesas</span>
+        <span class="kpi-value">R$ {{ kpis.despesas.value | number:'1.2-2' }}</span>
+        <div class="kpi-trend warn">
+          <i class="pi pi-arrow-down"></i>
+          <span>5% vs mês anterior</span>
+        </div>
+      </div>
+      <div class="kpi-icon-wrapper">
+        <i class="pi pi-shopping-cart text-xl text-red-400"></i>
+      </div>
+    </div>
+
+    <div class="card kpi-card">
+      <div class="kpi-content">
+        <span class="kpi-label">Saldo Atual</span>
+        <span class="kpi-value">R$ {{ kpis.saldo.value | number:'1.2-2' }}</span>
+        <div class="kpi-trend neutral">
+          <i class="pi pi-clock"></i>
+          <span>Atualizado agora</span>
+        </div>
+      </div>
+      <div class="kpi-icon-wrapper">
+        <i class="pi pi-wallet text-xl text-blue-400"></i>
+      </div>
+    </div>
+
+    <div class="card kpi-card">
+      <div class="kpi-content">
+        <span class="kpi-label">Investimentos</span>
+        <span class="kpi-value">R$ {{ kpis.investimentos.value | number:'1.2-2' }}</span>
+        <div class="kpi-trend ok">
+          <i class="pi pi-chart-line"></i>
+          <span>+2.4% rendimento</span>
+        </div>
+      </div>
+      <div class="kpi-icon-wrapper">
+        <i class="pi pi-briefcase text-xl text-purple-400"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Middle Section: Charts -->
+  <div class="middle-grid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Fluxo de Caixa</h3>
+        <div class="flex gap-2">
+          <button class="btn-text">Semanal</button>
+          <button class="btn-text text-white">Mensal</button>
+        </div>
+      </div>
+      <div class="chart-wrapper">
+        <p-chart type="line" [data]="revenueChart" [options]="chartOptions" height="100%"></p-chart>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Despesas por Categoria</h3>
+      </div>
+      <div class="chart-wrapper">
+        <!-- Using the same chart for now, ideally pie chart -->
+        <p-chart type="line" [data]="expenseChart" [options]="chartOptions" height="100%"></p-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Section: Transactions & Goals -->
+  <div class="bottom-grid">
+    <div class="card col-span-2" style="grid-column: span 2;">
+      <div class="card-header">
+        <h3 class="card-title">Transações Recentes</h3>
+        <button class="btn-text">Ver todas</button>
+      </div>
+      <div class="transactions-list">
+        <div class="list-header">
+          <span>Descrição</span>
+          <span>Data</span>
+          <span class="text-right">Valor</span>
+        </div>
+        <div *ngFor="let item of recentTransactions" class="list-item">
+          <div class="flex align-items-center gap-3">
+            <div class="item-icon" [ngClass]="item.type">
+              <i [class]="item.icon"></i>
+            </div>
+            <span class="font-medium text-gray-200">{{ item.descricao }}</span>
+          </div>
+          <span class="text-gray-400 text-sm">{{ item.data | date:'dd/MM/yyyy' }}</span>
+          <span class="text-right font-medium" [class.text-red-400]="item.type === 'expense'" [class.text-green-400]="item.type === 'income'">
+            {{ item.type === 'expense' ? '-' : '+' }} R$ {{ item.valor | number:'1.2-2' }}
+          </span>
         </div>
       </div>
     </div>
-    <button class="btn-outlined w-full mt-4" (click)="summaryVisible = true">
-      <i class="pi pi-file mr-2"></i> Ver Resumo Detalhado
-    </button>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Objetivos</h3>
+      </div>
+      <div class="flex flex-column gap-4">
+        <div class="goal-item">
+          <div class="goal-info">
+            <span>Reserva de Emergência</span>
+            <span class="text-blue-400">65%</span>
+          </div>
+          <div class="progress-bg">
+            <div class="progress-fill" style="width: 65%"></div>
+          </div>
+          <div class="text-xs text-gray-400 mt-1">R$ 13.000 / R$ 20.000</div>
+        </div>
+        
+        <div class="goal-item">
+          <div class="goal-info">
+            <span>Viagem Férias</span>
+            <span class="text-cyan-400">30%</span>
+          </div>
+          <div class="progress-bg">
+            <div class="progress-fill" style="width: 30%; background: linear-gradient(90deg, #06b6d4, #22d3ee);"></div>
+          </div>
+          <div class="text-xs text-gray-400 mt-1">R$ 3.000 / R$ 10.000</div>
+        </div>
+        
+        <div class="p-4 rounded-lg border border-dashed border-gray-700 text-center text-gray-400 text-sm mt-2" style="background: rgba(255,255,255,0.02)">
+          <i class="pi pi-plus mb-2 block text-xl"></i>
+          Novo Objetivo
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Right Sidebar for Summary -->
 <p-sidebar [(visible)]="summaryVisible" position="right" [baseZIndex]="10000" styleClass="w-30rem bg-card border-l border-gray-800">
-  <div class="flex flex-col h-full">
-    <h2 class="text-xl font-bold mb-6 text-primary">Resumo Financeiro</h2>
+  <div class="flex flex-column h-full p-4" style="background: #0b1324; height: 100%;">
+    <h2 class="text-xl font-bold mb-6 text-blue-400">Resumo Financeiro</h2>
     
-    <div class="flex flex-col gap-6">
-      <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+    <div class="flex flex-column gap-4">
+      <div class="p-4 rounded-xl border border-blue-900" style="background: rgba(59, 130, 246, 0.1);">
         <span class="text-sm text-blue-400 block mb-1">Saldo Total</span>
         <span class="text-2xl font-bold text-white">R$ {{ kpis.saldo.value | number:'1.2-2' }}</span>
       </div>
 
-      <div class="space-y-4">
-        <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Desempenho do Mês</h3>
+      <div class="flex flex-column gap-3">
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Desempenho do Mês</h3>
         
-        <div class="flex justify-between items-center p-3 rounded-lg bg-white/5">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
+        <div class="flex justify-content-between align-items-center p-3 rounded-lg" style="background: rgba(255,255,255,0.03);">
+          <div class="flex align-items-center gap-3">
+            <div class="w-2rem h-2rem rounded-circle flex align-items-center justify-content-center text-green-500" style="background: rgba(34, 197, 94, 0.1);">
               <i class="pi pi-arrow-up"></i>
             </div>
-            <span>Receitas</span>
+            <span class="text-gray-300">Receitas</span>
           </div>
           <span class="font-bold text-green-400">R$ {{ kpis.receitas.value | number:'1.2-2' }}</span>
         </div>
 
-        <div class="flex justify-between items-center p-3 rounded-lg bg-white/5">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-500">
+        <div class="flex justify-content-between align-items-center p-3 rounded-lg" style="background: rgba(255,255,255,0.03);">
+          <div class="flex align-items-center gap-3">
+            <div class="w-2rem h-2rem rounded-circle flex align-items-center justify-content-center text-red-500" style="background: rgba(239, 68, 68, 0.1);">
               <i class="pi pi-arrow-down"></i>
             </div>
-            <span>Despesas</span>
+            <span class="text-gray-300">Despesas</span>
           </div>
           <span class="font-bold text-red-400">R$ {{ kpis.despesas.value | number:'1.2-2' }}</span>
         </div>
-
-        <div class="flex justify-between items-center p-3 rounded-lg bg-white/5">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500">
-              <i class="pi pi-chart-line"></i>
-            </div>
-            <span>Investimentos</span>
-          </div>
-          <span class="font-bold text-purple-400">R$ {{ kpis.investimentos.value | number:'1.2-2' }}</span>
-        </div>
       </div>
       
-      <div class="mt-auto">
-        <div class="p-4 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700">
-          <h4 class="font-medium mb-2">Dica Financeira</h4>
-          <p class="text-sm text-gray-400 leading-relaxed">
-            Seu saldo está positivo! Considere investir 20% do excedente em Renda Fixa para criar uma reserva de emergência sólida.
+      <div class="mt-auto pt-4 border-top-1 border-gray-800">
+        <div class="p-3 rounded-xl border border-gray-700" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
+          <h4 class="font-medium mb-2 text-gray-200">Dica Financeira</h4>
+          <p class="text-sm text-gray-400 leading-relaxed m-0">
+            Seu saldo está positivo! Considere investir 20% do excedente em Renda Fixa.
           </p>
         </div>
       </div>
     </div>
   </div>
 </p-sidebar>
-
-<!-- Bottom Section: Transactions & Budget -->
-<div class="bottom-grid">
-  <div class="card col-span-2">
-    <div class="card-header">
-      <h3 class="card-title">Transações Recentes</h3>
-      <button class="btn-text text-sm">Ver todas</button>
-    </div>
-    <div class="transactions-list">
-      <div class="list-header">
-        <span>Descrição</span>
-        <span>Data</span>
-        <span class="text-right">Valor</span>
-      </div>
-      <div *ngFor="let item of recentTransactions" class="list-item">
-        <div class="flex items-center gap-3">
-          <div class="item-icon" [ngClass]="item.type">
-            <i [class]="item.icon"></i>
-          </div>
-          <span class="font-medium">{{ item.descricao }}</span>
-        </div>
-        <span class="text-gray-400 text-sm">{{ item.data | date:'dd/MM/yyyy' }}</span>
-        <span class="text-right font-medium" [class.text-red-400]="item.type === 'expense'" [class.text-green-400]="item.type === 'income'">
-          {{ item.type === 'expense' ? '-' : '+' }} R$ {{ item.valor | number:'1.2-2' }}
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      <h3 class="card-title">Meus Objetivos</h3>
-    </div>
-    <div class="goals-list">
-      <div class="goal-item">
-        <div class="goal-info">
-          <span>Reserva de Emergência</span>
-          <span class="text-primary">65%</span>
-        </div>
-        <div class="progress-bg">
-          <div class="progress-fill bg-blue-500" style="width: 65%"></div>
-        </div>
-        <div class="text-xs text-gray-400 mt-1">R$ 13.000 / R$ 20.000</div>
-      </div>
-      
-      <div class="goal-item">
-        <div class="goal-info">
-          <span>Viagem Férias</span>
-          <span class="text-purple-400">32%</span>
-        </div>
-        <div class="progress-bg">
-          <div class="progress-fill bg-purple-500" style="width: 32%"></div>
-        </div>
-        <div class="text-xs text-gray-400 mt-1">R$ 3.200 / R$ 10.000</div>
-      </div>
-
-      <div class="goal-item">
-        <div class="goal-info">
-          <span>Carro Novo</span>
-          <span class="text-green-400">15%</span>
-        </div>
-        <div class="progress-bg">
-          <div class="progress-fill bg-green-500" style="width: 15%"></div>
-        </div>
-        <div class="text-xs text-gray-400 mt-1">R$ 15.000 / R$ 100.000</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-

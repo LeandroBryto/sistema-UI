@@ -59,7 +59,7 @@ export class DashboardComponent implements OnInit {
   chartOptions: any;
 
   // Summary Sidebar
-  summaryVisible = false;
+  summaryVisible: boolean = false;
 
   constructor(
     private carteiraService: CarteiraService,
@@ -75,10 +75,9 @@ export class DashboardComponent implements OnInit {
   }
 
   initChartOptions() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-primary');
-    const textColorSecondary = documentStyle.getPropertyValue('--text-secondary');
-    const surfaceBorder = documentStyle.getPropertyValue('--border-color');
+    const textColor = '#e2e8f0';
+    const textColorSecondary = '#94a3b8';
+    const surfaceBorder = 'rgba(255, 255, 255, 0.1)';
 
     this.chartOptions = {
       plugins: {
@@ -96,7 +95,12 @@ export class DashboardComponent implements OnInit {
           ticks: { color: textColorSecondary },
           grid: { color: surfaceBorder, drawBorder: false }
         }
-      }
+      },
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      maintainAspectRatio: false
     };
   }
 
@@ -125,7 +129,6 @@ export class DashboardComponent implements OnInit {
     });
 
     // Load Transactions (Mock combination of recent items)
-    // In a real app, you'd have a specific endpoint for "recent activity"
     Promise.all([
       firstValueFrom(this.receitaService.list(startDate, endDate)),
       firstValueFrom(this.despesaService.list(startDate, endDate))
@@ -144,15 +147,16 @@ export class DashboardComponent implements OnInit {
   }
 
   updateCharts(receitas: ReceitaResponse[], despesas: DespesaResponse[]) {
-    // Simple mock chart data mapping
     this.revenueChart = {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
       datasets: [
         {
           label: 'Receitas',
           data: [65, 59, 80, 81, 56, 55], // Mock data for trend
-          borderColor: '#10b981',
-          tension: 0.4
+          borderColor: '#34d399', // Green
+          backgroundColor: 'rgba(52, 211, 153, 0.2)',
+          tension: 0.4,
+          fill: true
         }
       ]
     };
@@ -163,8 +167,10 @@ export class DashboardComponent implements OnInit {
         {
           label: 'Despesas',
           data: [28, 48, 40, 19, 86, 27], // Mock data
-          borderColor: '#ef4444',
-          tension: 0.4
+          borderColor: '#f87171', // Red
+          backgroundColor: 'rgba(248, 113, 113, 0.2)',
+          tension: 0.4,
+          fill: true
         }
       ]
     };
