@@ -4,6 +4,7 @@ import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { SidebarModule } from 'primeng/sidebar';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { AvatarModule } from 'primeng/avatar';
@@ -27,6 +28,7 @@ import { CarteiraResponse } from '../../models/carteira.models';
     TableModule,
     ButtonModule,
     DialogModule,
+    SidebarModule,
     DropdownModule,
     InputTextModule,
     AvatarModule,
@@ -56,13 +58,8 @@ export class DashboardComponent implements OnInit {
   expenseChart: any;
   chartOptions: any;
 
-  // Transfer Logic
-  transferVisible = false;
-  transferForm = this.fb.group({
-    amount: [0, [Validators.required, Validators.min(1)]],
-    category: ['', Validators.required],
-    description: ['', Validators.required]
-  });
+  // Summary Sidebar
+  summaryVisible = false;
 
   constructor(
     private carteiraService: CarteiraService,
@@ -171,18 +168,5 @@ export class DashboardComponent implements OnInit {
         }
       ]
     };
-  }
-
-  openTransferDialog() {
-    this.transferVisible = true;
-  }
-
-  doTransfer() {
-    if (this.transferForm.valid) {
-      console.log('Transfer:', this.transferForm.value);
-      this.transferVisible = false;
-      this.transferForm.reset();
-      // Call service to process transfer
-    }
   }
 }

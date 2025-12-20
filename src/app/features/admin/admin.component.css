@@ -4,6 +4,7 @@
   margin: 0 auto;
   padding: clamp(12px, 2vw, 32px);
   min-height: 100vh;
+  color: var(--text-primary);
 }
 .head {
   display: flex;
@@ -13,21 +14,21 @@
 .badge {
   padding: 4px 8px;
   border-radius: 999px;
-  background: #1e50ff10;
-  color: #1e50ff;
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary);
   font-size: 12px;
-  border: 1px solid #c8d3ff;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 .card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 12px;
-  background: #fff;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  background: var(--bg-card);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 
 }
-.error { color: #b00020; }
-.loading { color: #666; }
+.error { color: var(--accent-red); }
+.loading { color: var(--text-secondary); }
 .grid.two {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
@@ -42,24 +43,24 @@
   gap: 8px;
 }
 .table { display: block; overflow: auto; }
-.table .row.alt { background: #fafafa; }
-.table .thead { font-weight: 700; padding: 6px 0; }
-.table .row { padding: 8px 0; border-top: 1px dashed #eee; }
+.table .row.alt { background: rgba(255,255,255,0.03); }
+.table .thead { font-weight: 700; padding: 6px 0; color: var(--text-primary); }
+.table .row { padding: 8px 0; border-top: 1px dashed var(--border-color); color: var(--text-secondary); }
 .actions { display: flex; gap: 6px; align-items: center; }
 .inline { display: inline-flex; gap: 6px; align-items: center; }
 .sm { font-size: 12px; padding: 4px 8px; }
-.warn { color: #b00020; }
+.warn { color: var(--accent-red); }
 .list { margin: 0; padding-left: 18px; }
 .list li { margin-bottom: 6px; }
 .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-.label { color: #666; font-size: 12px; display: inline-block; min-width: 80px; }
-.value { font-weight: 700; }
+.label { color: var(--text-secondary); font-size: 12px; display: inline-block; min-width: 80px; }
+.value { font-weight: 700; color: var(--text-primary); }
 .secondary.link {
   padding: 10px 14px;
   border-radius: 999px;
-  border: 1px solid #eee;
-  background: #fff;
-  color: #333;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
   text-decoration: none;
 }
 .filters {
@@ -75,12 +76,13 @@
 .filters-inline .row select,
 .filters-inline .row .p-dropdown { height: 32px; font-size: 12px; }
 .filters-inline .row .p-button { height: 32px; font-size: 12px; }
-.row label { font-size: 12px; color: #666; margin-bottom: 6px; display: block; }
+.row label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; display: block; }
 .row select {
   padding: 8px 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  background: #fff;
+  background: var(--bg-dark);
+  color: var(--text-primary);
 }
 .table.audit .thead,
 .table.audit .row {
@@ -88,8 +90,9 @@
 }
 
 .simple-table { width: 100%; border-collapse: collapse; }
-.simple-table th, .simple-table td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; }
-.simple-table th { font-weight: 700; }
+.simple-table th, .simple-table td { border-bottom: 1px solid var(--border-color); padding: 8px; text-align: left; }
+.simple-table th { font-weight: 700; color: var(--text-primary); }
+.simple-table td { color: var(--text-secondary); }
 @media (max-width: 1200px) {
   .table .thead,
   .table .row { grid-template-columns: 60px 1fr 1fr 100px 80px 1.2fr; }
@@ -98,25 +101,4 @@
 }
 @media (max-width: 768px) {
   .admin-page { padding: 12px; }
-  .table .thead,
-  .table .row { grid-template-columns: 50px 1fr 1fr 90px 70px 1fr; }
-  .table.audit .thead,
-  .table.audit .row { grid-template-columns: 50px 1fr 80px 120px 140px 1fr; }
 }
-
-@media (min-width: 1920px) {
-  .admin-page { max-width: clamp(1200px, 85vw, 1680px); }
-}
-.chip {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  border: 1px solid #e3e8f2;
-  background: #fff;
-}
-.chip.ok { background: #e8f5e9; color: #1b5e20; border-color: #c8e6c9; }
-.chip.warn { background: #fff3e0; color: #e65100; border-color: #ffe0b2; }
-.chip.info { background: #e3f2fd; color: #01579b; border-color: #bbdefb; }
-.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; max-width: 100%; }
-

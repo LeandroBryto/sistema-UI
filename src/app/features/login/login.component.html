@@ -1,43 +1,72 @@
 <div class="login-page">
-  <div class="brand">
-    <img src="assets/logo.svg" alt="Logo" class="brand-svg" />
-    <h1>Sistema Financeiro Inteligente</h1>
-    <!-- <p class="subtitle">Gestão Financeira Inteligente</p> -->
-  </div>
+  <div class="login-card">
+    <div class="brand-section">
+      <div class="logo-icon">
+        <i class="pi pi-chart-line"></i>
+      </div>
+      <h1 class="brand-title">Financeiro</h1>
+    </div>
 
-  <div class="card">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="field">
-        <label for="username">Usuário</label>
-        <span class="p-input-icon-left" style="display:block">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-field">
+        <span class="p-input-icon-left w-full">
           <i class="pi pi-user"></i>
-          <input id="username" pInputText type="text" formControlName="username" placeholder="Usuário" />
+          <input 
+            pInputText 
+            formControlName="username" 
+            placeholder="Username" 
+            class="custom-input" 
+          />
         </span>
       </div>
 
-      <div class="field">
-        <label for="senha">Senha</label>
-        <span class="p-input-icon-left" style="display:block">
+      <div class="form-field password-field">
+        <span class="p-input-icon-left w-full">
           <i class="pi pi-lock"></i>
-          <p-password inputId="senha" formControlName="senha" [feedback]="false" [toggleMask]="true" placeholder="Senha" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%', 'padding-left': '2.5rem'}"></p-password>
+          <input 
+            pInputText 
+            type="password" 
+            formControlName="senha" 
+            placeholder="Password" 
+            class="custom-input" 
+          />
         </span>
-        <a class="recover" routerLink="/esqueci-senha">Recuperar Senha?</a>
+        <a routerLink="/esqueci-senha" class="forgot-link">Forgot password?</a>
       </div>
 
-      <div class="form-actions">
-        <p-button type="submit" [label]="loading ? 'Entrando...' : 'Entrar'" severity="primary" [disabled]="form.invalid || loading" [loading]="loading" icon="pi pi-sign-in" iconPos="right"></p-button>
+      <button 
+        pButton 
+        type="submit" 
+        label="ENTRAR" 
+        class="login-button" 
+        [loading]="loading"
+        [disabled]="form.invalid || loading">
+      </button>
+
+      <div class="remember-me">
+        <p-checkbox formControlName="rememberMe" [binary]="true" label="Remember me"></p-checkbox>
       </div>
 
-      <p-message *ngIf="error" severity="error" [text]="error"></p-message>
+      <div class="register-link">
+        <span>Não possui uma conta? </span>
+        <a routerLink="/register">Inscreva-se</a>
+      </div>
+
+      <p-message *ngIf="error" severity="error" [text]="error" styleClass="w-full mt-3"></p-message>
     </form>
 
-    <div class="extras">
-      <div class="secure">🛡️ Ambiente Seguro </div>
+    <div class="social-login">
+      <div class="divider">
+        <span>Sign in with</span>
+      </div>
+      <div class="social-icons">
+        <button class="social-btn facebook">
+          <i class="pi pi-facebook"></i>
+        </button>
+        <button class="social-btn twitter">
+          <i class="pi pi-twitter"></i>
+        </button>
+      </div>
     </div>
   </div>
-
-  <p class="register">
-    Não possui conta?
-    <a routerLink="/register">Criar conta</a>
-  </p>
 </div>

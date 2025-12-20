@@ -63,7 +63,7 @@
 }
 
 /* Poseidon Menu Customization */
-:host ::ng-deep .poseidon-menu .p-panelmenu-header-action {
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-header > a {
   background: transparent !important;
   color: var(--text-secondary) !important;
   border: none !important;
@@ -73,14 +73,20 @@
   border-left: 3px solid transparent;
 }
 
-:host ::ng-deep .poseidon-menu .p-panelmenu-header-action:hover {
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-header > a:hover {
   color: var(--text-primary) !important;
   background-color: rgba(255,255,255,0.03) !important;
   border-left-color: rgba(255,255,255,0.2);
 }
 
-:host ::ng-deep .poseidon-menu .p-panelmenu-header-action:focus {
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-header > a:focus {
   box-shadow: none !important;
+}
+
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-content {
+  background: transparent !important;
+  border: none !important;
+  padding-left: 1rem !important;
 }
 
 :host ::ng-deep .poseidon-menu .p-menuitem-icon {
@@ -90,16 +96,38 @@
 
 :host ::ng-deep .poseidon-menu .p-menuitem-text {
   font-size: 0.95rem;
+  color: var(--text-secondary);
 }
 
+:host ::ng-deep .poseidon-menu .p-menuitem-link {
+  background: transparent !important;
+  transition: all 0.2s;
+}
+
+:host ::ng-deep .poseidon-menu .p-menuitem-link:hover {
+  background: rgba(255,255,255,0.03) !important;
+}
+
+:host ::ng-deep .poseidon-menu .p-menuitem-link:hover .p-menuitem-text,
+:host ::ng-deep .poseidon-menu .p-menuitem-link:hover .p-menuitem-icon {
+  color: var(--text-primary) !important;
+}
+
+
 /* Admin Menu Item Specifics */
-:host ::ng-deep .poseidon-menu .admin-menu-item > .p-menuitem-content .p-menuitem-link .p-menuitem-icon {
+:host ::ng-deep .poseidon-menu .admin-menu-item .p-panelmenu-header > a .p-menuitem-icon {
   color: var(--admin-color) !important;
 }
 
-:host ::ng-deep .poseidon-menu .admin-menu-item > .p-menuitem-content .p-menuitem-link:hover {
-  background: rgba(245, 158, 11, 0.1) !important;
+:host ::ng-deep .poseidon-menu .admin-menu-item .p-panelmenu-header > a {
+  border-left-color: var(--admin-color) !important;
+  background-color: rgba(245, 158, 11, 0.1) !important;
 }
+
+:host ::ng-deep .poseidon-menu .admin-menu-item .p-panelmenu-header > a:hover {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+}
+
 
 .sidebar-footer {
   padding: 1rem;

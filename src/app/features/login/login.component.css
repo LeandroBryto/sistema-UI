@@ -1,135 +1,305 @@
-:root {
-  --bg: #f7f8fc;
-  --text: #0f172a;
-  --muted: #666666;
-  --border: #e3e8f2;
-  --primary: #1e50ff;
-  --primary-text: #ffffff;
+:host {
+  display: block;
 }
+
 .login-page {
   min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Deep Underwater Abyss Background */
+  background-color: #02040a;
+  background-image: 
+    /* Light beam from top */
+    radial-gradient(circle at 50% 0%, rgba(30, 64, 175, 0.25) 0%, transparent 45%),
+    /* General deep blue ambiance */
+    radial-gradient(circle at 50% 50%, rgba(10, 25, 47, 0.4) 0%, rgba(2, 4, 10, 0.9) 100%),
+    /* Texture image - Underwater Cave/Abyss */
+    url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Vignette overlay for focus */
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, transparent 30%, #000000 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.login-card {
+  position: relative;
+  z-index: 10;
+  width: 380px; /* Slightly narrower to match reference */
+  background: rgba(11, 19, 36, 0.75); /* Dark, transparent blue-black */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 10px; /* Reference has softer but not pill radius */
+  padding: 40px 35px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  color: #fff;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 12px;
-  padding: 14px 10px 28px;
-  background:
-    radial-gradient(120px 120px at 20% 0%, rgba(65, 105, 225, 0.15), transparent 60%),
-    radial-gradient(200px 200px at 80% 90%, rgba(30, 80, 255, 0.12), transparent 70%),
-    var(--bg);
-  color: var(--text);
+  gap: 20px;
+  /* Very subtle top highlight border */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
-.brand {
-  margin-top: 12px;
+
+/* Brand / Logo */
+.brand-section {
   text-align: center;
+  margin-bottom: 10px;
 }
-.brand-icon {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 12px;
-  border-radius: 20px;
-  background: var(--primary);
-  display: grid;
-  place-items: center;
-  box-shadow: 0 10px 24px rgba(255, 234, 0, 0.4);
-  color: var(--primary-text);
-  font-weight: 700;
-  font-size: 22px;
-}
-.brand-svg {
-  width: clamp(80px, 10vw, 140px);
-  height: clamp(80px, 10vw, 140px);
-  display: block;
+
+.logo-icon {
   margin: 0 auto 10px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.brand h1 {
+
+.logo-icon i {
+  font-size: 42px;
+  /* Cyan to Blue gradient for the icon */
+  background: linear-gradient(180deg, #22d3ee 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Glow effect */
+  filter: drop-shadow(0 0 15px rgba(34, 211, 238, 0.3));
+}
+
+.brand-title {
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 400; /* Regular/Thin weight as per reference */
+  color: #e2e8f0;
   margin: 0;
+  letter-spacing: 0.5px;
 }
-.brand .subtitle {
-  margin: 4px 0 0;
-  color: var(--muted);
+
+/* Form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
-.card {
-  width: 100%;
-  max-width: 340px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
-  padding: 16px 14px;
-}
-.field { margin-bottom: 16px; }
-.field label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #303020;
-}
-.input-wrapper {
+
+.form-field {
   position: relative;
 }
-.p-inputtext, .p-password input {
+
+/* Inputs */
+:host ::ng-deep .custom-input {
+  width: 100%;
+  /* Very dark input background, almost black */
+  background-color: rgba(6, 11, 20, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px; /* Sharper corners like reference */
+  padding: 12px 12px 12px 40px;
+  color: #cbd5e1;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+:host ::ng-deep .custom-input:focus {
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+  background-color: rgba(6, 11, 20, 0.8);
+  color: #fff;
+}
+
+:host ::ng-deep .custom-input::placeholder {
+  color: #64748b;
+}
+
+/* Icons inside input */
+:host ::ng-deep .p-input-icon-left {
   width: 100%;
 }
-.input-wrapper input::placeholder {
-  color: #b0b08f;
+
+:host ::ng-deep .p-input-icon-left > i {
+  left: 12px;
+  color: #64748b;
+  font-size: 14px;
+  top: 50%;
+  margin-top: -7px;
 }
-.input-wrapper input:focus {
-  border-color: #d3d3bd;
-  box-shadow: 0 0 0 4px rgba(255, 234, 0, 0.2);
+
+/* Forgot Password Link - Inside Input */
+.password-field {
+  position: relative;
 }
-.leading-icon,
-.trailing-icon {
+
+.forgot-link {
   position: absolute;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #b0b08f;
-  pointer-events: none;
-}
-.leading-icon {
-  left: 14px;
-}
-.trailing-icon {
-  right: 14px;
-}
-.recover {
-  display: block;
-  margin-top: 8px;
-  color: var(--muted);
+  color: #64748b;
+  font-size: 11px;
   text-decoration: none;
-  font-size: 13px;
-  text-align: left;
-  width: 100%; 
+  z-index: 5;
+  cursor: pointer;
+  transition: color 0.2s;
 }
-.form-actions {
+
+.forgot-link:hover {
+  color: #94a3b8;
+}
+
+/* Button */
+:host ::ng-deep .login-button {
+  width: 100%;
+  /* Classic blue gradient button */
+  background: linear-gradient(to bottom, #3b82f6, #2563eb);
+  border: none;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 4px; /* Matching inputs */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  margin-top: 5px;
+  transition: all 0.2s;
+  color: #fff;
+  cursor: pointer;
+}
+
+:host ::ng-deep .login-button:hover {
+  background: linear-gradient(to bottom, #2563eb, #1d4ed8);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Remember Me */
+.remember-me {
   display: flex;
   justify-content: center;
-  margin-top: 16px;
+  align-items: center;
+  margin-top: -5px;
 }
-/* Força o botão a não ocupar 100% caso haja estilo global */
-::ng-deep .form-actions .p-button {
-  width: auto !important;
-  min-width: 150px;
+
+:host ::ng-deep .p-checkbox .p-checkbox-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
 }
-.arrow {
-  display: inline-block;
+
+:host ::ng-deep .p-checkbox .p-checkbox-box.p-highlight {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+:host ::ng-deep .p-checkbox .p-checkbox-box .p-checkbox-icon {
+  font-size: 10px;
+}
+
+:host ::ng-deep .p-checkbox-label {
+  color: #94a3b8;
+  font-size: 12px;
   margin-left: 8px;
+  font-weight: 400;
 }
-.p-message { margin-top: 12px; }
-.extras {
-  display: grid;
-  place-items: center;
-  gap: 12px;
-  padding-top: 10px;
-}
-.secure {
-  color: var(--muted);
-  font-size: 13px;
-}
-.register {
-  margin-top: 8px;
+
+/* Register Link */
+.register-link {
   text-align: center;
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 5px;
+}
+
+.register-link a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 4px;
+  transition: color 0.2s;
+}
+
+.register-link a:hover {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+/* Social Login Divider */
+.social-login {
+  margin-top: 15px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  color: #475569;
+  font-size: 11px;
+  margin-bottom: 20px;
+  text-transform: lowercase; /* "sign in with" is usually lowercase or title case */
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.divider span {
+  padding: 0 10px;
+  color: #64748b;
+}
+
+/* Social Icons */
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.social-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #fff;
+  opacity: 0.9;
+}
+
+.facebook {
+  background: #3b5998;
+  box-shadow: 0 2px 5px rgba(59, 89, 152, 0.3);
+}
+
+.twitter {
+  background: #1da1f2;
+  box-shadow: 0 2px 5px rgba(29, 161, 242, 0.3);
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+  opacity: 1;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.3);
 }

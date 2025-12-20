@@ -74,32 +74,76 @@
   <div class="card flex flex-col justify-between">
     <div>
       <div class="card-header">
-        <h3 class="card-title">Transferência Rápida</h3>
+        <h3 class="card-title">Ações Rápidas</h3>
       </div>
       <div class="flex flex-col gap-3">
-        <div class="flex items-center gap-3 p-3 rounded-lg border border-gray-700 cursor-pointer hover:bg-white/5 transition">
-          <p-avatar icon="pi pi-user" shape="circle"></p-avatar>
-          <div class="text-sm">
-            <div class="font-medium">Para Poupança</div>
-            <div class="text-gray-400 text-xs">**** 4589</div>
-          </div>
-          <i class="pi pi-chevron-right ml-auto text-gray-500"></i>
-        </div>
-        <div class="flex items-center gap-3 p-3 rounded-lg border border-gray-700 cursor-pointer hover:bg-white/5 transition">
-          <p-avatar icon="pi pi-users" shape="circle"></p-avatar>
-          <div class="text-sm">
-            <div class="font-medium">Pagamento Familiar</div>
-            <div class="text-gray-400 text-xs">Mãe</div>
-          </div>
-          <i class="pi pi-chevron-right ml-auto text-gray-500"></i>
+        <div class="p-4 rounded-lg border border-dashed border-gray-700 text-center text-gray-400 text-sm">
+          Selecione uma ação abaixo para visualizar detalhes
         </div>
       </div>
     </div>
-    <button class="btn-primary w-full mt-4" (click)="openTransferDialog()">
-      Nova Transferência
+    <button class="btn-outlined w-full mt-4" (click)="summaryVisible = true">
+      <i class="pi pi-file mr-2"></i> Ver Resumo Detalhado
     </button>
   </div>
 </div>
+
+<!-- Right Sidebar for Summary -->
+<p-sidebar [(visible)]="summaryVisible" position="right" [baseZIndex]="10000" styleClass="w-30rem bg-card border-l border-gray-800">
+  <div class="flex flex-col h-full">
+    <h2 class="text-xl font-bold mb-6 text-primary">Resumo Financeiro</h2>
+    
+    <div class="flex flex-col gap-6">
+      <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+        <span class="text-sm text-blue-400 block mb-1">Saldo Total</span>
+        <span class="text-2xl font-bold text-white">R$ {{ kpis.saldo.value | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Desempenho do Mês</h3>
+        
+        <div class="flex justify-between items-center p-3 rounded-lg bg-white/5">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
+              <i class="pi pi-arrow-up"></i>
+            </div>
+            <span>Receitas</span>
+          </div>
+          <span class="font-bold text-green-400">R$ {{ kpis.receitas.value | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="flex justify-between items-center p-3 rounded-lg bg-white/5">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-500">
+              <i class="pi pi-arrow-down"></i>
+            </div>
+            <span>Despesas</span>
+          </div>
+          <span class="font-bold text-red-400">R$ {{ kpis.despesas.value | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="flex justify-between items-center p-3 rounded-lg bg-white/5">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500">
+              <i class="pi pi-chart-line"></i>
+            </div>
+            <span>Investimentos</span>
+          </div>
+          <span class="font-bold text-purple-400">R$ {{ kpis.investimentos.value | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      
+      <div class="mt-auto">
+        <div class="p-4 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700">
+          <h4 class="font-medium mb-2">Dica Financeira</h4>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Seu saldo está positivo! Considere investir 20% do excedente em Renda Fixa para criar uma reserva de emergência sólida.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-sidebar>
 
 <!-- Bottom Section: Transactions & Budget -->
 <div class="bottom-grid">
@@ -170,24 +214,4 @@
   </div>
 </div>
 
-<!-- Transfer Dialog -->
-<p-dialog header="Nova Transferência" [(visible)]="transferVisible" [modal]="true" [style]="{width: '400px'}" styleClass="dark-dialog">
-  <form [formGroup]="transferForm" class="flex flex-col gap-4 mt-2">
-    <div class="flex flex-col gap-2">
-      <label class="text-sm text-gray-400">Valor</label>
-      <input pInputText type="number" formControlName="amount" class="w-full" placeholder="0.00" />
-    </div>
-    <div class="flex flex-col gap-2">
-      <label class="text-sm text-gray-400">Categoria</label>
-      <input pInputText type="text" formControlName="category" class="w-full" placeholder="Ex: Alimentação" />
-    </div>
-    <div class="flex flex-col gap-2">
-      <label class="text-sm text-gray-400">Descrição</label>
-      <input pInputText type="text" formControlName="description" class="w-full" placeholder="Descrição da transferência" />
-    </div>
-  </form>
-  <ng-template pTemplate="footer">
-    <button pButton label="Cancelar" class="p-button-text text-gray-400" (click)="transferVisible = false"></button>
-    <button pButton label="Confirmar" class="bg-primary border-none" (click)="doTransfer()" [disabled]="transferForm.invalid"></button>
-  </ng-template>
-</p-dialog>
+

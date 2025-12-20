@@ -1,17 +1,65 @@
 @import 'primeng/resources/themes/lara-light-blue/theme.css';
 @import 'primeng/resources/primeng.min.css';
 @import 'primeicons/primeicons.css';
+@import 'primeflex/primeflex.css';
+
 :root {
-  --bg: #f7f8fc;
-  --text: #0f172a;
-  --muted: #666666;
-  --border: #e3e8f2;
-  --primary: #1e50ff;
-  --primary-alt: #4169e1;
-  --primary-text: #ffffff;
-  --gradient-primary: linear-gradient(135deg, #4169e1, #1e50ff 70%);
-  --success: #1b5e20;
-  --warn: #e65100;
-  --danger: #b71c1c;
-  --surface: #ffffff;
+  /* Dark Theme Palette (Poseidon Inspired) */
+  --bg-dark: #0f172a;
+  --bg-sidebar: #020617;
+  --bg-card: #111827;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border-color: rgba(255,255,255,0.1);
+  
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-orange: #f59e0b;
+  --accent-purple: #8b5cf6;
+
+  /* Legacy mappings */
+  --bg: var(--bg-dark);
+  --text: var(--text-primary);
+  --surface: var(--bg-card);
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+/* Utilities */
+.bg-card { background-color: var(--bg-card) !important; }
+.text-primary { color: var(--primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* PrimeNG Overrides for Dark Mode */
+.p-component {
+  font-family: 'Inter', sans-serif;
+}
+
+.p-sidebar {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-left: 1px solid var(--border-color);
 }
