@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
@@ -8,6 +8,10 @@ import {
 } from '@angular/forms';
 import { ReceitaService } from '../../services/receita.service';
 import { ReceitaRequest, ReceitaResponse } from '../../models/receita.models';
+import { CarteiraService } from '../../services/carteira.service';
+import { CategoriaService } from '../../services/categoria.service';
+import { CarteiraResponse } from '../../models/carteira.models';
+import { CategoriaResponse } from '../../models/categoria.models';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
@@ -38,13 +42,16 @@ import { MessageService } from 'primeng/api';
   templateUrl: './receitas.component.html',
   styleUrls: ['./receitas.component.css'],
 })
-export class ReceitasComponent {
+export class ReceitasComponent implements OnInit {
   loading = false;
   error: string | null = null;
   success: string | null = null;
   itens: ReceitaResponse[] = [];
   editingId: number | null = null;
   globalFilter = '';
+
+  carteiras: CarteiraResponse[] = [];
+  categoriasPersonalizadas: CategoriaResponse[] = [];
 
   filtros = this.fb.nonNullable.group({
     startDate: ['', [Validators.required]],
@@ -59,6 +66,8 @@ export class ReceitasComponent {
     formaRecebimento: ['', [Validators.required]],
     recorrente: [false],
     observacoes: [''],
+    carteiraId: [null as number | null],
+    categoriaId: [null as number | null]
   });
 
   categorias = [
@@ -71,10 +80,25 @@ export class ReceitasComponent {
   ];
   formas = ['PIX', 'TED', 'ESPECIE', 'BOLETO'];
 
-  constructor(private fb: FormBuilder, private api: ReceitaService, private toast: MessageService) {
+  constructor(
+    private fb: FormBuilder, 
+    private api: ReceitaService, 
+    private toast: MessageService,
+    private carteiraService: CarteiraService,
+    private categoriaService: CategoriaService
+  ) {
     const { start, end } = this.currentMonthRange();
     this.filtros.setValue({ startDate: start, endDate: end });
+  }
+
+  ngOnInit(): void {
     this.load();
+    this.loadAuxiliares();
+  }
+
+  loadAuxiliares(): void {
+    this.carteiraService.list().subscribe(l => this.carteiras = l);
+    this.categoriaService.list().subscribe(l => this.categoriasPersonalizadas = l.filter(c => c.tipo === 'RECEITA'));
   }
 
   load(): void {
@@ -107,6 +131,8 @@ export class ReceitasComponent {
       formaRecebimento: '',
       recorrente: false,
       observacoes: '',
+      carteiraId: null,
+      categoriaId: null
     });
     this.success = null;
     this.error = null;
@@ -122,6 +148,8 @@ export class ReceitasComponent {
       formaRecebimento: item.formaRecebimento,
       recorrente: item.recorrente ?? false,
       observacoes: item.observacoes ?? '',
+      carteiraId: item.carteiraId ?? null,
+      categoriaId: item.categoriaId ?? null
     });
     this.success = null;
     this.error = null;

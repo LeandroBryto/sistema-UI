@@ -5,9 +5,12 @@ export interface DespesaRequest {
   data: string;
   formaPagamento: string;
   recorrente?: boolean;
-  notificarAntesVencimento?: number;
+  notificarAntesVencimento?: number | null;
   statusPagamento: string;
   observacoes?: string;
+  carteiraId?: number;
+  cartaoCreditoId?: number;
+  categoriaId?: number;
 }
 
 export interface DespesaResponse extends DespesaRequest {

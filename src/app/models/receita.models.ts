@@ -6,6 +6,8 @@ export interface ReceitaRequest {
   formaRecebimento: string;
   recorrente?: boolean;
   observacoes?: string;
+  carteiraId?: number;
+  categoriaId?: number;
 }
 
 export interface ReceitaResponse extends ReceitaRequest {

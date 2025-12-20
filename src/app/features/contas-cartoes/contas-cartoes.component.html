@@ -1,0 +1,144 @@
+<div class="page-container">
+  <p-toast position="top-right"></p-toast>
+  
+  <header class="page-header">
+    <div class="header-content">
+      <a routerLink="/dashboard" class="back-btn">
+        <i class="pi pi-arrow-left"></i>
+        <span>Voltar</span>
+      </a>
+      <h1>Minhas Contas & Cartões</h1>
+    </div>
+  </header>
+
+  <div class="grid-layout">
+    <!-- Seção Carteiras -->
+    <section class="card-section">
+      <div class="section-header">
+        <h2>Carteiras</h2>
+        <button pButton icon="pi pi-plus" label="Nova" class="p-button-sm" (click)="openCarteiraDialog()"></button>
+      </div>
+      <div class="items-grid">
+        <div class="item-card" *ngFor="let c of carteiras">
+          <div class="icon" [class]="c.tipo">{{ c.tipo === 'CONTA_BANCARIA' ? '🏦' : '💰' }}</div>
+          <div class="info">
+            <h3>{{ c.nome }}</h3>
+            <p class="balance">R$ {{ c.saldoAtual | number:'1.2-2' }}</p>
+          </div>
+        </div>
+        <div *ngIf="carteiras.length === 0" class="empty-state">Nenhuma carteira cadastrada.</div>
+      </div>
+    </section>
+
+    <!-- Seção Cartões -->
+    <section class="card-section">
+      <div class="section-header">
+        <h2>Cartões de Crédito</h2>
+        <button pButton icon="pi pi-plus" label="Novo" class="p-button-sm" (click)="openCartaoDialog()"></button>
+      </div>
+      <div class="items-grid">
+        <div class="item-card credit" *ngFor="let card of cartoes">
+          <div class="icon">💳</div>
+          <div class="info">
+            <h3>{{ card.nome }}</h3>
+            <p class="limit">Limite: R$ {{ card.limite | number:'1.2-2' }}</p>
+            <small>Fecha dia {{ card.diaFechamento }} • Vence dia {{ card.diaVencimento }}</small>
+          </div>
+        </div>
+        <div *ngIf="cartoes.length === 0" class="empty-state">Nenhum cartão cadastrado.</div>
+      </div>
+    </section>
+
+    <!-- Seção Categorias -->
+    <section class="card-section full-width">
+      <div class="section-header">
+        <h2>Categorias Personalizadas</h2>
+        <button pButton icon="pi pi-plus" label="Nova" class="p-button-sm" (click)="openCategoriaDialog()"></button>
+      </div>
+      <div class="categories-list">
+        <div class="cat-tag" *ngFor="let cat of categorias" [style.background]="cat.cor + '20'" [style.color]="cat.cor">
+          <i class="pi pi-{{cat.icone}}"></i>
+          <span>{{ cat.nome }}</span>
+          <button class="del-btn" (click)="deleteCategoria(cat.id)">×</button>
+        </div>
+        <div *ngIf="categorias.length === 0" class="empty-state">Nenhuma categoria personalizada.</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Dialog Carteira -->
+<p-dialog header="Nova Carteira" [(visible)]="showCarteiraDialog" [modal]="true" [style]="{width: '400px'}">
+  <form [formGroup]="carteiraForm" (ngSubmit)="saveCarteira()" class="form-dialog">
+    <div class="field">
+      <label>Nome da Conta</label>
+      <input pInputText formControlName="nome" placeholder="Ex: Nubank Principal" />
+    </div>
+    <div class="field">
+      <label>Tipo</label>
+      <p-dropdown [options]="tiposCarteira" formControlName="tipo" optionLabel="label" optionValue="value"></p-dropdown>
+    </div>
+    <div class="field">
+      <label>Saldo Inicial</label>
+      <input pInputText type="number" formControlName="saldoInicial" />
+    </div>
+    <div class="actions">
+      <button pButton label="Cancelar" class="p-button-text" (click)="showCarteiraDialog=false"></button>
+      <button pButton label="Salvar" type="submit" [disabled]="carteiraForm.invalid"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Dialog Cartão -->
+<p-dialog header="Novo Cartão" [(visible)]="showCartaoDialog" [modal]="true" [style]="{width: '400px'}">
+  <form [formGroup]="cartaoForm" (ngSubmit)="saveCartao()" class="form-dialog">
+    <div class="field">
+      <label>Nome do Cartão</label>
+      <input pInputText formControlName="nome" placeholder="Ex: Visa Platinum" />
+    </div>
+    <div class="field">
+      <label>Vincular a Carteira (para débito automático)</label>
+      <p-dropdown [options]="carteiras" formControlName="idCarteira" optionLabel="nome" optionValue="id" placeholder="Selecione..."></p-dropdown>
+    </div>
+    <div class="field">
+      <label>Limite</label>
+      <input pInputText type="number" formControlName="limite" />
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Dia Fechamento</label>
+        <input pInputText type="number" formControlName="diaFechamento" />
+      </div>
+      <div class="field">
+        <label>Dia Vencimento</label>
+        <input pInputText type="number" formControlName="diaVencimento" />
+      </div>
+    </div>
+    <div class="actions">
+      <button pButton label="Cancelar" class="p-button-text" (click)="showCartaoDialog=false"></button>
+      <button pButton label="Salvar" type="submit" [disabled]="cartaoForm.invalid"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Dialog Categoria -->
+<p-dialog header="Nova Categoria" [(visible)]="showCategoriaDialog" [modal]="true" [style]="{width: '400px'}">
+  <form [formGroup]="categoriaForm" (ngSubmit)="saveCategoria()" class="form-dialog">
+    <div class="field">
+      <label>Nome</label>
+      <input pInputText formControlName="nome" />
+    </div>
+    <div class="field">
+      <label>Tipo</label>
+      <p-dropdown [options]="tiposCategoria" formControlName="tipo" optionLabel="label" optionValue="value"></p-dropdown>
+    </div>
+    <div class="field">
+      <label>Cor (Hex)</label>
+      <input pInputText type="color" formControlName="cor" style="width: 100%; height: 40px;" />
+    </div>
+    <div class="actions">
+      <button pButton label="Cancelar" class="p-button-text" (click)="showCategoriaDialog=false"></button>
+      <button pButton label="Salvar" type="submit" [disabled]="categoriaForm.invalid"></button>
+    </div>
+  </form>
+</p-dialog>

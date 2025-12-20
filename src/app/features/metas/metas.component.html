@@ -1,97 +1,88 @@
-<div class="page">
-  <header class="header">
-    <a routerLink="/investimentos" class="back-btn">
-      <i class="pi pi-arrow-left"></i>
-      <span>Voltar</span>
-    </a>
-    <div class="summary">
-      <div class="chip">Itens: {{ itens.length }}</div>
+<div class="page-container">
+  <p-toast position="top-right"></p-toast>
+  
+  <header class="page-header">
+    <div class="header-content">
+      <a routerLink="/dashboard" class="back-btn">
+        <i class="pi pi-arrow-left"></i>
+        <span>Voltar</span>
+      </a>
+      <h1>Planejamento & Metas</h1>
     </div>
   </header>
 
-  <section class="alert cotacao">
-    <div class="row" *ngIf="cotacaoLoading">
-      <p class="muted">Carregando cotação...</p>
-    </div>
-    <ng-container *ngIf="!cotacaoLoading">
-      <ng-container *ngIf="cotacao; else cotacaoEmpty">
-        <strong>🔔 Cotação do Dólar</strong>
-        <p class="muted">Dólar comercial em {{ cotacao.data }}: R$ {{ cotacao.valor | number:'1.2-2' }}</p>
-        <div class="row actions"><button class="primary" (click)="updateCotacao()">Atualizar</button></div>
-      </ng-container>
-      <ng-template #cotacaoEmpty>
-        <p class="muted">Cotação do dólar indisponível no momento.</p>
-        <div class="row actions"><button class="primary" (click)="updateCotacao()">Tentar novamente</button></div>
-      </ng-template>
-    </ng-container>
-  </section>
-
-  <p class="error" *ngIf="error">{{ error }}</p>
-  <p class="success" *ngIf="success">{{ success }}</p>
-
-  <div class="grid two">
-    <section class="card form-card">
-      <h3>Nova Meta</h3>
-      <form [formGroup]="form" (ngSubmit)="save()">
-        <div class="form-grid">
-          <div class="row">
-            <label>Meta</label>
-            <input type="text" formControlName="meta" />
+  <p-tabView>
+    <!-- Aba Metas de Longo Prazo -->
+    <p-tabPanel header="Metas de Longo Prazo">
+      <div class="metas-grid">
+        <div class="meta-card" *ngFor="let meta of metas">
+          <div class="card-header">
+            <h3>{{ meta.nome }}</h3>
+            <span class="badge">{{ meta.progresso }}%</span>
           </div>
-          <div class="row">
-            <label>Valor da Meta</label>
-            <input type="number" step="0.01" formControlName="valorMeta" />
+          <div class="card-body">
+            <p-progressBar [value]="meta.progresso" [showValue]="false" [style]="{'height': '10px'}"></p-progressBar>
+            <div class="values">
+              <span>Atual: <strong>R$ {{ meta.atual | number }}</strong></span>
+              <span>Alvo: <strong>R$ {{ meta.alvo | number }}</strong></span>
+            </div>
           </div>
-          <div class="row">
-            <label>Valor Acumulado</label>
-            <input type="number" step="0.01" formControlName="valorAcumulado" />
+          <div class="card-footer">
+            <button pButton label="Adicionar Valor" class="p-button-outlined p-button-sm"></button>
           </div>
-        </div>
-        <div class="form-actions">
-          <button class="primary" type="submit" [disabled]="form.invalid || loading">
-            Criar
-          </button>
-          <button type="button" class="secondary" (click)="resetForm()">Limpar</button>
-        </div>
-      </form>
-    </section>
-
-    <section class="card list-card">
-      <div class="list-head">
-        <h3>Lista</h3>
-      </div>
-      <div class="table-wrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Meta</th>
-              <th>Valor da Meta</th>
-              <th>Acumulado</th>
-              <th>% Concluído</th>
-              <th>Criado em</th>
-              <th>Previsão</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let g of itens; let i = index" [class.alt]="i % 2 === 1">
-              <td>{{ g.meta }}</td>
-              <td>R$ {{ g.valorMeta | number:'1.2-2' }}</td>
-              <td>R$ {{ g.valorAcumulado | number:'1.2-2' }}</td>
-              <td style="min-width:180px">
-                <div class="bar">
-                  <div class="fill" [style.width.%]="pct(g.valorAcumulado, g.valorMeta)"></div>
-                </div>
-                <span class="val">{{ g.percentualConcluido | number:'1.0-2' }}%</span>
-              </td>
-              <td>{{ g.dataCriacao }}</td>
-              <td>{{ g.previsaoConclusao }}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="empty" *ngIf="itens.length === 0">
-          Nenhuma meta registrada.
         </div>
       </div>
-    </section>
-  </div>
+    </p-tabPanel>
+
+    <!-- Aba Orçamento Mensal -->
+    <p-tabPanel header="Orçamento Mensal">
+      <div class="orcamento-header">
+        <h2>Orçamentos de {{ mesAtual }}/{{ anoAtual }}</h2>
+        <button pButton icon="pi pi-plus" label="Novo Limite" (click)="openOrcamentoDialog()"></button>
+      </div>
+
+      <div class="orcamentos-list">
+        <div class="orcamento-item" *ngFor="let o of orcamentos">
+          <div class="orc-info">
+            <span class="cat-name">{{ getCategoriaNome(o.idCategoria) }}</span>
+            <span class="orc-values">R$ {{ o.totalGasto | number:'1.2-2' }} / R$ {{ o.limiteMensal | number:'1.2-2' }}</span>
+          </div>
+          <p-progressBar 
+            [value]="o.progressoPercentual" 
+            [showValue]="true" 
+            [style]="{'height': '20px'}"
+            [color]="o.progressoPercentual > 100 ? '#ef4444' : (o.progressoPercentual > 80 ? '#f59e0b' : '#22c55e')">
+          </p-progressBar>
+        </div>
+        <div *ngIf="orcamentos.length === 0" class="empty-state">
+          Nenhum orçamento definido para este mês.
+        </div>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
 </div>
+
+<!-- Dialog Novo Orçamento -->
+<p-dialog header="Definir Orçamento" [(visible)]="showOrcamentoDialog" [modal]="true" [style]="{width: '400px'}">
+  <div class="form-dialog">
+    <div class="field">
+      <label>Categoria</label>
+      <select [(ngModel)]="novoOrcamento.idCategoria" class="p-inputtext" style="width: 100%">
+        <option [value]="0" disabled>Selecione...</option>
+        <option *ngFor="let c of categorias" [value]="c.id">{{ c.nome }}</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Limite Mensal (R$)</label>
+      <input pInputText type="number" [(ngModel)]="novoOrcamento.limiteMensal" />
+    </div>
+    <div class="field">
+      <label>Alerta em (R$)</label>
+      <input pInputText type="number" [(ngModel)]="novoOrcamento.limiteAlerta" placeholder="Opcional" />
+    </div>
+    <div class="actions">
+      <button pButton label="Cancelar" class="p-button-text" (click)="showOrcamentoDialog=false"></button>
+      <button pButton label="Salvar" (click)="saveOrcamento()"></button>
+    </div>
+  </div>
+</p-dialog>

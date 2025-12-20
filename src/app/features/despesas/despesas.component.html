@@ -51,18 +51,26 @@
             <input type="date" formControlName="data" />
           </div>
           <div class="row">
-            <label>Forma de Pagamento</label>
-            <select formControlName="formaPagamento">
-              <option value="" disabled>Selecione</option>
-              <option *ngFor="let f of formas" [value]="f">{{ f }}</option>
-            </select>
-          </div>
-          <div class="row">
-            <label>Status</label>
-            <select formControlName="statusPagamento">
-              <option value="" disabled>Selecione</option>
-              <option *ngFor="let s of status" [value]="s">{{ s }}</option>
-            </select>
+            <div class="field">
+              <label>Forma de Pagamento</label>
+              <p-dropdown [options]="formas" formControlName="formaPagamento" placeholder="Selecione..."></p-dropdown>
+            </div>
+            
+            <!-- Seleção dinâmica: Carteira ou Cartão -->
+            <div class="field" *ngIf="form.get('formaPagamento')?.value === 'CARTAO_CREDITO'">
+              <label>Cartão de Crédito</label>
+              <p-dropdown [options]="cartoes" formControlName="cartaoCreditoId" optionLabel="nome" optionValue="id" placeholder="Selecione o Cartão"></p-dropdown>
+            </div>
+
+            <div class="field" *ngIf="form.get('formaPagamento')?.value && form.get('formaPagamento')?.value !== 'CARTAO_CREDITO'">
+              <label>Conta de Saída</label>
+              <p-dropdown [options]="carteiras" formControlName="carteiraId" optionLabel="nome" optionValue="id" placeholder="Selecione a Conta"></p-dropdown>
+            </div>
+
+            <div class="field">
+              <label>Status</label>
+              <p-dropdown [options]="status" formControlName="statusPagamento" placeholder="Selecione..."></p-dropdown>
+            </div>
           </div>
           <div class="row checkbox">
             <label>

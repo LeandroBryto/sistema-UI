@@ -1,131 +1,102 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { GoalService } from '../../services/goal.service';
-import { GoalRequest, GoalResponse, CotacaoDolarDTO } from '../../models/goal.models';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { CardModule } from 'primeng/card';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { TabViewModule } from 'primeng/tabview';
+import { OrcamentoService } from '../../services/orcamento.service';
+import { CategoriaService } from '../../services/categoria.service';
+import { OrcamentoResponse, OrcamentoRequest } from '../../models/orcamento.models';
+import { CategoriaResponse } from '../../models/categoria.models';
 
 @Component({
   selector: 'app-metas',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [
+    CommonModule, 
+    RouterLink, 
+    FormsModule, 
+    ButtonModule, 
+    ProgressBarModule, 
+    DialogModule, 
+    InputTextModule, 
+    CardModule,
+    ToastModule,
+    TabViewModule
+  ],
+  providers: [MessageService],
   templateUrl: './metas.component.html',
-  styleUrls: ['./metas.component.css'],
+  styleUrls: ['./metas.component.css']
 })
-export class MetasComponent {
-  loading = false;
-  error: string | null = null;
-  success: string | null = null;
-  itens: GoalResponse[] = [];
-  cotacao: CotacaoDolarDTO | null = null;
-  cotacaoMsg: string | null = null;
-  cotacaoLoading = false;
+export class MetasComponent implements OnInit {
+  // Metas (código existente)
+  metas = [
+    { nome: 'Reserva de Emergência', atual: 5000, alvo: 15000, progresso: 33 },
+    { nome: 'Viagem Fim de Ano', atual: 2000, alvo: 8000, progresso: 25 },
+    { nome: 'Trocar de Carro', atual: 15000, alvo: 60000, progresso: 25 }
+  ];
 
-  form = this.fb.nonNullable.group({
-    meta: ['', [Validators.required]],
-    valorMeta: [0, [Validators.required, Validators.min(0.01)]],
-    valorAcumulado: [0],
-  });
+  // Orçamentos
+  orcamentos: OrcamentoResponse[] = [];
+  categorias: CategoriaResponse[] = [];
+  showOrcamentoDialog = false;
+  novoOrcamento = { idCategoria: 0, limiteMensal: 0, limiteAlerta: 0 };
+  mesAtual = new Date().getMonth() + 1;
+  anoAtual = new Date().getFullYear();
 
-  constructor(private fb: FormBuilder, private api: GoalService) {
-    this.load();
-    this.loadCotacao();
+  constructor(
+    private orcamentoService: OrcamentoService,
+    private categoriaService: CategoriaService,
+    private toast: MessageService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadOrcamentos();
+    this.loadCategorias();
   }
 
-  load(): void {
-    this.loading = true;
-    this.error = null;
-    this.api.list().subscribe({
-      next: (list) => {
-        this.itens = list;
-        this.loading = false;
-      },
-      error: (e) => {
-        this.loading = false;
-        this.error =
-          e?.error?.message ||
-          'Erro ao listar metas. Tente novamente mais tarde.';
-      },
-    });
+  loadOrcamentos(): void {
+    this.orcamentoService.list(this.mesAtual, this.anoAtual).subscribe(list => this.orcamentos = list);
   }
 
-  loadCotacao(): void {
-    this.cotacaoLoading = true;
-    this.api.cotacaoDolar().subscribe({
-      next: (data) => {
-        if (data) {
-          this.cotacao = data;
-          this.cotacaoMsg = null;
-        } else {
-          this.cotacao = null;
-          this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
-        }
-        this.cotacaoLoading = false;
-      },
-      error: () => {
-        this.cotacao = null;
-        this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
-        this.cotacaoLoading = false;
-      },
-    });
+  loadCategorias(): void {
+    this.categoriaService.list().subscribe(list => this.categorias = list.filter(c => c.tipo === 'DESPESA'));
   }
 
-  updateCotacao(): void {
-    this.cotacaoLoading = true;
-    this.api.cotacaoDolar().subscribe({
-      next: (data) => {
-        if (data) {
-          this.cotacao = data;
-          this.cotacaoMsg = null;
-        } else {
-          this.cotacao = null;
-          this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
-        }
-        this.cotacaoLoading = false;
-      },
-      error: () => {
-        this.cotacao = null;
-        this.cotacaoMsg = 'Cotação do dólar indisponível no momento.';
-        this.cotacaoLoading = false;
-      },
-    });
+  openOrcamentoDialog(): void {
+    this.novoOrcamento = { idCategoria: 0, limiteMensal: 0, limiteAlerta: 0 };
+    this.showOrcamentoDialog = true;
   }
 
-  resetForm(): void {
-    this.form.reset({
-      meta: '',
-      valorMeta: 0,
-      valorAcumulado: 0,
-    });
-    this.success = null;
-    this.error = null;
-  }
+  saveOrcamento(): void {
+    if (!this.novoOrcamento.idCategoria || this.novoOrcamento.limiteMensal <= 0) {
+      this.toast.add({ severity: 'warn', summary: 'Atenção', detail: 'Preencha os campos corretamente.' });
+      return;
+    }
 
-  save(): void {
-    if (this.form.invalid) return;
-    const payload = this.form.getRawValue() as GoalRequest;
-    this.loading = true;
-    this.error = null;
-    this.success = null;
-    this.api.create(payload).subscribe({
+    const payload: OrcamentoRequest = {
+      ...this.novoOrcamento,
+      mes: this.mesAtual,
+      ano: this.anoAtual
+    };
+
+    this.orcamentoService.save(payload).subscribe({
       next: () => {
-        this.loading = false;
-        this.success = 'Meta criada com sucesso.';
-        this.resetForm();
-        this.load();
+        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Orçamento definido!' });
+        this.showOrcamentoDialog = false;
+        this.loadOrcamentos();
       },
-      error: (e) => {
-        this.loading = false;
-        this.error =
-          e?.error?.message ||
-          'Falha ao criar a meta. Verifique os campos e tente novamente.';
-      },
+      error: () => this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao salvar orçamento.' })
     });
   }
 
-  pct(v: number, total: number): number {
-    if (!total || total <= 0) return 0;
-    const p = (v / total) * 100;
-    return Math.max(0, Math.min(100, p));
+  getCategoriaNome(id: number): string {
+    return this.categorias.find(c => c.id === id)?.nome || 'Categoria Desconhecida';
   }
 }

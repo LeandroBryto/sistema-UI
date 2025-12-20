@@ -1,9 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { DespesaService } from '../../services/despesa.service';
 import { DespesaRequest, DespesaResponse } from '../../models/despesa.models';
+import { CarteiraService } from '../../services/carteira.service';
+import { CartaoService } from '../../services/cartao.service';
+import { CategoriaService } from '../../services/categoria.service';
+import { CarteiraResponse } from '../../models/carteira.models';
+import { CartaoCreditoResponse } from '../../models/cartao.models';
+import { CategoriaResponse } from '../../models/categoria.models';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
@@ -36,13 +42,18 @@ import { MessageService } from 'primeng/api';
   templateUrl: './despesas.component.html',
   styleUrls: ['./despesas.component.css'],
 })
-export class DespesasComponent {
+export class DespesasComponent implements OnInit {
   loading = false;
   error: string | null = null;
   success: string | null = null;
   itens: DespesaResponse[] = [];
   editingId: number | null = null;
   globalFilter = '';
+
+  // Listas auxiliares
+  carteiras: CarteiraResponse[] = [];
+  cartoes: CartaoCreditoResponse[] = [];
+  categoriasPersonalizadas: CategoriaResponse[] = [];
 
   filtros = this.fb.nonNullable.group({
     startDate: [''],
@@ -59,6 +70,9 @@ export class DespesasComponent {
     recorrente: [false],
     notificarAntesVencimento: [null as number | null],
     observacoes: [''],
+    carteiraId: [null as number | null],
+    cartaoCreditoId: [null as number | null],
+    categoriaId: [null as number | null]
   });
 
   categorias = [
@@ -74,10 +88,27 @@ export class DespesasComponent {
   formas = ['PIX', 'CARTAO_CREDITO', 'CARTAO_DEBITO', 'DINHEIRO'];
   status = ['PAGO', 'PENDENTE', 'ATRASADO'];
 
-  constructor(private fb: FormBuilder, private api: DespesaService, private toast: MessageService) {
+  constructor(
+    private fb: FormBuilder, 
+    private api: DespesaService, 
+    private toast: MessageService,
+    private carteiraService: CarteiraService,
+    private cartaoService: CartaoService,
+    private categoriaService: CategoriaService
+  ) {
     const { start, end } = this.currentMonthRange();
     this.filtros.setValue({ startDate: start, endDate: end });
+  }
+
+  ngOnInit(): void {
     this.load();
+    this.loadAuxiliares();
+  }
+
+  loadAuxiliares(): void {
+    this.carteiraService.list().subscribe(l => this.carteiras = l);
+    this.cartaoService.list().subscribe(l => this.cartoes = l);
+    this.categoriaService.list().subscribe(l => this.categoriasPersonalizadas = l.filter(c => c.tipo === 'DESPESA'));
   }
 
   load(): void {
@@ -110,6 +141,9 @@ export class DespesasComponent {
       recorrente: false,
       notificarAntesVencimento: null,
       observacoes: '',
+      carteiraId: null,
+      cartaoCreditoId: null,
+      categoriaId: null
     });
     this.success = null;
     this.error = null;
@@ -127,6 +161,9 @@ export class DespesasComponent {
       recorrente: item.recorrente ?? false,
       notificarAntesVencimento: item.notificarAntesVencimento ?? null,
       observacoes: item.observacoes ?? '',
+      carteiraId: item.carteiraId ?? null,
+      cartaoCreditoId: item.cartaoCreditoId ?? null,
+      categoriaId: item.categoriaId ?? null
     });
     this.success = null;
     this.error = null;

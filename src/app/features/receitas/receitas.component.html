@@ -51,11 +51,14 @@
             <input type="date" formControlName="data" />
           </div>
           <div class="row">
-            <label>Forma de Recebimento</label>
-            <select formControlName="formaRecebimento">
-              <option value="" disabled>Selecione</option>
-              <option *ngFor="let f of formas" [value]="f">{{ f }}</option>
-            </select>
+            <div class="field">
+              <label>Forma de Recebimento</label>
+              <p-dropdown [options]="formas" formControlName="formaRecebimento" placeholder="Selecione..."></p-dropdown>
+            </div>
+            <div class="field">
+              <label>Conta de Destino</label>
+              <p-dropdown [options]="carteiras" formControlName="carteiraId" optionLabel="nome" optionValue="id" placeholder="Onde o dinheiro entrou?"></p-dropdown>
+            </div>
           </div>
           <div class="row checkbox">
             <label>
