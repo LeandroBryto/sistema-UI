@@ -1,0 +1,46 @@
+<div class="layout-wrapper">
+  <!-- Sidebar -->
+  <div class="layout-sidebar">
+    <div class="sidebar-header">
+      <h2 class="app-title">FINANCE<span class="highlight">PRO</span></h2>
+    </div>
+    
+    <div class="sidebar-content">
+      <p-panelMenu [model]="menuItems" styleClass="poseidon-menu"></p-panelMenu>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <p-avatar icon="pi pi-user" styleClass="mr-2" shape="circle" [style]="{'background-color': '#3b82f6', 'color': '#ffffff'}"></p-avatar>
+        <div class="user-info">
+          <span class="user-name">{{ username || 'User' }}</span>
+          <span class="user-role">Admin</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="layout-main">
+    <!-- Topbar -->
+    <div class="layout-topbar">
+      <div class="topbar-left">
+        <i class="pi pi-bars mobile-toggle"></i>
+        <div class="search-box">
+          <i class="pi pi-search"></i>
+          <input type="text" pInputText placeholder="Search..." />
+        </div>
+      </div>
+      
+      <div class="topbar-right">
+        <button pButton icon="pi pi-bell" class="p-button-rounded p-button-text text-white"></button>
+        <button pButton icon="pi pi-cog" class="p-button-rounded p-button-text text-white"></button>
+      </div>
+    </div>
+
+    <!-- Router Outlet -->
+    <div class="layout-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

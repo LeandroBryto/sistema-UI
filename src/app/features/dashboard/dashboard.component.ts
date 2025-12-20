@@ -1,221 +1,188 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
-import { SummaryService } from '../../services/summary.service';
-import { CarteiraFinanceiraDTO, ResumoFinanceiroDTO } from '../../models/summary.models';
-import { AuthService } from '../../services/auth.service';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { AiAssistantService } from '../../services/ai-assistant.service';
-import { SettingsMenuComponent } from '../settings/settings-menu.component';
-import { PanelModule } from 'primeng/panel';
-import { DialogModule } from 'primeng/dialog';
+import { ChartModule } from 'primeng/chart';
+import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { AvatarModule } from 'primeng/avatar';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { CarteiraService } from '../../services/carteira.service';
+import { ReceitaService } from '../../services/receita.service';
+import { DespesaService } from '../../services/despesa.service';
+import { SummaryService } from '../../services/summary.service';
+import { firstValueFrom } from 'rxjs';
+import { ResumoFinanceiroDTO, CarteiraFinanceiraDTO } from '../../models/summary.models';
+import { ReceitaResponse } from '../../models/receita.models';
+import { DespesaResponse } from '../../models/despesa.models';
+import { CarteiraResponse } from '../../models/carteira.models';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterLink, 
-    ReactiveFormsModule, 
-    SettingsMenuComponent, 
-    PanelModule,
-    DialogModule,
+    CommonModule,
+    ChartModule,
+    TableModule,
     ButtonModule,
+    DialogModule,
+    DropdownModule,
     InputTextModule,
-    AvatarModule
+    AvatarModule,
+    ReactiveFormsModule
   ],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+  styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit, OnDestroy {
-  loading = false;
-  error: string | null = null;
-  carteira: CarteiraFinanceiraDTO | null = null;
-  resumo: ResumoFinanceiroDTO | null = null;
-  grafico: { receitas: number; despesas: number } | null = null;
+export class DashboardComponent implements OnInit {
+  // Data
+  kpis = {
+    receitas: { value: 0, trend: 0 },
+    despesas: { value: 0, trend: 0 },
+    saldo: { value: 0, trend: 0 },
+    investimentos: { value: 0, trend: 0 }
+  };
   
-  ads: string[] = [
-    '/assets/ads/ad1.svg',
-    '/assets/ads/ad2.svg',
-    '/assets/ads/ad3.svg',
-    '/assets/ads/ad4.svg',
-  ];
-  currentAd = 0;
-  adTimer: any;
-  adIntervalMs = 2000;
+  carteira = {
+    saldo: 0,
+    meta: 50000
+  };
+
+  recentTransactions: any[] = [];
+  
+  // Charts
+  revenueChart: any;
+  expenseChart: any;
+  chartOptions: any;
+
+  // Transfer Logic
+  transferVisible = false;
+  transferForm = this.fb.group({
+    amount: [0, [Validators.required, Validators.min(1)]],
+    category: ['', Validators.required],
+    description: ['', Validators.required]
+  });
 
   constructor(
-    private summary: SummaryService,
-    private auth: AuthService,
-    private router: Router,
-    private ai: AiAssistantService,
+    private carteiraService: CarteiraService,
+    private receitaService: ReceitaService,
+    private despesaService: DespesaService,
+    private summaryService: SummaryService,
     private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
+    this.initChartOptions();
     this.loadData();
-    this.startAdTimer();
   }
 
-  ngOnDestroy(): void {
-    this.stopAdTimer();
-  }
+  initChartOptions() {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-primary');
+    const textColorSecondary = documentStyle.getPropertyValue('--text-secondary');
+    const surfaceBorder = documentStyle.getPropertyValue('--border-color');
 
-  onAdError(): void {
-    this.currentAd = (this.currentAd + 1) % this.ads.length;
-  }
-
-  startAdTimer(): void {
-    this.stopAdTimer();
-    this.adTimer = setInterval(() => this.nextAd(), this.adIntervalMs);
-  }
-
-  stopAdTimer(): void {
-    if (this.adTimer) {
-      clearInterval(this.adTimer);
-      this.adTimer = null;
-    }
-  }
-
-  nextAd(): void {
-    if (!this.ads.length) return;
-    this.currentAd = (this.currentAd + 1) % this.ads.length;
-  }
-
-  prevAd(): void {
-    if (!this.ads.length) return;
-    this.currentAd = (this.currentAd - 1 + this.ads.length) % this.ads.length;
-  }
-
-  get username(): string | null {
-    return this.auth.getUsername();
-  }
-
-  isAdmin(): boolean {
-    return this.auth.isAdmin();
-  }
-
-  loadData(): void {
-    this.loading = true;
-    this.error = null;
-    this.carteira = null;
-    this.resumo = null;
-    this.grafico = null;
-
-    this.summary.getCarteira().subscribe({
-      next: (data) => {
-        this.carteira = data;
-        this.parseGrafico();
-        this.summary.getResumo().subscribe({
-          next: (res) => {
-            this.resumo = res;
-            this.loading = false;
-          },
-          error: (e) => {
-            this.loading = false;
-            this.error = this.errorMsg(e);
-          },
-        });
-      },
-      error: (e) => {
-        this.loading = false;
-        this.error = this.errorMsg(e);
-      },
-    });
-  }
-
-  logout(): void {
-    this.auth.logout();
-    this.router.navigateByUrl('/');
-  }
-
-  parseGrafico(): void {
-    if (!this.carteira || !this.carteira.graficoReceitasVsDespesasJson) {
-      this.grafico = null;
-      return;
-    }
-    try {
-      const obj = JSON.parse(this.carteira.graficoReceitasVsDespesasJson || '{}');
-      const receitas = Number(obj?.receitas ?? obj?.totalReceitas ?? 0);
-      const despesas = Number(obj?.despesas ?? obj?.totalDespesas ?? 0);
-      this.grafico = {
-        receitas: isNaN(receitas) ? 0 : receitas,
-        despesas: isNaN(despesas) ? 0 : despesas,
-      };
-    } catch {
-      this.grafico = null;
-    }
-  }
-
-  barHeight(kind: 'receitas' | 'despesas'): number {
-    if (!this.grafico) return 0;
-    const max = Math.max(this.grafico.receitas, this.grafico.despesas, 1);
-    const val = kind === 'receitas' ? this.grafico.receitas : this.grafico.despesas;
-    const pct = (val / max) * 100;
-    return Math.max(5, Math.min(100, pct));
-  }
-
-  estadoClass(saude?: 'OK' | 'ATENCAO' | 'CRITICA'): string {
-    if (!saude) return 'state';
-    if (saude === 'OK') return 'state ok';
-    if (saude === 'ATENCAO') return 'state warn';
-    return 'state crit';
-  }
-
-  barWidth(value: number, total?: number | null): number {
-    if (!total || total <= 0) return 0;
-    const pct = (value / total) * 100;
-    return Math.max(2, Math.min(100, pct));
-  }
-
-  errorMsg(e: any): string {
-    if (e?.status === 401) return 'Sessão expirada. Faça login novamente.';
-    if (e?.status === 404) return 'Dados não encontrados.';
-    if (e?.status === 500) return 'Erro no servidor. Tente mais tarde.';
-    return e?.error?.message || 'Falha ao carregar dados do Dashboard.';
-  }
-
-  // Assistente IA
-  aiVisible = false;
-  aiLoading = false;
-  aiChatHistory: { sender: 'user' | 'ai'; text: string }[] = [
-    { sender: 'ai', text: 'Olá 👋 Posso te ajudar a entender suas finanças?' }
-  ];
-  aiForm = this.fb.nonNullable.group({
-    message: ['', [Validators.required, Validators.minLength(2)]],
-  });
-
-  aiToggle(): void {
-    this.aiVisible = !this.aiVisible;
-  }
-
-  aiAsk(): void {
-    if (this.aiForm.invalid) return;
-    const { message } = this.aiForm.getRawValue();
-    
-    // Adiciona mensagem do usuário ao histórico
-    this.aiChatHistory.push({ sender: 'user', text: message });
-    this.aiForm.reset();
-
-    this.aiLoading = true;
-    
-    this.ai.ask({ message }).subscribe({
-      next: (res) => {
-        this.aiLoading = false;
-        this.aiChatHistory.push({ sender: 'ai', text: res.response });
-      },
-      error: (e) => {
-        this.aiLoading = false;
-        if (e?.status === 401) {
-          this.auth.logout();
-          this.router.navigateByUrl('/');
-          return;
+    this.chartOptions = {
+      plugins: {
+        legend: {
+          labels: { color: textColor }
         }
-        this.aiChatHistory.push({ sender: 'ai', text: 'Não foi possível obter a resposta. Tente novamente mais tarde.' });
       },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: textColorSecondary },
+          grid: { color: surfaceBorder, drawBorder: false }
+        },
+        x: {
+          ticks: { color: textColorSecondary },
+          grid: { color: surfaceBorder, drawBorder: false }
+        }
+      }
+    };
+  }
+
+  loadData() {
+    // Dates for filtering (current month/year)
+    const now = new Date();
+    const startDate = new Date(now.getFullYear(), 0, 1).toISOString().split('T')[0]; // Start of year
+    const endDate = new Date(now.getFullYear(), 11, 31).toISOString().split('T')[0]; // End of year
+
+    // Load Summary
+    this.summaryService.getResumo().subscribe((data: ResumoFinanceiroDTO) => {
+      this.kpis.receitas.value = data.totalReceitas;
+      this.kpis.despesas.value = data.totalDespesas;
+      this.kpis.saldo.value = data.saldoAtual;
     });
+
+    // Load Investments from CarteiraService
+    this.carteiraService.list().subscribe((carteiras: CarteiraResponse[]) => {
+      const investimentos = carteiras.filter(c => c.tipo === 'INVESTIMENTO');
+      this.kpis.investimentos.value = investimentos.reduce((acc, curr) => acc + curr.saldoAtual, 0);
+    });
+
+    // Load Carteira Summary
+    this.summaryService.getCarteira().subscribe((data: CarteiraFinanceiraDTO) => {
+      this.carteira.saldo = data.saldoAtual;
+    });
+
+    // Load Transactions (Mock combination of recent items)
+    // In a real app, you'd have a specific endpoint for "recent activity"
+    Promise.all([
+      firstValueFrom(this.receitaService.list(startDate, endDate)),
+      firstValueFrom(this.despesaService.list(startDate, endDate))
+    ]).then(([receitas, despesas]) => {
+      const combined = [
+        ...receitas.map((r: ReceitaResponse) => ({ ...r, type: 'income', icon: 'pi pi-arrow-up' })),
+        ...despesas.map((d: DespesaResponse) => ({ ...d, type: 'expense', icon: 'pi pi-arrow-down' }))
+      ];
+      // Sort by date desc
+      this.recentTransactions = combined
+        .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
+        .slice(0, 5);
+
+      this.updateCharts(receitas, despesas);
+    });
+  }
+
+  updateCharts(receitas: ReceitaResponse[], despesas: DespesaResponse[]) {
+    // Simple mock chart data mapping
+    this.revenueChart = {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      datasets: [
+        {
+          label: 'Receitas',
+          data: [65, 59, 80, 81, 56, 55], // Mock data for trend
+          borderColor: '#10b981',
+          tension: 0.4
+        }
+      ]
+    };
+
+    this.expenseChart = {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      datasets: [
+        {
+          label: 'Despesas',
+          data: [28, 48, 40, 19, 86, 27], // Mock data
+          borderColor: '#ef4444',
+          tension: 0.4
+        }
+      ]
+    };
+  }
+
+  openTransferDialog() {
+    this.transferVisible = true;
+  }
+
+  doTransfer() {
+    if (this.transferForm.valid) {
+      console.log('Transfer:', this.transferForm.value);
+      this.transferVisible = false;
+      this.transferForm.reset();
+      // Call service to process transfer
+    }
   }
 }

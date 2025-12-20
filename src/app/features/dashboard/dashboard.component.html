@@ -1,138 +1,193 @@
-<div class="dashboard">
-  <header class="top">
-    <div class="avatar">{{ (username || 'U').charAt(0).toUpperCase() }}</div>
-    <div class="hello">
-      <span>Bem-vindo,</span>
-      <h2>{{ username || 'Usuário' }}</h2>
-      <span class="role-badge" *ngIf="isAdmin()">ADMIN</span>
-    </div>
-    <div class="actions">
-      <app-settings-menu *ngIf="isAdmin()" />
-      <button class="logout" (click)="logout()">Sair</button>
-    </div>
-  </header>
-
-  <section class="balance">
-    <div class="left">
-      <div class="label">Saldo Atual</div>
-      <div class="value">R$ {{ carteira?.saldoAtual | number:'1.2-2' }}</div>
-      <div class="trend">
-        Comprometimento: {{ carteira?.percentualComprometido | number:'1.0-1' }}%
+<!-- KPI Grid -->
+<div class="kpi-grid mb-4">
+  <div class="card kpi-card">
+    <div class="kpi-content">
+      <span class="kpi-label">Receitas</span>
+      <span class="kpi-value">R$ {{ kpis.receitas.value | number:'1.2-2' }}</span>
+      <div class="kpi-trend ok">
+        <i class="pi pi-arrow-up"></i>
+        <span>12% vs last month</span>
       </div>
-      <div class="trend">Previsto no mês: R$ {{ carteira?.saldoPrevistoDoMes | number:'1.2-2' }}</div>
     </div>
-    <div class="right">
-      <span [class]="estadoClass(carteira?.saudeFinanceira)">{{ carteira?.saudeFinanceira || '—' }}</span>
-      
+    <div class="kpi-icon-wrapper bg-green-500/10 text-green-500">
+      <i class="pi pi-dollar text-xl"></i>
     </div>
-    <button class="refresh" (click)="loadData()" [disabled]="loading">
-      {{ loading ? '...' : '⟳' }}
-    </button>
-  </section>
-
-  <section class="quick">
-    <a class="qcard" *ngIf="isAdmin()" routerLink="/admin">Painel de Controle</a>
-    <a class="qcard" routerLink="/receitas">Receitas</a>
-    <a class="qcard" routerLink="/despesas">Despesas</a>
-    <a class="qcard" routerLink="/investimentos">Investimentos</a>
-    <a class="qcard" routerLink="/relatorios">Relatórios</a>
-  </section>
-
-  <section class="ad">
-    <div class="ad-frame" (mouseenter)="stopAdTimer()" (mouseleave)="startAdTimer()">
-      <img [src]="ads[currentAd]" alt="Publicidade" class="ad-img" (error)="onAdError()" />
-      <button class="ad-nav left" (click)="prevAd()" aria-label="Anterior">‹</button>
-      <button class="ad-nav right" (click)="nextAd()" aria-label="Próximo">›</button>
-    </div>
-  </section>
-
-  <!-- Botão Flutuante IA -->
-  <div class="ai-fab-container">
-    <p-button 
-      icon="pi pi-sparkles" 
-      [rounded]="true" 
-      size="large" 
-      (onClick)="aiToggle()" 
-      styleClass="p-button-raised p-button-help p-button-lg shadow-4"
-      pTooltip="Falar com IA"
-      tooltipPosition="left">
-    </p-button>
   </div>
 
-  <!-- Chat Dialog -->
-  <p-dialog 
-    header="Assistente Financeiro" 
-    [(visible)]="aiVisible" 
-    position="bottomright" 
-    [style]="{ width: '380px', height: '500px', margin: '0 20px 80px 0' }" 
-    [modal]="false"
-    [draggable]="false"
-    [resizable]="false"
-    [closeOnEscape]="true"
-    [dismissableMask]="false"
-    appendTo="body"
-    styleClass="ai-chat-dialog">
-    
-    <div class="chat-content">
-      <div class="chat-messages">
-        <div *ngFor="let msg of aiChatHistory" [class]="'message-row ' + msg.sender">
-          <p-avatar *ngIf="msg.sender === 'ai'" icon="pi pi-android" shape="circle" size="normal" styleClass="mr-2"></p-avatar>
-          <div class="message-bubble">{{ msg.text }}</div>
+  <div class="card kpi-card">
+    <div class="kpi-content">
+      <span class="kpi-label">Despesas</span>
+      <span class="kpi-value">R$ {{ kpis.despesas.value | number:'1.2-2' }}</span>
+      <div class="kpi-trend warn">
+        <i class="pi pi-arrow-down"></i>
+        <span>5% vs last month</span>
+      </div>
+    </div>
+    <div class="kpi-icon-wrapper bg-red-500/10 text-red-500">
+      <i class="pi pi-shopping-cart text-xl"></i>
+    </div>
+  </div>
+
+  <div class="card kpi-card">
+    <div class="kpi-content">
+      <span class="kpi-label">Saldo Atual</span>
+      <span class="kpi-value">R$ {{ kpis.saldo.value | number:'1.2-2' }}</span>
+      <div class="kpi-trend neutral">
+        <span>Updated just now</span>
+      </div>
+    </div>
+    <div class="kpi-icon-wrapper bg-blue-500/10 text-blue-500">
+      <i class="pi pi-wallet text-xl"></i>
+    </div>
+  </div>
+
+  <div class="card kpi-card">
+    <div class="kpi-content">
+      <span class="kpi-label">Investimentos</span>
+      <span class="kpi-value">R$ {{ kpis.investimentos.value | number:'1.2-2' }}</span>
+      <div class="kpi-trend ok">
+        <i class="pi pi-chart-line"></i>
+        <span>+8.5% YTD</span>
+      </div>
+    </div>
+    <div class="kpi-icon-wrapper bg-purple-500/10 text-purple-500">
+      <i class="pi pi-briefcase text-xl"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Middle Section: Charts & Quick Transfer -->
+<div class="middle-grid mb-4">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Fluxo de Caixa</h3>
+      <div class="flex gap-2">
+        <button class="btn-outlined text-xs">Semana</button>
+        <button class="btn-primary text-xs">Mês</button>
+      </div>
+    </div>
+    <div class="chart-wrapper">
+      <p-chart type="line" [data]="revenueChart" [options]="chartOptions" height="280px"></p-chart>
+    </div>
+  </div>
+
+  <div class="card flex flex-col justify-between">
+    <div>
+      <div class="card-header">
+        <h3 class="card-title">Transferência Rápida</h3>
+      </div>
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center gap-3 p-3 rounded-lg border border-gray-700 cursor-pointer hover:bg-white/5 transition">
+          <p-avatar icon="pi pi-user" shape="circle"></p-avatar>
+          <div class="text-sm">
+            <div class="font-medium">Para Poupança</div>
+            <div class="text-gray-400 text-xs">**** 4589</div>
+          </div>
+          <i class="pi pi-chevron-right ml-auto text-gray-500"></i>
         </div>
-        <div *ngIf="aiLoading" class="message-row ai">
-          <p-avatar icon="pi pi-spin pi-spinner" shape="circle" size="normal" styleClass="mr-2"></p-avatar>
-          <div class="message-bubble">Digitando...</div>
+        <div class="flex items-center gap-3 p-3 rounded-lg border border-gray-700 cursor-pointer hover:bg-white/5 transition">
+          <p-avatar icon="pi pi-users" shape="circle"></p-avatar>
+          <div class="text-sm">
+            <div class="font-medium">Pagamento Familiar</div>
+            <div class="text-gray-400 text-xs">Mãe</div>
+          </div>
+          <i class="pi pi-chevron-right ml-auto text-gray-500"></i>
         </div>
+      </div>
+    </div>
+    <button class="btn-primary w-full mt-4" (click)="openTransferDialog()">
+      Nova Transferência
+    </button>
+  </div>
+</div>
+
+<!-- Bottom Section: Transactions & Budget -->
+<div class="bottom-grid">
+  <div class="card col-span-2">
+    <div class="card-header">
+      <h3 class="card-title">Transações Recentes</h3>
+      <button class="btn-text text-sm">Ver todas</button>
+    </div>
+    <div class="transactions-list">
+      <div class="list-header">
+        <span>Descrição</span>
+        <span>Data</span>
+        <span class="text-right">Valor</span>
+      </div>
+      <div *ngFor="let item of recentTransactions" class="list-item">
+        <div class="flex items-center gap-3">
+          <div class="item-icon" [ngClass]="item.type">
+            <i [class]="item.icon"></i>
+          </div>
+          <span class="font-medium">{{ item.descricao }}</span>
+        </div>
+        <span class="text-gray-400 text-sm">{{ item.data | date:'dd/MM/yyyy' }}</span>
+        <span class="text-right font-medium" [class.text-red-400]="item.type === 'expense'" [class.text-green-400]="item.type === 'income'">
+          {{ item.type === 'expense' ? '-' : '+' }} R$ {{ item.valor | number:'1.2-2' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Meus Objetivos</h3>
+    </div>
+    <div class="goals-list">
+      <div class="goal-item">
+        <div class="goal-info">
+          <span>Reserva de Emergência</span>
+          <span class="text-primary">65%</span>
+        </div>
+        <div class="progress-bg">
+          <div class="progress-fill bg-blue-500" style="width: 65%"></div>
+        </div>
+        <div class="text-xs text-gray-400 mt-1">R$ 13.000 / R$ 20.000</div>
       </div>
       
-      <form [formGroup]="aiForm" (ngSubmit)="aiAsk()" class="chat-input-area">
-        <div class="p-inputgroup">
-          <input pInputText type="text" formControlName="message" placeholder="Pergunte sobre suas finanças..." />
-          <button pButton type="submit" icon="pi pi-send" [disabled]="aiForm.invalid || aiLoading"></button>
+      <div class="goal-item">
+        <div class="goal-info">
+          <span>Viagem Férias</span>
+          <span class="text-purple-400">32%</span>
         </div>
-      </form>
-    </div>
-  </p-dialog>
-
-  <p class="error" *ngIf="error">{{ error }}</p>
-
-  <section class="goals">
-    <div class="goals-header">
-      <h3>Resumo do mês</h3>
-      <a routerLink="/relatorios" class="view-all">Ver detalhes</a>
-    </div>
-    <div class="goal-card">
-      <div class="head">
-        <span class="icon">🏆</span>
-        <div>
-          <div class="title">Maiores despesas</div>
-          <div class="meta">Top 5 do mês</div>
+        <div class="progress-bg">
+          <div class="progress-fill bg-purple-500" style="width: 32%"></div>
         </div>
-        <span [class]="estadoClass(resumo?.saudeFinanceira)">{{ resumo?.saudeFinanceira || '—' }}</span>
+        <div class="text-xs text-gray-400 mt-1">R$ 3.200 / R$ 10.000</div>
       </div>
-      <div *ngIf="resumo?.rankingMaioresDespesas; else noRank">
-        <div class="bar-row" *ngFor="let kv of (resumo?.rankingMaioresDespesas | keyvalue)">
-          <span class="cat">{{ kv.key }}</span>
-          <div class="track"><div class="progress warn" [style.width.%]="barWidth(kv.value, resumo?.totalDespesas)"></div></div>
-          <span class="val">R$ {{ kv.value | number:'1.2-2' }}</span>
+
+      <div class="goal-item">
+        <div class="goal-info">
+          <span>Carro Novo</span>
+          <span class="text-green-400">15%</span>
         </div>
-      </div>
-      <ng-template #noRank><p class="caption">Sem ranking disponível</p></ng-template>
-    </div>
-
-    <div class="goal-card">
-      <div class="head">
-        <span class="icon">💡</span>
-        <div>
-          <div class="title">Sugestão automática</div>
-          <div class="meta">Baseada na saúde financeira</div>
+        <div class="progress-bg">
+          <div class="progress-fill bg-green-500" style="width: 15%"></div>
         </div>
+        <div class="text-xs text-gray-400 mt-1">R$ 15.000 / R$ 100.000</div>
       </div>
-      <p class="caption">{{ resumo?.sugestaoAutomatica || '—' }}</p>
     </div>
-  </section>
-
-  <p class="error" *ngIf="error">{{ error }}</p>
-
-  
+  </div>
 </div>
+
+<!-- Transfer Dialog -->
+<p-dialog header="Nova Transferência" [(visible)]="transferVisible" [modal]="true" [style]="{width: '400px'}" styleClass="dark-dialog">
+  <form [formGroup]="transferForm" class="flex flex-col gap-4 mt-2">
+    <div class="flex flex-col gap-2">
+      <label class="text-sm text-gray-400">Valor</label>
+      <input pInputText type="number" formControlName="amount" class="w-full" placeholder="0.00" />
+    </div>
+    <div class="flex flex-col gap-2">
+      <label class="text-sm text-gray-400">Categoria</label>
+      <input pInputText type="text" formControlName="category" class="w-full" placeholder="Ex: Alimentação" />
+    </div>
+    <div class="flex flex-col gap-2">
+      <label class="text-sm text-gray-400">Descrição</label>
+      <input pInputText type="text" formControlName="description" class="w-full" placeholder="Descrição da transferência" />
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <button pButton label="Cancelar" class="p-button-text text-gray-400" (click)="transferVisible = false"></button>
+    <button pButton label="Confirmar" class="bg-primary border-none" (click)="doTransfer()" [disabled]="transferForm.invalid"></button>
+  </ng-template>
+</p-dialog>
