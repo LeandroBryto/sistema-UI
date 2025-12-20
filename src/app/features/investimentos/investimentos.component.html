@@ -57,12 +57,26 @@
       </section>
 
       <section class="tips">
-        <h3>Dicas de Economia</h3>
-        <div class="tips-list">
-          <div class="tip-item" *ngFor="let dica of dicas">
-            <h4><i class="pi pi-lightbulb"></i> {{ dica.title }}</h4>
-            <p>{{ dica.content }}</p>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+          <div>
+            <h3>Cotação do Dólar</h3>
+            <p class="text-secondary" style="font-size: 0.9rem; margin: 0;">Histórico dos últimos 30 dias</p>
           </div>
+          <div *ngIf="cotacaoAtual" style="text-align: right;">
+             <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">
+               R$ {{ cotacaoAtual.atual.valor | number:'1.2-4' }}
+             </div>
+             <div [style.color]="cotacaoAtual.variacaoPercentual >= 0 ? '#ef4444' : '#22c55e'" style="font-size: 0.9rem; font-weight: 600;">
+               {{ cotacaoAtual.variacaoPercentual > 0 ? '+' : '' }}{{ cotacaoAtual.variacaoPercentual | number:'1.2-2' }}%
+             </div>
+          </div>
+        </div>
+        
+        <div class="chart-container" *ngIf="chartData">
+            <p-chart type="line" [data]="chartData" [options]="chartOptions" height="300px"></p-chart>
+        </div>
+        <div *ngIf="!chartData" style="display: grid; place-items: center; height: 300px; color: var(--text-secondary);">
+          <p>Carregando dados do gráfico...</p>
         </div>
       </section>
     </div>
