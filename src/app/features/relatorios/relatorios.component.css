@@ -7,7 +7,7 @@
   min-height: 100vh;
   padding: clamp(16px, 3vw, 32px);
   /* Background delegated to global body style for consistency */
-  color: #e2e8f0;
+  color: #cfd7e1;
 }
 
 .header {
@@ -72,7 +72,7 @@ input {
 
 input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--primary, #3b82f6);
   background: rgba(0, 0, 0, 0.4);
 }
 

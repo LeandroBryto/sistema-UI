@@ -21,16 +21,49 @@
   overflow: hidden;
 }
 
-/* Sidebar */
+/* Sidebar Poseidon Style */
 .layout-sidebar {
-  width: var(--sidebar-width);
-  background-color: var(--bg-sidebar);
-  border-right: 1px solid rgba(255,255,255,0.05);
+  background-color: #000000 !important; /* Pure Black - Force Override */
+  border-right: 1px solid #333;
   display: flex;
   flex-direction: column;
-  z-index: 99;
-  transition: all 0.3s;
-  background-image: linear-gradient(to bottom, rgba(13, 22, 38, 0.8), rgba(2, 4, 10, 1));
+  z-index: 999;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Desktop Styles (>= 992px) */
+@media (min-width: 992px) {
+    .layout-sidebar {
+        position: static;
+        width: 0;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .layout-sidebar.active {
+        width: var(--sidebar-width);
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Mobile Styles (< 992px) */
+@media (max-width: 991px) {
+    .layout-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: var(--sidebar-width);
+        transform: translateX(-100%);
+    }
+
+    .layout-sidebar.active {
+        transform: translateX(0);
+    }
 }
 
 .sidebar-header {
@@ -38,8 +71,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
 }
 
 .app-title {
@@ -47,86 +80,108 @@
   font-weight: 700;
   letter-spacing: 1px;
   margin: 0;
-  background: linear-gradient(to right, #fff, #94a3b8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ffffff; /* White Text */
+  background: none;
+  -webkit-text-fill-color: initial;
 }
 
 .highlight {
   color: var(--primary);
-  -webkit-text-fill-color: var(--primary);
+  -webkit-text-fill-color: initial;
 }
 
 .sidebar-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 0;
+  padding: 1rem;
 }
 
 /* Poseidon Menu Customization */
+/* Global Reset for PanelMenu in Sidebar */
+:host ::ng-deep .poseidon-menu .p-panelmenu,
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-panel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Root Items (Categories) - Headers */
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-header {
+    background: transparent !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
 :host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-header > a {
   background: transparent !important;
-  color: var(--text-secondary) !important;
+  color: #ffffff !important; /* White text for categories */
   border: none !important;
-  padding: 1rem 1.5rem !important;
-  font-weight: 500 !important;
-  transition: all 0.2s;
-  border-left: 3px solid transparent;
-}
-
-:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-header > a:hover {
-  color: var(--text-primary) !important;
-  background-color: rgba(255,255,255,0.03) !important;
-  border-left-color: rgba(255,255,255,0.2);
-}
-
-:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-header > a:focus {
+  padding: 0.5rem 0.5rem !important;
+  margin: 0.5rem 0 !important;
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.05rem !important;
+  text-transform: uppercase !important;
+  cursor: default !important;
   box-shadow: none !important;
 }
 
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-header > a:hover {
+  background: transparent !important;
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-header > a .p-menuitem-icon {
+  display: none; /* Hide icon for categories if we want just text */
+}
+
+/* Sub Items (Actual Links) */
 :host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-content {
   background: transparent !important;
   border: none !important;
-  padding-left: 1rem !important;
+  padding: 0 !important;
+  margin-bottom: 0.5rem;
 }
 
-:host ::ng-deep .poseidon-menu .p-menuitem-icon {
-  color: var(--text-secondary);
-  margin-right: 0.75rem;
-}
-
-:host ::ng-deep .poseidon-menu .p-menuitem-text {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-}
-
-:host ::ng-deep .poseidon-menu .p-menuitem-link {
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-content .p-menuitem-link {
   background: transparent !important;
+  color: #ffffff !important; /* White text for links */
+  border-radius: 6px !important;
+  padding: 0.75rem 1rem !important;
+  margin-bottom: 0.25rem !important;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  border: none !important;
 }
 
-:host ::ng-deep .poseidon-menu .p-menuitem-link:hover {
-  background: rgba(255,255,255,0.03) !important;
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-content .p-menuitem-link:hover {
+  background: #333333 !important; /* Dark Gray hover */
+  color: #ffffff !important;
 }
 
-:host ::ng-deep .poseidon-menu .p-menuitem-link:hover .p-menuitem-text,
-:host ::ng-deep .poseidon-menu .p-menuitem-link:hover .p-menuitem-icon {
-  color: var(--text-primary) !important;
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-content .p-menuitem-link .p-menuitem-text {
+  color: inherit !important;
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
-
-/* Admin Menu Item Specifics */
-:host ::ng-deep .poseidon-menu .admin-menu-item .p-panelmenu-header > a .p-menuitem-icon {
-  color: var(--admin-color) !important;
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-content .p-menuitem-link .p-menuitem-icon {
+  color: inherit !important;
+  margin-right: 0.75rem;
+  font-size: 1rem;
 }
 
-:host ::ng-deep .poseidon-menu .admin-menu-item .p-panelmenu-header > a {
-  border-left-color: var(--admin-color) !important;
-  background-color: rgba(245, 158, 11, 0.1) !important;
+/* Active State Simulation (would need routerLinkActive support in PanelMenu or custom logic, 
+   but hover is good for now. PanelMenu uses routerLinkActive automatically if configured) */
+:host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-content .p-menuitem-link:focus {
+    box-shadow: none;
 }
 
-:host ::ng-deep .poseidon-menu .admin-menu-item .p-panelmenu-header > a:hover {
-  background-color: rgba(245, 158, 11, 0.2) !important;
+/* Admin Specific */
+:host ::ng-deep .poseidon-menu .admin-menu-item .p-menuitem-link {
+    color: var(--admin-color) !important;
 }
 
 
@@ -193,10 +248,15 @@
 }
 
 .mobile-toggle {
-  display: none;
+  display: block; /* Always visible for toggle functionality */
   font-size: 1.5rem;
   cursor: pointer;
   color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.mobile-toggle:hover {
+  color: var(--primary);
 }
 
 .search-box {
@@ -224,7 +284,7 @@
 .search-box input {
   background: transparent;
   border: none;
-  color: #fff;
+  color: #d7cbcb;
   width: 100%;
   outline: none;
   font-size: 0.9rem;

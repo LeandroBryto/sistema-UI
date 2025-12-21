@@ -153,12 +153,13 @@ button {
 }
 
 button.primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: var(--primary, #60a5fa);
   color: #fff;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
 }
 button.primary:hover {
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+  background: var(--primary-dark, #3b82f6);
+  box-shadow: 0 6px 16px rgba(96, 165, 250, 0.4);
   transform: translateY(-1px);
 }
 
@@ -192,9 +193,9 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--primary, #60a5fa);
   background: rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
 }
 
 /* MOBILE RESPONSIVENESS */
