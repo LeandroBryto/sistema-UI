@@ -1,53 +1,114 @@
-<div class="container">
-  <h2>Registrar</h2>
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div class="field">
-      <label for="email">Email</label>
-      <span class="p-input-icon-left" style="display:block">
-        <i class="pi pi-envelope"></i>
-        <input id="email" pInputText type="email" formControlName="email" placeholder="seu@email.com" />
-      </span>
-      <p-message *ngIf="form.controls.email.touched && form.controls.email.invalid" severity="error" text="Informe um e-mail válido."></p-message>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="brand-section">
+      <div class="logo-icon">
+        <i class="pi pi-user-plus"></i>
+      </div>
+      <h1 class="brand-title">Criar Conta</h1>
     </div>
 
-    <div class="field">
-      <label for="username">Usuário</label>
-      <span class="p-input-icon-left" style="display:block">
-        <i class="pi pi-user"></i>
-        <input id="username" pInputText type="text" formControlName="username" placeholder="Digite seu usuário" />
-      </span>
-      <p-message *ngIf="form.controls.username.touched && form.controls.username.invalid" severity="error" text="Usuário é obrigatório."></p-message>
-    </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
+      
+      <!-- Email -->
+      <div class="form-field">
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-envelope"></i>
+          <input 
+            pInputText 
+            type="email"
+            formControlName="email" 
+            placeholder="Email" 
+            class="custom-input" 
+          />
+        </span>
+        <small *ngIf="form.controls.email.touched && form.controls.email.invalid" class="p-error block mt-1">
+          Informe um e-mail válido.
+        </small>
+      </div>
 
-    <div class="field">
-      <label for="telefone">Telefone</label>
-      <span class="p-input-icon-left" style="display:block">
-        <i class="pi pi-phone"></i>
-        <p-inputMask id="telefone" formControlName="telefone" mask="(99) 99999-9999" placeholder="(00) 00000-0000"></p-inputMask>
-      </span>
-      <p-message *ngIf="form.controls.telefone.touched && form.controls.telefone.invalid" severity="error" text="Telefone é obrigatório."></p-message>
-    </div>
+      <!-- Username -->
+      <div class="form-field">
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-user"></i>
+          <input 
+            pInputText 
+            type="text"
+            formControlName="username" 
+            placeholder="Usuário" 
+            class="custom-input" 
+          />
+        </span>
+        <small *ngIf="form.controls.username.touched && form.controls.username.invalid" class="p-error block mt-1">
+          Usuário é obrigatório.
+        </small>
+      </div>
 
-    <div class="field">
-      <label for="senha">Senha</label>
-      <p-password inputId="senha" formControlName="senha" [feedback]="true" toggleMask placeholder="Digite sua senha"></p-password>
-      <p-message *ngIf="form.controls.senha.touched && form.controls.senha.invalid" severity="error" text="Senha deve ter pelo menos 6 caracteres."></p-message>
-    </div>
+      <!-- Telefone -->
+      <div class="form-field">
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-phone"></i>
+          <p-inputMask 
+            styleClass="custom-input w-full"
+            formControlName="telefone" 
+            mask="(99) 99999-9999" 
+            placeholder="(00) 00000-0000">
+          </p-inputMask>
+        </span>
+        <small *ngIf="form.controls.telefone.touched && form.controls.telefone.invalid" class="p-error block mt-1">
+          Telefone é obrigatório.
+        </small>
+      </div>
 
-    <div class="field">
-      <label for="confirmSenha">Confirmar Senha</label>
-      <p-password inputId="confirmSenha" formControlName="confirmSenha" [feedback]="false" toggleMask placeholder="Repita sua senha"></p-password>
-      <p-message *ngIf="form.controls.confirmSenha.touched && form.controls.confirmSenha.value && form.controls.confirmSenha.value !== form.controls.senha.value" severity="error" text="As senhas não coincidem."></p-message>
-    </div>
+      <!-- Senha -->
+      <div class="form-field">
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-lock"></i>
+          <input 
+            pInputText 
+            type="password" 
+            formControlName="senha" 
+            placeholder="Senha" 
+            class="custom-input" 
+          />
+        </span>
+        <small *ngIf="form.controls.senha.touched && form.controls.senha.invalid" class="p-error block mt-1">
+          Min. 6 caracteres.
+        </small>
+      </div>
 
-    <p-button type="submit" [label]="loading ? 'Registrando...' : 'Registrar'" severity="primary" [disabled]="form.invalid || loading" [loading]="loading" icon="pi pi-user-plus" iconPos="right"></p-button>
+      <!-- Confirm Senha -->
+      <div class="form-field">
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-lock-open"></i>
+          <input 
+            pInputText 
+            type="password" 
+            formControlName="confirmSenha" 
+            placeholder="Confirmar Senha" 
+            class="custom-input" 
+          />
+        </span>
+        <small *ngIf="form.controls.confirmSenha.touched && form.hasError('mismatch')" class="p-error block mt-1">
+          As senhas não coincidem.
+        </small>
+      </div>
 
-    <p-message *ngIf="success" severity="success" text="Cadastro realizado com sucesso."></p-message>
-    <p-message *ngIf="error" severity="error" [text]="error"></p-message>
-  </form>
+      <button 
+        pButton 
+        type="submit" 
+        label="REGISTRAR" 
+        class="auth-button" 
+        [loading]="loading"
+        [disabled]="form.invalid || loading">
+      </button>
 
-  <p class="link">
-    Já possui conta?
-    <a routerLink="/">Entrar</a>
-  </p>
+      <div class="login-link">
+        <span>Já possui conta? </span>
+        <a routerLink="/">Entrar</a>
+      </div>
+
+      <p-message *ngIf="success" severity="success" text="Cadastro realizado com sucesso." styleClass="w-full mt-3"></p-message>
+      <p-message *ngIf="error" severity="error" [text]="error" styleClass="w-full mt-3"></p-message>
+    </form>
+  </div>
 </div>

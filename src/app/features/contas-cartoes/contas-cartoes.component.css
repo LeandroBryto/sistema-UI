@@ -1,10 +1,13 @@
+:host {
+  display: block;
+}
+
 .page-container {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
   min-height: 100vh;
-  background: #f7f8fc;
+  padding: 24px;
+  /* Background delegated to global body style for consistency */
+  color: #e2e8f0;
 }
 
 .page-header {
@@ -17,17 +20,29 @@
   gap: 16px;
 }
 
+.header-content h1 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
 .back-btn {
   display: flex;
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  color: #1e50ff;
+  color: #60a5fa;
   font-weight: 600;
   padding: 8px 16px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 .grid-layout {
@@ -36,17 +51,20 @@
   gap: 24px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .grid-layout {
     grid-template-columns: 1fr;
   }
 }
 
 .card-section {
-  background: #fff;
-  border-radius: 16px;
+  background: rgba(13, 22, 38, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .full-width {
@@ -62,8 +80,8 @@
 
 .section-header h2 {
   margin: 0;
-  font-size: 18px;
-  color: #333;
+  font-size: 1.25rem;
+  color: #f1f5f9;
 }
 
 .items-grid {
@@ -77,53 +95,59 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  border: 1px solid #e3e8f2;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background 0.2s;
 }
 
 .item-card:hover {
   transform: translateX(4px);
-  border-color: #1e50ff;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
 .icon {
   width: 40px;
   height: 40px;
-  background: #f0f4ff;
+  background: rgba(59, 130, 246, 0.1);
   border-radius: 10px;
   display: grid;
   place-items: center;
   font-size: 20px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .item-card.credit .icon {
-  background: #fff0f0;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
 }
 
 .info h3 {
   margin: 0 0 4px 0;
-  font-size: 16px;
-  color: #0f172a;
+  font-size: 1rem;
+  color: #e2e8f0;
 }
 
 .balance {
   margin: 0;
   font-weight: 700;
-  color: #22c55e;
+  color: #34d399;
 }
 
 .limit {
   margin: 0;
   font-weight: 600;
-  color: #64748b;
+  color: #94a3b8;
 }
 
 .empty-state {
   text-align: center;
-  color: #999;
+  color: #64748b;
   padding: 20px;
   font-style: italic;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
 }
 
 /* Categories */
@@ -141,6 +165,7 @@
   border-radius: 8px;
   font-weight: 600;
   font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .del-btn {
@@ -150,13 +175,15 @@
   cursor: pointer;
   opacity: 0.6;
   padding: 0 4px;
+  font-size: 1.2rem;
+  line-height: 1;
 }
 
 .del-btn:hover {
   opacity: 1;
 }
 
-/* Forms */
+/* Forms in Dialogs */
 .form-dialog {
   display: flex;
   flex-direction: column;
@@ -171,7 +198,7 @@
 
 .field label {
   font-weight: 500;
-  color: #333;
+  color: #e2e8f0;
 }
 
 .field input, .field p-dropdown {
@@ -192,4 +219,80 @@
   justify-content: flex-end;
   gap: 8px;
   margin-top: 16px;
+}
+
+/* PrimeNG Overrides for Dark Mode Dialogs */
+:host ::ng-deep .p-dialog .p-dialog-header {
+  background: #1e293b;
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding-top: 1.5rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-footer {
+  background: #1e293b;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+:host ::ng-deep .p-inputtext {
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+:host ::ng-deep .p-dropdown {
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-label {
+  color: #fff;
+}
+
+:host ::ng-deep .p-dropdown-panel {
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+:host ::ng-deep .p-dropdown-item {
+  color: #e2e8f0;
+}
+
+:host ::ng-deep .p-dropdown-item:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 480px) {
+  .page-container {
+    padding: 16px;
+  }
+  
+  .header-content h1 {
+    font-size: 1.25rem;
+  }
+  
+  .item-card {
+    padding: 12px;
+  }
+  
+  .cat-tag {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  
+  /* Stack dialog rows on mobile */
+  .row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  :host ::ng-deep .p-dialog {
+    width: 90vw !important;
+  }
 }

@@ -4,11 +4,11 @@
 @import 'primeflex/primeflex.css';
 
 :root {
-  /* Dark Theme Palette (Poseidon Inspired) */
-  --bg-dark: #0f172a;
+  /* Underwater Theme Palette */
+  --bg-dark: #02040a; /* Deepest underwater blue/black */
   --bg-sidebar: #020617;
-  --bg-card: #111827;
-  --text-primary: #f8fafc;
+  --bg-card: rgba(13, 22, 38, 0.7); /* Glassmorphic base */
+  --text-primary: #e2e8f0;
   --text-secondary: #94a3b8;
   --border-color: rgba(255,255,255,0.1);
   
@@ -30,6 +30,13 @@ body {
   color: var(--text-primary);
   font-family: 'Inter', sans-serif;
   margin: 0;
+  /* Ensure full height for gradients */
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(30, 64, 175, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(10, 25, 47, 0.4) 0%, rgba(2, 4, 10, 0.9) 100%);
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 /* Utilities */
@@ -59,7 +66,8 @@ body {
 }
 
 .p-sidebar {
-  background-color: var(--bg-card);
-  color: var(--text-primary);
-  border-left: 1px solid var(--border-color);
+  background-color: #0b1324 !important;
+  color: var(--text-primary) !important;
+  border-left: 1px solid var(--border-color) !important;
 }
+

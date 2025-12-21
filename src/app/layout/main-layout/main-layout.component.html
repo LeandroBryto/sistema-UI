@@ -1,6 +1,6 @@
 <div class="layout-wrapper">
   <!-- Sidebar -->
-  <div class="layout-sidebar">
+  <div class="layout-sidebar" [class.active]="sidebarActive">
     <div class="sidebar-header">
       <h2 class="app-title">FINANCE<span class="highlight">PRO</span></h2>
     </div>
@@ -20,12 +20,15 @@
     </div>
   </div>
 
+  <!-- Mobile Mask -->
+  <div class="layout-mask" *ngIf="sidebarActive" (click)="sidebarActive = false"></div>
+
   <!-- Main Content -->
   <div class="layout-main">
     <!-- Topbar -->
     <div class="layout-topbar">
       <div class="topbar-left">
-        <i class="pi pi-bars mobile-toggle"></i>
+        <i class="pi pi-bars mobile-toggle" (click)="toggleSidebar()"></i>
         <div class="search-box">
           <i class="pi pi-search"></i>
           <input type="text" pInputText placeholder="Search..." />

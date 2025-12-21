@@ -1,122 +1,373 @@
-.page {
-  width: 100%;
-  max-width: clamp(960px, 92vw, 1440px);
-  margin: 0 auto;
-  padding: clamp(12px, 2vw, 32px);
-  min-height: 100vh;
-  color: var(--text-primary);
+:host {
+  display: block;
 }
+
+.page-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: clamp(16px, 3vw, 32px);
+  /* Background delegated to global body style for consistency */
+  color: #e2e8f0;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: end;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
 }
-.muted { color: var(--text-secondary); margin: 0; }
-.summary { display: flex; gap: 8px; align-items: center; }
+
+.muted {
+  color: #94a3b8;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.summary {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
 .summary a.link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 8px 16px;
   border-radius: 999px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-card);
-  color: var(--primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #60a5fa;
   text-decoration: none;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
 }
-.summary a.link::before {
-  content: "←";
-  font-size: 16px;
-  line-height: 1;
-}
+
 .summary a.link:hover {
-  background: rgba(59, 130, 246, 0.1);
-  border-color: var(--primary);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  background: rgba(59, 130, 246, 0.15);
+  border-color: #60a5fa;
+  transform: translateY(-1px);
 }
+
 .chip {
-  padding: 6px 10px;
-  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
-  background: var(--bg-card);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  font-size: 0.9rem;
 }
+
 .card {
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 14px;
-  background: var(--bg-card);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+  background: rgba(13, 22, 38, 0.7);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #f8fafc;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
 .grid.two {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 16px;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
 }
+
+/* Filters */
 .filters.card {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: end;
 }
+
 .filters.card .row.actions {
-  align-self: end;
   display: flex;
   justify-content: flex-end;
 }
-.filters.card .row.actions .p-button {
-  padding: 12px 16px;
-}
+
 .row {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
+
+.row label {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Form Styles */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 input, select, textarea {
-  padding: 10px 12px;
-  border: 1px solid var(--border-color);
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   outline: none;
-  background: var(--bg-dark);
-  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.3);
+  color: #f8fafc;
+  transition: all 0.2s;
+  font-family: inherit;
 }
+
 input:focus, select:focus, textarea:focus {
-  border-color: var(--primary);
+  border-color: #60a5fa;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.15);
 }
-.primary {
-  padding: 10px 14px;
-  border: none;
-  border-radius: 999px;
-  background: var(--primary);
-  color: #fff;
+
+.row.checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  color: #e2e8f0;
 }
-.primary:hover {
-  background: var(--primary-dark);
+
+.row.checkbox input[type="checkbox"] {
+  width: auto;
 }
-button.secondary {
-  padding: 10px 14px;
-  border: none;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.1);
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: background-color 0.2s;
+
+.form-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
 }
-button.secondary:hover {
-  background: rgba(255,255,255,0.2);
-}
-button.danger {
-  padding: 8px 10px;
-  border: none;
+
+button.primary, button.secondary {
+  padding: 12px 24px;
   border-radius: 8px;
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--accent-red);
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
 }
-button.danger:hover {
-  background: rgba(239, 68, 68, 0.2);
+
+button.primary {
+  border: none;
+  background: #2563eb;
+  color: #fff;
+}
+
+button.primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+button.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #94a3b8;
+}
+
+button.secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+}
+
+/* Table Styles Override */
+:host ::ng-deep .p-table {
+  background: transparent;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+  background: transparent;
+  border: none;
+  padding: 0 0 16px 0;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.1);
+  padding: 12px 16px;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+  background: transparent;
+  color: #e2e8f0;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  border-color: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+}
+
+:host ::ng-deep .p-datatable .p-sortable-column:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
+:host ::ng-deep .p-datatable .p-sortable-column.p-highlight {
+  background: rgba(37, 99, 235, 0.15);
+  color: #60a5fa;
+}
+
+:host ::ng-deep .p-paginator {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-element {
+  color: #94a3b8;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-element:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-element.p-highlight {
+  background: #2563eb;
+  color: #fff;
+}
+
+:host ::ng-deep .p-dropdown {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+:host ::ng-deep .p-dropdown-label {
+  color: #f8fafc;
+}
+
+:host ::ng-deep .p-dropdown:not(.p-disabled):hover {
+  border-color: #60a5fa;
+}
+
+:host ::ng-deep .p-dropdown-panel {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:host ::ng-deep .p-dropdown-item {
+  color: #e2e8f0;
+}
+
+:host ::ng-deep .p-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 1024px) {
+  .grid.two {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-card {
+    order: 2;
+  }
+  
+  .list-card {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .filters.card {
+    grid-template-columns: 1fr;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .summary {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 16px;
+  }
+  
+  :host ::ng-deep .custom-input,
+  input, select, textarea {
+    font-size: 16px !important; /* Prevent iOS zoom */
+    min-height: 48px; /* Touch target size */
+  }
+
+  button, .p-button {
+    min-height: 48px; /* Touch target size */
+  }
+  
+  .card {
+    padding: 16px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-actions button {
+    width: 100%;
+    margin: 0;
+  }
+  
+  /* Stack table on mobile if needed */
+  :host ::ng-deep .p-datatable-tbody > tr > td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+    padding: 12px 0;
+    text-align: right;
+  }
+
+  :host ::ng-deep .p-datatable-tbody > tr > td .p-column-title {
+    font-weight: bold;
+    text-align: left;
+    margin-right: auto;
+  }
+  
+  :host ::ng-deep .p-datatable-thead {
+    display: none;
+  }
+  
+  :host ::ng-deep .p-datatable-tbody > tr {
+    display: block;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 0;
+  }
+
+  /* Specific adjustments for touch targets in table actions */
+  .actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .actions button {
+    flex: 1;
+  }
 }

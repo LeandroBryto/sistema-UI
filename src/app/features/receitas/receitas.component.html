@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page-container">
   <header class="header">
     <div>
       <p class="muted">Registre e acompanhe suas entradas</p>
@@ -100,18 +100,20 @@
         </ng-template>
         <ng-template pTemplate="body" let-item>
           <tr>
-            <td>{{ item.descricao }}</td>
-            <td>{{ item.categoria }}</td>
-            <td>R$ {{ item.valor | number : '1.2-2' }}</td>
-            <td>{{ item.data }}</td>
-            <td>{{ item.formaRecebimento }}</td>
+            <td><span class="p-column-title">Descrição</span>{{ item.descricao }}</td>
+            <td><span class="p-column-title">Categoria</span>{{ item.categoria }}</td>
+            <td><span class="p-column-title">Valor</span>R$ {{ item.valor | number : '1.2-2' }}</td>
+            <td><span class="p-column-title">Data</span>{{ item.data }}</td>
+            <td><span class="p-column-title">Forma</span>{{ item.formaRecebimento }}</td>
             <td>
+              <span class="p-column-title">Recorrente</span>
               <p-tag [value]="item.recorrente ? 'Sim' : 'Não'" [severity]="item.recorrente ? 'success' : 'secondary'"></p-tag>
             </td>
-            <td>{{ item.observacoes }}</td>
+            <td><span class="p-column-title">Observações</span>{{ item.observacoes }}</td>
             <td class="actions">
-              <button pButton type="button" label="Editar" [style.width.px]="110" (click)="edit(item)"></button>
-              <button pButton type="button" severity="danger" label="Excluir" [style.width.px]="110" (click)="remove(item)"></button>
+              <span class="p-column-title">Ações</span>
+              <button pButton type="button" label="Editar" class="p-button-sm" (click)="edit(item)"></button>
+              <button pButton type="button" severity="danger" label="Excluir" class="p-button-sm" (click)="remove(item)"></button>
             </td>
           </tr>
         </ng-template>

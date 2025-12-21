@@ -4,19 +4,19 @@
   --sidebar-width: 260px;
   --topbar-height: 70px;
   --bg-dark: #0f172a;
-  --bg-sidebar: #020617;
-  --bg-card: #111827;
+  --bg-sidebar: #02040a; /* Darker sidebar */
+  --bg-card: rgba(13, 22, 38, 0.95); /* Glassmorphic topbar base */
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --primary: #3b82f6;
   --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  --admin-color: #f59e0b; /* Amber for admin */
+  --admin-color: #f59e0b;
 }
 
 .layout-wrapper {
   display: flex;
   height: 100vh;
-  background-color: var(--bg-dark);
+  background-color: #02040a; /* Match base theme */
   color: var(--text-primary);
   overflow: hidden;
 }
@@ -30,6 +30,7 @@
   flex-direction: column;
   z-index: 99;
   transition: all 0.3s;
+  background-image: linear-gradient(to bottom, rgba(13, 22, 38, 0.8), rgba(2, 4, 10, 1));
 }
 
 .sidebar-header {
@@ -38,7 +39,7 @@
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid rgba(255,255,255,0.05);
-  background: linear-gradient(to right, rgba(255,255,255,0.01), transparent);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .app-title {
@@ -182,6 +183,7 @@
   padding: 0 2rem;
   box-shadow: 0 4px 20px -5px rgba(0,0,0,0.3);
   z-index: 98;
+  backdrop-filter: blur(12px); /* Glassmorphism */
 }
 
 .topbar-left {
@@ -226,13 +228,16 @@
   width: 100%;
   outline: none;
   font-size: 0.9rem;
+  /* Mobile input fix */
+  font-size: 16px; 
 }
 
 .layout-content {
   flex: 1;
-  padding: 2rem;
+  /* padding: 2rem; */ /* Removed padding to let children control it */
+  padding: 0;
   overflow-y: auto;
-  background-color: var(--bg-dark);
+  background-color: transparent; /* Transparent to show child backgrounds */
 }
 
 @media (max-width: 991px) {
@@ -249,5 +254,30 @@
   
   .mobile-toggle {
     display: block;
+  }
+  
+  .layout-topbar {
+    padding: 0 1rem;
+  }
+  
+  .search-box {
+    width: 200px;
+  }
+
+  .layout-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 98;
+    backdrop-filter: blur(2px);
+  }
+}
+
+@media (max-width: 480px) {
+  .search-box {
+    display: none; /* Hide search on small screens if needed */
   }
 }

@@ -87,12 +87,18 @@ export class MainLayoutComponent implements OnInit {
     });
   }
 
-  get username(): string | null {
+  username(): string | null {
     return this.auth.getUsername();
   }
 
+  sidebarActive = false;
+
+  toggleSidebar() {
+    this.sidebarActive = !this.sidebarActive;
+  }
+
   onMenuClick() {
-    // Optional: Close sidebar on mobile if needed
+    this.sidebarActive = false;
   }
 
   logout(): void {

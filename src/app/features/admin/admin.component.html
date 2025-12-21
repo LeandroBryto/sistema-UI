@@ -1,4 +1,4 @@
-<div class="admin-page">
+<div class="page-container">
   <header class="head">
     <h2>Painel de Controle</h2>
     <div class="actions">
@@ -18,12 +18,12 @@
         <span>ID</span><span>Username</span><span>Email</span><span>Status</span><span>Role</span><span>Ações</span>
       </div>
       <div class="row" *ngFor="let u of users; let i = index" [class.alt]="i % 2 === 1">
-        <span>{{ u.id }}</span>
-        <span>{{ u.username }}</span>
-        <span>{{ u.email }}</span>
-        <span><span class="chip" [class.ok]="u.status==='ATIVO'" [class.warn]="u.status==='BLOQUEADO'">{{ u.status }}</span></span>
-        <span><span class="chip info">{{ u.role }}</span></span>
-        <span class="actions">
+        <span class="col-id" data-label="ID">{{ u.id }}</span>
+        <span class="col-user" data-label="Username">{{ u.username }}</span>
+        <span class="col-email" data-label="Email">{{ u.email }}</span>
+        <span class="col-status" data-label="Status"><span class="chip" [class.ok]="u.status==='ATIVO'" [class.warn]="u.status==='BLOQUEADO'">{{ u.status }}</span></span>
+        <span class="col-role" data-label="Role"><span class="chip info">{{ u.role }}</span></span>
+        <span class="actions" data-label="Ações">
           <button class="sm" (click)="activate(u)" [disabled]="u.status==='ATIVO'">Ativar</button>
           <button class="sm" (click)="deactivate(u)" [disabled]="u.status==='BLOQUEADO'">Desativar</button>
           <form [formGroup]="roleForm" (ngSubmit)="changeRole(u)" class="inline">
@@ -75,29 +75,33 @@
 <section class="grid two" *ngIf="!loading">
   <div class="card">
     <h3>Últimos Logins</h3>
-    <table class="simple-table" *ngIf="last && last.length; else sampleLast">
-      <thead>
-        <tr><th>Usuário</th><th>Quando</th></tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let u of last"><td>{{ u.username }}</td><td>{{ formatDate(u.ultimaAtualizacao) }}</td></tr>
-      </tbody>
-    </table>
-    <ng-template #sampleLast>
-      <table class="simple-table">
+    <div class="table-responsive">
+      <table class="simple-table" *ngIf="last && last.length; else sampleLast">
         <thead>
           <tr><th>Usuário</th><th>Quando</th></tr>
         </thead>
         <tbody>
-          <tr><td>leandro ba</td><td>16/12/2025 01:25:12</td></tr>
-          <tr><td>leandro g</td><td>16/12/2025 01:02:01</td></tr>
-          <tr><td>leandro brito</td><td>15/12/2025 14:34:56</td></tr>
-          <tr><td>leandro iesb</td><td>14/12/2025 19:28:26</td></tr>
-          <tr><td>user1</td><td>13/12/2025 23:13:40</td></tr>
-          <tr><td>teste b</td><td>13/12/2025 22:16:15</td></tr>
-          <tr><td>leandro b</td><td>13/12/2025 20:50:48</td></tr>
+          <tr *ngFor="let u of last"><td>{{ u.username }}</td><td>{{ formatDate(u.ultimaAtualizacao) }}</td></tr>
         </tbody>
       </table>
+    </div>
+    <ng-template #sampleLast>
+      <div class="table-responsive">
+        <table class="simple-table">
+          <thead>
+            <tr><th>Usuário</th><th>Quando</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>leandro ba</td><td>16/12/2025 01:25:12</td></tr>
+            <tr><td>leandro g</td><td>16/12/2025 01:02:01</td></tr>
+            <tr><td>leandro brito</td><td>15/12/2025 14:34:56</td></tr>
+            <tr><td>leandro iesb</td><td>14/12/2025 19:28:26</td></tr>
+            <tr><td>user1</td><td>13/12/2025 23:13:40</td></tr>
+            <tr><td>teste b</td><td>13/12/2025 22:16:15</td></tr>
+            <tr><td>leandro b</td><td>13/12/2025 20:50:48</td></tr>
+          </tbody>
+        </table>
+      </div>
     </ng-template>
   </div>
   <div class="card">
@@ -137,12 +141,12 @@
       <span>ID</span><span>Admin</span><span>User</span><span>Ação</span><span>Quando</span><span>Detalhes</span>
     </div>
     <div class="row" *ngFor="let a of auditFiltered; let i = index" [class.alt]="i % 2 === 1">
-      <span>{{ a.id }}</span>
-      <span>{{ a.adminUsername }}</span>
-      <span>{{ a.userId }}</span>
-      <span><span class="chip" [class]="actionClass(a.action)">{{ a.action }}</span></span>
-      <span>{{ formatDate(a.timestamp) }}</span>
-      <span class="ellipsis" [title]="a.details || '—'">{{ a.details || '—' }}</span>
+      <span data-label="ID">{{ a.id }}</span>
+      <span data-label="Admin">{{ a.adminUsername }}</span>
+      <span data-label="User ID">{{ a.userId }}</span>
+      <span data-label="Ação"><span class="chip" [class]="actionClass(a.action)">{{ a.action }}</span></span>
+      <span data-label="Quando">{{ formatDate(a.timestamp) }}</span>
+      <span class="ellipsis" [title]="a.details || '—'" data-label="Detalhes">{{ a.details || '—' }}</span>
     </div>
   </div>
 </section>
