@@ -231,14 +231,24 @@
 .layout-topbar {
   height: var(--topbar-height);
   background-color: var(--bg-card);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
   box-shadow: 0 4px 20px -5px rgba(0,0,0,0.3);
   z-index: 98;
-  backdrop-filter: blur(12px); /* Glassmorphism */
+  backdrop-filter: blur(12px); /* Glassmorphic */
+}
+
+/* Adaptive text color for topbar elements */
+.layout-topbar .p-button.p-button-text {
+  color: var(--text-primary) !important;
+}
+
+.layout-topbar .user-info-group {
+  color: var(--text-primary);
+  border-right: 1px solid var(--border-color);
 }
 
 .topbar-left {

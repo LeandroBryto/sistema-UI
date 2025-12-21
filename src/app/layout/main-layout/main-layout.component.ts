@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ThemeService } from '../../services/theme.service';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { MenuItem } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
@@ -26,10 +27,12 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class MainLayoutComponent implements OnInit {
   menuItems: MenuItem[] = [];
+  isDarkTheme$ = this.themeService.isDarkMode$;
 
   constructor(
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private themeService: ThemeService
   ) {}
 
   ngOnInit() {
@@ -137,6 +140,10 @@ export class MainLayoutComponent implements OnInit {
 
   toggleSidebar() {
     this.sidebarActive = !this.sidebarActive;
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 
   onMenuClick() {

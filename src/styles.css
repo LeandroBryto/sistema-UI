@@ -4,7 +4,7 @@
 @import 'primeflex/primeflex.css';
 
 :root {
-  /* Underwater Theme Palette */
+  /* Underwater Theme Palette (Default Dark) */
   --bg-dark: #02040a; /* Deepest underwater blue/black */
   --bg-sidebar: #020617;
   --bg-card: rgba(13, 22, 38, 0.7); /* Glassmorphic base */
@@ -29,6 +29,21 @@
   --surface: var(--bg-card);
 }
 
+/* Light Theme Overrides */
+.light-theme {
+  --bg-dark: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --border-color: rgba(0,0,0,0.08);
+  
+  --primary: #2563eb; /* Blue-600 for better contrast on light */
+  --primary-dark: #1d4ed8;
+  
+  --primary-color: var(--primary);
+}
+
 body {
   background-color: var(--bg-dark);
   color: var(--text-primary);
@@ -41,7 +56,13 @@ body {
     radial-gradient(circle at 50% 50%, rgba(10, 25, 47, 0.4) 0%, rgba(2, 4, 10, 0.9) 100%);
   background-attachment: fixed;
   background-size: cover;
+  transition: background-color 0.3s, color 0.3s;
 }
+
+body.light-theme {
+  background-image: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
 
 /* Utilities */
 .bg-card { background-color: var(--bg-card) !important; }
