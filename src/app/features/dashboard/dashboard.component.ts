@@ -8,7 +8,8 @@ import { SidebarModule } from 'primeng/sidebar';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { AvatarModule } from 'primeng/avatar';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { TooltipModule } from 'primeng/tooltip';
+import { ReactiveFormsModule, FormBuilder, Validators, FormsModule } from '@angular/forms';
 import { CarteiraService } from '../../services/carteira.service';
 import { ReceitaService } from '../../services/receita.service';
 import { DespesaService } from '../../services/despesa.service';
@@ -18,6 +19,11 @@ import { ResumoFinanceiroDTO, CarteiraFinanceiraDTO } from '../../models/summary
 import { ReceitaResponse } from '../../models/receita.models';
 import { DespesaResponse } from '../../models/despesa.models';
 import { CarteiraResponse } from '../../models/carteira.models';
+
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { AiAssistantService } from '../../services/ai-assistant.service';
+import { AiAssistantRequestDTO } from '../../models/ai.models';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,7 +38,9 @@ import { CarteiraResponse } from '../../models/carteira.models';
     DropdownModule,
     InputTextModule,
     AvatarModule,
-    ReactiveFormsModule
+    TooltipModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
@@ -58,6 +66,14 @@ export class DashboardComponent implements OnInit {
   expenseChart: any;
   chartOptions: any;
 
+  // AI Assistant
+  aiVisible = false;
+  aiQuery = '';
+  aiLoading = false;
+  aiChatHistory: { role: 'user' | 'assistant', content: string }[] = [
+    { role: 'assistant', content: 'Olá! Sou seu assistente financeiro. Como posso ajudar você hoje com suas finanças?' }
+  ];
+
   // Summary Sidebar
   summaryVisible: boolean = false;
 
@@ -66,12 +82,55 @@ export class DashboardComponent implements OnInit {
     private receitaService: ReceitaService,
     private despesaService: DespesaService,
     private summaryService: SummaryService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private aiService: AiAssistantService
   ) {}
 
   ngOnInit(): void {
     this.initChartOptions();
     this.loadData();
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  // AI Methods
+  openAiAssistant() {
+    this.aiVisible = true;
+  }
+
+  sendAiQuery() {
+    if (!this.aiQuery.trim()) return;
+
+    const userMsg = this.aiQuery;
+    this.aiChatHistory.push({ role: 'user', content: userMsg });
+    this.aiQuery = '';
+    this.aiLoading = true;
+
+    const request: AiAssistantRequestDTO = {
+      message: userMsg,
+      context: {
+        saldoAtual: this.kpis.saldo.value,
+        receitas: this.kpis.receitas.value,
+        despesas: this.kpis.despesas.value
+      }
+    };
+
+    this.aiService.ask(request).subscribe({
+      next: (res) => {
+        this.aiChatHistory.push({ role: 'assistant', content: res.response });
+        this.aiLoading = false;
+      },
+      error: (err) => {
+        console.error('AI Error', err);
+        this.aiChatHistory.push({ role: 'assistant', content: 'Desculpe, tive um problema ao processar sua solicitação. Tente novamente.' });
+        this.aiLoading = false;
+      }
+    });
   }
 
   initChartOptions() {

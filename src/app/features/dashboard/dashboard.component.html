@@ -6,10 +6,23 @@
       <p class="text-gray-400 mt-1">Visão geral da sua carteira</p>
     </div>
     <div class="header-actions flex gap-3 align-items-center">
-      <button class="btn-outlined" (click)="summaryVisible = true">
+      <!-- AI Assistant -->
+      <button class="btn-ai-glow" (click)="openAiAssistant()" pTooltip="Assistente Financeiro IA" tooltipPosition="bottom" aria-label="Abrir Assistente IA">
+        <i class="pi pi-sparkles text-xl"></i>
+        <span class="ml-2 font-bold hidden md:inline">AI Assist</span>
+      </button>
+
+      <button class="btn-outlined" (click)="summaryVisible = true" pTooltip="Relatórios e Resumo" tooltipPosition="bottom">
         <i class="pi pi-chart-bar mr-2"></i> Relatórios
       </button>
-      <p-avatar label="LB" size="large" shape="circle" [style]="{'background-color': 'rgba(59, 130, 246, 0.2)', 'color': '#60a5fa', 'border': '1px solid #3b82f6'}"></p-avatar>
+      
+      <p-avatar label="LB" size="large" shape="circle" [style]="{'background-color': 'rgba(59, 130, 246, 0.2)', 'color': '#60a5fa', 'border': '1px solid #3b82f6', 'cursor': 'pointer'}"></p-avatar>
+
+      <!-- Logout Button -->
+      <button class="btn-logout" (click)="logout()" pTooltip="Sair do Sistema" tooltipPosition="bottom" aria-label="Sair">
+        <i class="pi pi-power-off"></i>
+        <span class="hidden md:inline">Sair</span>
+      </button>
     </div>
   </div>
 
@@ -208,3 +221,36 @@
     </div>
   </div>
 </p-sidebar>
+
+<!-- AI Assistant Dialog -->
+<p-dialog 
+  [(visible)]="aiVisible" 
+  [modal]="true" 
+  [style]="{width: '450px', maxWidth: '90vw'}" 
+  header="Finance AI Assistant" 
+  styleClass="ai-dialog"
+  [draggable]="false"
+  [resizable]="false">
+  
+  <div class="ai-chat-container">
+    <div class="chat-messages" #chatContainer>
+      <div *ngFor="let msg of aiChatHistory" class="message" [ngClass]="msg.role">
+        <div class="message-content">
+          <i class="pi" [ngClass]="msg.role === 'assistant' ? 'pi-bolt text-purple-400' : 'pi-user text-blue-400'"></i>
+          <p>{{ msg.content }}</p>
+        </div>
+      </div>
+      <div *ngIf="aiLoading" class="message assistant loading">
+        <div class="message-content">
+          <i class="pi pi-spin pi-spinner text-purple-400"></i>
+          <p>Analisando dados...</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="chat-input-area">
+      <input type="text" pInputText [(ngModel)]="aiQuery" (keydown.enter)="sendAiQuery()" placeholder="Pergunte sobre suas finanças..." [disabled]="aiLoading" />
+      <button pButton icon="pi pi-send" class="p-button-rounded p-button-text" (click)="sendAiQuery()" [disabled]="!aiQuery.trim() || aiLoading"></button>
+    </div>
+  </div>
+</p-dialog>
