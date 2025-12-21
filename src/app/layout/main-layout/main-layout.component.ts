@@ -7,6 +7,7 @@ import { MenuItem } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-main-layout',
@@ -17,7 +18,8 @@ import { InputTextModule } from 'primeng/inputtext';
     PanelMenuModule,
     AvatarModule,
     ButtonModule,
-    InputTextModule
+    InputTextModule,
+    TooltipModule
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css']
