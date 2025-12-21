@@ -13,9 +13,10 @@
       <div class="user-profile">
         <p-avatar icon="pi pi-user" styleClass="mr-2" shape="circle" [style]="{'background-color': '#3b82f6', 'color': '#ffffff'}"></p-avatar>
         <div class="user-info">
-          <span class="user-name">{{ username || 'User' }}</span>
+          <span class="user-name">{{ username() || 'User' }}</span>
           <span class="user-role">Admin</span>
         </div>
+        <button pButton icon="pi pi-power-off" class="p-button-rounded p-button-text p-button-danger ml-auto" (click)="logout()"></button>
       </div>
     </div>
   </div>
