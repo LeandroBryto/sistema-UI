@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/login/login.component';
 import { RegisterComponent } from './features/register/register.component';
 import { ForgotComponent } from './features/forgot/forgot.component';
-import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+import { AppLayout } from './layout/component/app.layout';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ReceitasComponent } from './features/receitas/receitas.component';
 import { DespesasComponent } from './features/despesas/despesas.component';
@@ -22,16 +22,17 @@ import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   // Public Routes
-  { path: '', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'esqueci-senha', component: ForgotComponent },
 
   // Protected Layout Routes
   {
     path: '',
-    component: MainLayoutComponent,
+    component: AppLayout,
     canActivate: [authGuard],
     children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'receitas', component: ReceitasComponent },
       { path: 'despesas', component: DespesasComponent },
@@ -52,6 +53,7 @@ export const routes: Routes = [
     ]
   },
 
-  { path: '**', redirectTo: '' },
+  // Fallback
+  { path: '**', redirectTo: 'login' },
 ];
 

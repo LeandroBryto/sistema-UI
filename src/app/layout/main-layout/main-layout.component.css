@@ -34,8 +34,8 @@
   flex-shrink: 0;
 }
 
-/* Desktop Styles (>= 992px) */
-@media (min-width: 992px) {
+/* Desktop Styles (> 1024px) */
+@media (min-width: 1025px) {
     .layout-sidebar {
         position: static;
         width: 0;
@@ -50,8 +50,8 @@
     }
 }
 
-/* Mobile Styles (< 992px) */
-@media (max-width: 991px) {
+/* Mobile/Tablet Styles (<= 1024px) */
+@media (max-width: 1024px) {
     .layout-sidebar {
         position: fixed;
         top: 0;
@@ -63,6 +63,26 @@
 
     .layout-sidebar.active {
         transform: translateX(0);
+    }
+    
+    /* Adjust topbar padding for tablet/mobile */
+    .layout-topbar {
+      padding: 0 1rem;
+    }
+    
+    .search-box {
+      width: 200px;
+    }
+  
+    .layout-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 98;
+      backdrop-filter: blur(2px);
     }
 }
 
@@ -80,7 +100,7 @@
   font-weight: 700;
   letter-spacing: 1px;
   margin: 0;
-  color: #ffffff; /* White Text */
+  color: var(--text-primary);
   background: none;
   -webkit-text-fill-color: initial;
 }
@@ -115,7 +135,7 @@
 
 :host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-header > a {
   background: transparent !important;
-  color: #ffffff !important; /* White text for categories */
+  color: var(--text-primary) !important;
   border: none !important;
   padding: 0.5rem 0.5rem !important;
   margin: 0.5rem 0 !important;
@@ -157,8 +177,8 @@
 }
 
 :host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-content .p-menuitem-link:hover {
-  background: #333333 !important; /* Dark Gray hover */
-  color: #ffffff !important;
+  background: var(--bg-card) !important;
+  color: var(--primary) !important;
 }
 
 :host ::ng-deep .poseidon-menu .p-panelmenu .p-panelmenu-content .p-menuitem-link .p-menuitem-text {
@@ -294,7 +314,7 @@
 .search-box input {
   background: transparent;
   border: none;
-  color: #d7cbcb;
+  color: var(--text-primary);
   width: 100%;
   outline: none;
   font-size: 0.9rem;
@@ -310,28 +330,7 @@
   background-color: transparent; /* Transparent to show child backgrounds */
 }
 
-@media (max-width: 991px) {
-  /* Sidebar and Toggle styles are handled in the main CSS block above */
-
-  .layout-topbar {
-    padding: 0 1rem;
-  }
-  
-  .search-box {
-    width: 200px;
-  }
-
-  .layout-mask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 98;
-    backdrop-filter: blur(2px);
-  }
-}
+/* Media query merged above */
 
 @media (max-width: 480px) {
   .search-box {

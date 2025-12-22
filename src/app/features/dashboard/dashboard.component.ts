@@ -23,6 +23,7 @@ import { CarteiraResponse } from '../../models/carteira.models';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AiAssistantService } from '../../services/ai-assistant.service';
+import { ThemeService } from '../../services/theme.service';
 import { AiAssistantRequestDTO } from '../../models/ai.models';
 
 @Component({

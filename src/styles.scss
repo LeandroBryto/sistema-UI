@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+@import "primeng/resources/primeng.min.css";
+/* Theme is now loaded dynamically in index.html via <link> */
+/* @import "primeng/resources/themes/aura-light-indigo/theme.css"; */
+@import "primeflex/primeflex.css";
+
+/* Sakai Layout Styles - Usando caminhos relativos para garantir */
+@import "./assets/layout/layout.scss";
+@import "./assets/demo/demo.scss";
+
+:root {
+  /* Mapeamento de variáveis do tema para o layout */
+  --bg-dark: var(--surface-ground);
+  --bg-sidebar: var(--surface-overlay);
+  --bg-card: var(--surface-card);
+  --text-primary: var(--text-color);
+  --text-secondary: var(--text-color-secondary);
+  --border-color: var(--surface-border);
+  --bg-subtle: var(--surface-hover);
+  --primary: var(--primary-color);
+  --primary-dark: var(--primary-700);
+  --primary-color: var(--primary-color);
+  --primary-color-text: var(--primary-color-text);
+}
