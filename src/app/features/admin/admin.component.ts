@@ -6,6 +6,8 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
+import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
 import { Router, RouterLink } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
@@ -14,7 +16,7 @@ import { AdminUserResponseDTO, MetricsSummaryDTO, AuditLogResponseDTO, Applicati
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, DropdownModule, ButtonModule, DialogModule, PasswordModule, ToastModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, DropdownModule, ButtonModule, DialogModule, PasswordModule, ToastModule, TableModule, InputTextModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
   providers: [MessageService],

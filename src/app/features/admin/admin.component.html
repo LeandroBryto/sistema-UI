@@ -7,148 +7,213 @@
     </div>
   </header>
 
-<p class="error" *ngIf="error">{{ error }}</p>
-<div class="loading" *ngIf="loading">Carregando...</div>
+  <p class="error" *ngIf="error">{{ error }}</p>
+  <div class="loading" *ngIf="loading">Carregando...</div>
 
-<section class="grid two" *ngIf="!loading">
-  <div class="card">
+  <!-- METRICS -->
+  <section class="stats-grid" *ngIf="metrics && !loading">
+    <div class="stat-item">
+      <span class="stat-label">Total Usuários</span>
+      <span class="stat-value">{{ metrics.totalUsuarios }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Usuários Ativos</span>
+      <span class="stat-value">{{ metrics.usuariosAtivos }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Administradores</span>
+      <span class="stat-value">{{ metrics.administradores }}</span>
+    </div>
+  </section>
+
+  <!-- USERS TABLE -->
+  <div class="card" *ngIf="!loading">
     <h3>Usuários</h3>
-    <div class="table">
-      <div class="thead">
-        <span>ID</span><span>Username</span><span>Email</span><span>Status</span><span>Role</span><span>Ações</span>
-      </div>
-      <div class="row" *ngFor="let u of users; let i = index" [class.alt]="i % 2 === 1">
-        <span class="col-id" data-label="ID">{{ u.id }}</span>
-        <span class="col-user" data-label="Username">{{ u.username }}</span>
-        <span class="col-email" data-label="Email">{{ u.email }}</span>
-        <span class="col-status" data-label="Status"><span class="chip" [class.ok]="u.status==='ATIVO'" [class.warn]="u.status==='BLOQUEADO'">{{ u.status }}</span></span>
-        <span class="col-role" data-label="Role"><span class="chip info">{{ u.role }}</span></span>
-        <span class="actions" data-label="Ações">
-          <button class="sm" (click)="activate(u)" [disabled]="u.status==='ATIVO'">Ativar</button>
-          <button class="sm" (click)="deactivate(u)" [disabled]="u.status==='BLOQUEADO'">Desativar</button>
-          <form [formGroup]="roleForm" (ngSubmit)="changeRole(u)" class="inline">
-            <select formControlName="role">
-              <option value="USER">USER</option>
-              <option value="ADMIN">ADMIN</option>
-            </select>
-            <button class="sm" type="submit">Alterar</button>
-          </form>
-          <button class="sm warn" (click)="openResetDialog(u)">Resetar Senha</button>
+    <p-table [value]="users" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" 
+             [globalFilterFields]="['username','email','role']" #dtUsers 
+             styleClass="p-datatable-sm underwater-table" responsiveLayout="scroll">
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dtUsers.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar usuário..." />
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="id" style="width: 80px">ID <p-sortIcon field="id"></p-sortIcon></th>
+          <th pSortableColumn="username">Username <p-sortIcon field="username"></p-sortIcon></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+          <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+          <th pSortableColumn="role">Role <p-sortIcon field="role"></p-sortIcon></th>
+          <th>Ações</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-u>
+        <tr>
+          <td><span class="p-column-title">ID</span>{{ u.id }}</td>
+          <td><span class="p-column-title">Username</span>{{ u.username }}</td>
+          <td><span class="p-column-title">Email</span>{{ u.email }}</td>
+          <td>
+            <span class="p-column-title">Status</span>
+            <span class="chip" [class.ok]="u.status==='ATIVO'" [class.warn]="u.status==='BLOQUEADO'">{{ u.status }}</span>
+          </td>
+          <td>
+            <span class="p-column-title">Role</span>
+            <span class="chip info">{{ u.role }}</span>
+          </td>
+          <td>
+            <span class="p-column-title">Ações</span>
+            <div class="actions-flex">
+              <button class="sm" (click)="activate(u)" *ngIf="u.status!=='ATIVO'">Ativar</button>
+              <button class="sm warn" (click)="deactivate(u)" *ngIf="u.status!=='BLOQUEADO'">Desativar</button>
+              <button class="sm info" (click)="openResetDialog(u)">Senha</button>
+              
+              <!-- Simple inline role toggle for now -->
+              <form [formGroup]="roleForm" (ngSubmit)="changeRole(u)" class="inline" style="display:inline-flex; gap:4px; align-items:center;" *ngIf="false">
+                <!-- Hiding inline form in favor of simplicity or future dialog -->
+                <!-- Ideally, create a 'Change Role' dialog, but user asked for organization. 
+                     Let's keep the existing logic but maybe make it cleaner if needed. 
+                     For now, I'll assume standard buttons are enough or I'll re-add the role changer if space permits.
+                     The original had it inline. Let's put it back if needed. -->
+              </form>
+              <!-- Role changer as a button that could open a dialog or just toggle. 
+                   The original code had a form. Let's keep it simple. -->
+               <div style="display:flex; align-items:center; gap:0.5rem;" *ngIf="true">
+                  <select [value]="u.role" (change)="u.role = $any($event.target).value; roleForm.patchValue({role: u.role}); changeRole(u)" 
+                          style="width:auto; padding:0.3rem; font-size:0.8rem; height:auto; min-height:0;">
+                    <option value="USER">USER</option>
+                    <option value="ADMIN">ADMIN</option>
+                  </select>
+               </div>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <section class="grid two" *ngIf="!loading">
+    <!-- LAST LOGINS -->
+    <div class="card">
+      <h3>Últimos Logins</h3>
+      <p-table [value]="last" [rows]="5" styleClass="p-datatable-sm underwater-table" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="username">Usuário <p-sortIcon field="username"></p-sortIcon></th>
+            <th pSortableColumn="ultimaAtualizacao">Quando <p-sortIcon field="ultimaAtualizacao"></p-sortIcon></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-u>
+          <tr>
+            <td><span class="p-column-title">Usuário</span>{{ u.username }}</td>
+            <td><span class="p-column-title">Quando</span>{{ formatDate(u.ultimaAtualizacao) }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="2">Nenhum registro encontrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- STATUS -->
+    <div class="card">
+      <h3>Status do Sistema</h3>
+      <div class="stat-item" style="text-align: center; padding: 2rem;">
+        <span class="stat-label" style="display:block; margin-bottom:1rem">Status Atual</span>
+        <span class="stat-value" [style.color]="status?.status === 'UP' ? '#4ade80' : '#f87171'" style="font-size: 2.5rem;">
+          {{ status?.status || 'UNKNOWN' }}
         </span>
+        <p class="muted" style="margin-top: 1rem;">{{ formatDate(status?.timestamp) }}</p>
+        <button class="primary" (click)="refreshStatus()" style="margin-top: 1rem;">Atualizar Status</button>
       </div>
     </div>
-  </div>
-<!-- 
-  <div class="card">
-    <h3>Métricas</h3>
-    <div *ngIf="metrics; else noMetrics" class="metrics">
-      <div><span class="label">Total</span><span class="value">{{ metrics.totalUsuarios }}</span></div>
-      <div><span class="label">Ativos</span><span class="value">{{ metrics.usuariosAtivos }}</span></div>
-      <div><span class="label">Admins</span><span class="value">{{ metrics.administradores }}</span></div>
-    </div>
-    <ng-template #noMetrics><p class="muted">Sem métricas</p></ng-template>
-  </div> -->
-</section>
+  </section>
 
-<p-toast position="top-right"></p-toast>
+  <!-- AUDIT FILTERS -->
+  <form class="card filters filters-inline" [formGroup]="filterForm" (ngSubmit)="refresh()">
+    <div class="row">
+      <label>Últimos logins (qtd)</label>
+      <p-dropdown formControlName="lastLimit" [options]="[{label:'5', value:5},{label:'10', value:10},{label:'20', value:20}]"></p-dropdown>
+    </div>
+    <div class="row">
+      <label>Auditoria (qtd)</label>
+      <p-dropdown formControlName="auditLimit" [options]="[{label:'20', value:20},{label:'50', value:50},{label:'100', value:100}]"></p-dropdown>
+    </div>
+    <div class="row">
+      <label>Filtrar ação</label>
+      <select formControlName="action" (change)="applyAuditFilter()" class="action-select">
+        <option value="ALL">Todas</option>
+        <option value="ACTIVATE">Ativar</option>
+        <option value="DEACTIVATE">Desativar</option>
+        <option value="CHANGE_ROLE">Alterar role</option>
+        <option value="RESET_PASSWORD">Resetar senha</option>
+      </select>
+    </div>
+    <div class="row" style="align-self: flex-end;">
+      <p-button type="submit" label="Aplicar Filtros" severity="primary"></p-button>
+    </div>
+  </form>
 
-<p-dialog [(visible)]="showResetDialog" [modal]="true" [closable]="true" (onHide)="closeResetDialog()" [style]="{ width: '420px', 'max-width': '90vw' }" header="Resetar Senha">
-  <div *ngIf="userToReset as user">
-    <p class="muted" style="margin-top:0">Usuário: <strong>{{ user.username }}</strong></p>
-    <form [formGroup]="resetForm" (ngSubmit)="confirmReset()" class="form-grid" style="margin-top:8px">
-      <div class="row">
-        <label>Nova senha</label>
-        <p-password formControlName="password" [toggleMask]="true" [feedback]="false"></p-password>
-      </div>
-      <div class="row">
-        <label>Confirmar senha</label>
-        <p-password formControlName="confirm" [toggleMask]="true" [feedback]="false"></p-password>
-      </div>
-      <div class="form-actions" style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end">
-        <p-button type="button" label="Cancelar" severity="secondary" (onClick)="closeResetDialog()"></p-button>
-        <p-button type="submit" label="Confirmar" severity="primary" [disabled]="resetForm.invalid || resetForm.get('password')?.value !== resetForm.get('confirm')?.value"></p-button>
-      </div>
-    </form>
+  <!-- AUDIT TABLE -->
+  <div class="card" *ngIf="!loading">
+    <h3>Auditoria</h3>
+    <p-table [value]="auditFiltered" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]"
+             styleClass="p-datatable-sm underwater-table" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="id" style="width: 80px">ID <p-sortIcon field="id"></p-sortIcon></th>
+          <th pSortableColumn="adminUsername">Admin <p-sortIcon field="adminUsername"></p-sortIcon></th>
+          <th pSortableColumn="userId">User ID <p-sortIcon field="userId"></p-sortIcon></th>
+          <th pSortableColumn="action">Ação <p-sortIcon field="action"></p-sortIcon></th>
+          <th pSortableColumn="timestamp">Quando <p-sortIcon field="timestamp"></p-sortIcon></th>
+          <th>Detalhes</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-a>
+        <tr>
+          <td><span class="p-column-title">ID</span>{{ a.id }}</td>
+          <td><span class="p-column-title">Admin</span>{{ a.adminUsername }}</td>
+          <td><span class="p-column-title">User ID</span>{{ a.userId }}</td>
+          <td>
+            <span class="p-column-title">Ação</span>
+            <span class="chip" [class]="actionClass(a.action)">{{ a.action }}</span>
+          </td>
+          <td><span class="p-column-title">Quando</span>{{ formatDate(a.timestamp) }}</td>
+          <td>
+            <span class="p-column-title">Detalhes</span>
+            <span class="ellipsis" [title]="a.details || '—'">{{ a.details || '—' }}</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
-</p-dialog>
 
-<section class="grid two" *ngIf="!loading">
-  <div class="card">
-    <h3>Últimos Logins</h3>
-    <div class="table-responsive">
-      <table class="simple-table" *ngIf="last && last.length; else sampleLast">
-        <thead>
-          <tr><th>Usuário</th><th>Quando</th></tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let u of last"><td>{{ u.username }}</td><td>{{ formatDate(u.ultimaAtualizacao) }}</td></tr>
-        </tbody>
-      </table>
+  <p-toast position="top-right"></p-toast>
+
+  <!-- RESET PASSWORD DIALOG -->
+  <p-dialog [(visible)]="showResetDialog" [modal]="true" [closable]="true" (onHide)="closeResetDialog()" 
+            [style]="{ width: '420px', 'max-width': '90vw' }" header="Resetar Senha">
+    <div *ngIf="userToReset as user">
+      <p class="muted" style="margin-top:0">Usuário: <strong>{{ user.username }}</strong></p>
+      <form [formGroup]="resetForm" (ngSubmit)="confirmReset()" class="form-grid" style="margin-top:8px">
+        <div class="row">
+          <label>Nova senha</label>
+          <p-password formControlName="password" [toggleMask]="true" [feedback]="false"></p-password>
+        </div>
+        <div class="row">
+          <label>Confirmar senha</label>
+          <p-password formControlName="confirm" [toggleMask]="true" [feedback]="false"></p-password>
+        </div>
+        <div class="form-actions" style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end">
+          <p-button type="button" label="Cancelar" severity="secondary" (onClick)="closeResetDialog()"></p-button>
+          <p-button type="submit" label="Confirmar" severity="primary" [disabled]="resetForm.invalid || resetForm.get('password')?.value !== resetForm.get('confirm')?.value"></p-button>
+        </div>
+      </form>
     </div>
-    <ng-template #sampleLast>
-      <div class="table-responsive">
-        <table class="simple-table">
-          <thead>
-            <tr><th>Usuário</th><th>Quando</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>leandro ba</td><td>16/12/2025 01:25:12</td></tr>
-            <tr><td>leandro g</td><td>16/12/2025 01:02:01</td></tr>
-            <tr><td>leandro brito</td><td>15/12/2025 14:34:56</td></tr>
-            <tr><td>leandro iesb</td><td>14/12/2025 19:28:26</td></tr>
-            <tr><td>user1</td><td>13/12/2025 23:13:40</td></tr>
-            <tr><td>teste b</td><td>13/12/2025 22:16:15</td></tr>
-            <tr><td>leandro b</td><td>13/12/2025 20:50:48</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </ng-template>
-  </div>
-  <div class="card">
-    <h3>Status</h3>
-    <p *ngIf="status">{{ status.status }} — {{ formatDate(status.timestamp) }}</p>
-    <p *ngIf="!status" class="muted">UP — 16/12/2025 01:37:58</p>
-  </div>
-</section>
-<form class="card filters filters-inline" [formGroup]="filterForm" (ngSubmit)="refresh()">
-  <div class="row">
-    <label>Últimos logins</label>
-    <p-dropdown formControlName="lastLimit" [options]="[{label:'5', value:5},{label:'10', value:10},{label:'20', value:20}]" [style]="{width:'180px'}"></p-dropdown>
-  </div>
-  <div class="row">
-    <label>Auditoria</label>
-    <p-dropdown formControlName="auditLimit" [options]="[{label:'20', value:20},{label:'50', value:50},{label:'100', value:100}]" [style]="{width:'180px'}"></p-dropdown>
-  </div>
-  <div class="row">
-    <label>Filtrar ação</label>
-    <select formControlName="action" (change)="applyAuditFilter()" style="width:180px; height:32px; font-size:12px;">
-      <option value="ALL">Todas</option>
-      <option value="ACTIVATE">Ativar</option>
-      <option value="DEACTIVATE">Desativar</option>
-      <option value="CHANGE_ROLE">Alterar role</option>
-      <option value="RESET_PASSWORD">Resetar senha</option>
-    </select>
-  </div>
-  <div class="row">
-    <p-button type="submit" label="Aplicar" severity="primary" size="small"></p-button>
-    <p-button type="button" label="Atualizar Status" severity="secondary" size="small" (onClick)="refreshStatus()"></p-button>
-  </div>
-</form>
-<section class="card" *ngIf="!loading">
-  <h3>Auditoria</h3>
-  <div class="table audit">
-    <div class="thead">
-      <span>ID</span><span>Admin</span><span>User</span><span>Ação</span><span>Quando</span><span>Detalhes</span>
-    </div>
-    <div class="row" *ngFor="let a of auditFiltered; let i = index" [class.alt]="i % 2 === 1">
-      <span data-label="ID">{{ a.id }}</span>
-      <span data-label="Admin">{{ a.adminUsername }}</span>
-      <span data-label="User ID">{{ a.userId }}</span>
-      <span data-label="Ação"><span class="chip" [class]="actionClass(a.action)">{{ a.action }}</span></span>
-      <span data-label="Quando">{{ formatDate(a.timestamp) }}</span>
-      <span class="ellipsis" [title]="a.details || '—'" data-label="Detalhes">{{ a.details || '—' }}</span>
-    </div>
-  </div>
-</section>
+  </p-dialog>
+
 </div>
-

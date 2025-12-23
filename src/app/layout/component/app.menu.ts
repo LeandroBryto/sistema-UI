@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-menu',
@@ -15,8 +16,10 @@ import { AppMenuitem } from './app.menuitem';
         </ng-container>
     </ul> `
 })
-export class AppMenu {
+export class AppMenu implements OnInit {
     model: MenuItem[] = [];
+
+    constructor(private authService: AuthService) {}
 
     ngOnInit() {
         this.model = [
@@ -43,7 +46,12 @@ export class AppMenu {
             {
                 label: 'SISTEMA',
                 items: [
-                    { label: 'Painel de Controle', icon: 'pi pi-fw pi-shield', routerLink: ['/admin'] },
+                    { 
+                        label: 'Painel de Controle', 
+                        icon: 'pi pi-fw pi-shield', 
+                        routerLink: ['/admin'],
+                        visible: this.authService.isAdmin()
+                    },
                     { label: 'Configurações da Conta', icon: 'pi pi-fw pi-user-edit', routerLink: ['/config/conta'] },
                     { label: 'Notificações por E-mail', icon: 'pi pi-fw pi-envelope', routerLink: ['/config/notificacoes-email'] },
                     { label: 'Alertas de Cotação', icon: 'pi pi-fw pi-bell', routerLink: ['/config/alertas-cotacao'] },
