@@ -41,8 +41,14 @@
      but kept for fine-tuning specific behaviors if needed */
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   .middle-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .kpi-grid, .middle-grid, .bottom-grid {
     grid-template-columns: 1fr;
   }
 }

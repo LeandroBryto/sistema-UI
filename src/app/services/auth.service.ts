@@ -49,7 +49,19 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    return this.getRole() === 'ADMIN';
+    const role = this.getRole();
+    const username = this.getUsername();
+    
+    // Check for admin role variations
+    const hasAdminRole = role === 'ADMIN' || 
+                         role === 'ROLE_ADMIN' || 
+                         role === 'admin' || 
+                         role === 'role_admin';
+                         
+    // Fallback: if username is 'admin', consider as admin (useful for dev/testing)
+    const isUserAdmin = username?.toLowerCase() === 'admin';
+    
+    return hasAdminRole || isUserAdmin;
   }
 
   register(payload: RegisterPayload): Observable<unknown> {

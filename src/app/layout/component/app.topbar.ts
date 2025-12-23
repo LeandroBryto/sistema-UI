@@ -39,7 +39,7 @@ import { ThemeService } from '../../services/theme.service';
                     />
                     </g>
                 </svg>
-                <span>Sistema Web</span>
+                <span>Nexus Finance</span>
             </a>
         </div>
 

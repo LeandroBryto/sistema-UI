@@ -43,6 +43,7 @@ export class AppMenu {
             {
                 label: 'SISTEMA',
                 items: [
+                    { label: 'Painel de Controle', icon: 'pi pi-fw pi-shield', routerLink: ['/admin'] },
                     { label: 'Configurações da Conta', icon: 'pi pi-fw pi-user-edit', routerLink: ['/config/conta'] },
                     { label: 'Notificações por E-mail', icon: 'pi pi-fw pi-envelope', routerLink: ['/config/notificacoes-email'] },
                     { label: 'Alertas de Cotação', icon: 'pi pi-fw pi-bell', routerLink: ['/config/alertas-cotacao'] },

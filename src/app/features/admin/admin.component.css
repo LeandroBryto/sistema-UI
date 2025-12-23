@@ -199,9 +199,15 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* MOBILE RESPONSIVENESS */
+@media (max-width: 1200px) {
+  .grid.two {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .page-container {
-    padding: 1rem;
+    padding: clamp(16px, 3vw, 24px);
   }
   
   .head {
@@ -239,6 +245,7 @@ input:focus, select:focus, textarea:focus {
   }
 
   .row {
+    display: flex; /* Ensure flex is applied */
     flex-direction: column;
     gap: 0.5rem;
     padding: 1rem;

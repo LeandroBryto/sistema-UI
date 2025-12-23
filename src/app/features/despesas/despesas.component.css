@@ -92,6 +92,17 @@
   }
 }
 
+@media (max-width: 576px) {
+  .grid.two {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .page-container {
+    padding: 16px;
+  }
+}
+
 @media (max-width: 991px) {
   .header {
     flex-direction: column;
