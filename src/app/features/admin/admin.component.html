@@ -52,7 +52,7 @@
 
 <p-toast position="top-right"></p-toast>
 
-<p-dialog [(visible)]="showResetDialog" [modal]="true" [closable]="true" (onHide)="closeResetDialog()" [style]="{ width: '420px' }" header="Resetar Senha">
+<p-dialog [(visible)]="showResetDialog" [modal]="true" [closable]="true" (onHide)="closeResetDialog()" [style]="{ width: '420px', 'max-width': '90vw' }" header="Resetar Senha">
   <div *ngIf="userToReset as user">
     <p class="muted" style="margin-top:0">Usuário: <strong>{{ user.username }}</strong></p>
     <form [formGroup]="resetForm" (ngSubmit)="confirmReset()" class="form-grid" style="margin-top:8px">

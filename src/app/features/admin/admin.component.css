@@ -88,6 +88,16 @@
 }
 
 /* GRID / STATS */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.grid.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -205,31 +215,48 @@ input:focus, select:focus, textarea:focus {
   }
 }
 
+@media (max-width: 991px) {
+  .page-container {
+    padding: 1.5rem;
+  }
+  
+  /* Stack grids on tablet */
+  .grid.two {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .page-container {
-    padding: clamp(16px, 3vw, 24px);
+    padding: 1rem;
   }
   
   .head {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1rem;
   }
   
   .actions {
     width: 100%;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .link.secondary {
+    order: 2;
+  }
+
+  .badge {
+    order: 1;
   }
   
   .stats-grid {
     grid-template-columns: 1fr;
   }
 
-  /* Stack table on mobile if needed, or scroll */
-  .table-responsive {
-    overflow-x: auto;
-  }
-  
-  /* iOS Input Zoom Fix */
+  /* iOS Input Zoom Fix & Touch Targets */
   input, select, textarea {
     font-size: 16px !important;
     min-height: 48px;
@@ -237,6 +264,11 @@ input:focus, select:focus, textarea:focus {
 
   button {
     min-height: 48px;
+  }
+
+  /* Card padding reduction */
+  .card {
+    padding: 1rem;
   }
 
   /* Div-based table stacking for Users and Audit */
@@ -247,12 +279,12 @@ input:focus, select:focus, textarea:focus {
   .row {
     display: flex; /* Ensure flex is applied */
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
     padding: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.05);
     margin-bottom: 1rem;
     background: rgba(255, 255, 255, 0.02);
-    border-radius: 8px;
+    border-radius: 12px;
   }
 
   .row span {
@@ -261,6 +293,7 @@ input:focus, select:focus, textarea:focus {
     align-items: center;
     width: 100%;
     text-align: right;
+    font-size: 0.95rem;
   }
 
   .row span::before {
@@ -269,15 +302,18 @@ input:focus, select:focus, textarea:focus {
     color: #94a3b8;
     margin-right: 1rem;
     text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
   }
 
-  /* Adjust actions column */
+  /* Actions section in row */
   .row .actions {
     flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
   }
 
   .row .actions button,
@@ -288,35 +324,39 @@ input:focus, select:focus, textarea:focus {
   .row .actions form {
     display: flex;
     gap: 0.5rem;
+    flex-direction: column;
   }
 
   .row .actions form select {
-    flex: 1;
-  }
-
-  /* Grid adjustment */
-  .grid.two {
-    grid-template-columns: 1fr;
+    width: 100%;
   }
   
-  /* Inline filters */
+  /* Inline filters stacking */
   .filters-inline {
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
+    gap: 1rem;
   }
 
   .filters-inline .row {
-    flex-direction: column; /* Keep label above input */
     border: none;
     background: transparent;
     padding: 0;
-    margin-bottom: 0.5rem;
+    margin: 0;
+    box-shadow: none;
   }
   
-  .filters-inline .row span {
-      justify-content: flex-start;
+  .filters-inline label {
+    margin-bottom: 0.5rem;
   }
-  .filters-inline .row span::before {
-      display: none;
+
+  .filters-inline p-dropdown, 
+  .filters-inline select {
+    width: 100% !important;
+  }
+  
+  /* Ensure PrimeNG dropdowns are full width */
+  :host ::ng-deep .p-dropdown {
+    width: 100% !important;
   }
 }
