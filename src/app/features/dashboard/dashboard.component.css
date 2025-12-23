@@ -17,14 +17,14 @@
 /* Grids */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .middle-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   gap: 1.5rem;
   min-height: 400px;
   margin-bottom: 2rem;
@@ -32,8 +32,19 @@
 
 .bottom-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
+}
+
+@media (max-width: 991px) {
+  /* Media queries adjustments are less needed with auto-fit, 
+     but kept for fine-tuning specific behaviors if needed */
+}
+
+@media (max-width: 576px) {
+  .middle-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Buttons */

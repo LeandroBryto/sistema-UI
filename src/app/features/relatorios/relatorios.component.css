@@ -48,6 +48,12 @@
   align-items: end;
 }
 
+@media (max-width: 768px) {
+  .filters.card {
+    grid-template-columns: 1fr;
+  }
+}
+
 .row {
   display: flex;
   flex-direction: column;
@@ -78,7 +84,7 @@ input:focus {
 
 .grid.two {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
   margin-bottom: 24px;
 }

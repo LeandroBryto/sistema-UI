@@ -11,7 +11,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: clamp(1rem, 3vw, 2rem);
   box-sizing: border-box;
   min-height: 100vh;
   /* If the global body has the gradient, we might not need this, 

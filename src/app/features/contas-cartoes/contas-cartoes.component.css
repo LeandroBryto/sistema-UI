@@ -5,7 +5,7 @@
 .page-container {
   width: 100%;
   min-height: 100vh;
-  padding: 24px;
+  padding: clamp(16px, 3vw, 24px);
   /* Background delegated to global body style for consistency */
   color: #e2e8f0;
 }
@@ -47,11 +47,11 @@
 
 .grid-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 24px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 500px) {
   .grid-layout {
     grid-template-columns: 1fr;
   }
