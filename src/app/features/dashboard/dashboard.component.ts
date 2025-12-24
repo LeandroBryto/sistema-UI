@@ -49,10 +49,10 @@ import { AiAssistantRequestDTO } from '../../models/ai.models';
 export class DashboardComponent implements OnInit {
   // Data
   kpis = {
-    receitas: { value: 0, trend: 0 },
-    despesas: { value: 0, trend: 0 },
-    saldo: { value: 0, trend: 0 },
-    investimentos: { value: 0, trend: 0 }
+    receitas: { value: 0, trend: 0, trendLabel: 'vs mês anterior' },
+    despesas: { value: 0, trend: 0, trendLabel: 'vs mês anterior' },
+    saldo: { value: 0, trend: 0, trendLabel: 'vs mês anterior' },
+    investimentos: { value: 0, trend: 0, trendLabel: 'rendimento' }
   };
   
   carteira = {
@@ -92,6 +92,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.initChartOptions();
     this.loadData();
+    this.loadTrends();
   }
 
   logout() {
@@ -170,12 +171,8 @@ export class DashboardComponent implements OnInit {
     const startDate = new Date(now.getFullYear(), 0, 1).toISOString().split('T')[0]; // Start of year
     const endDate = new Date(now.getFullYear(), 11, 31).toISOString().split('T')[0]; // End of year
 
-    // Load Summary
-    this.summaryService.getResumo().subscribe((data: ResumoFinanceiroDTO) => {
-      this.kpis.receitas.value = data.totalReceitas;
-      this.kpis.despesas.value = data.totalDespesas;
-      this.kpis.saldo.value = data.saldoAtual;
-    });
+    // Load Summary (Now calculated manually from transactions to ensure consistency)
+    // this.summaryService.getResumo().subscribe(...) - REMOVED to fix logic
 
     // Load Investments from CarteiraService
     this.carteiraService.list().subscribe((carteiras: CarteiraResponse[]) => {
@@ -188,11 +185,36 @@ export class DashboardComponent implements OnInit {
       this.carteira.saldo = data.saldoAtual;
     });
 
-    // Load Transactions (Mock combination of recent items)
+    // Load Transactions (Fetch full year to calculate current month KPIs locally)
     Promise.all([
       firstValueFrom(this.receitaService.list(startDate, endDate)),
       firstValueFrom(this.despesaService.list(startDate, endDate))
     ]).then(([receitas, despesas]) => {
+      
+      // Calculate KPIs manually for the current month
+      const now = new Date();
+      const currentMonth = now.getMonth(); // 0-11
+      const currentYear = now.getFullYear();
+
+      const isCurrentMonth = (dateStr: string) => {
+        if (!dateStr) return false;
+        const [y, m, d] = dateStr.split('-').map(Number);
+        return y === currentYear && (m - 1) === currentMonth;
+      };
+
+      const receitasMes = receitas.filter(r => isCurrentMonth(r.data));
+      const despesasMes = despesas.filter(d => isCurrentMonth(d.data));
+
+      const totalReceitas = receitasMes.reduce((acc, r) => acc + r.valor, 0);
+      const totalDespesas = despesasMes.reduce((acc, d) => acc + d.valor, 0);
+
+      this.kpis.receitas.value = totalReceitas;
+      this.kpis.despesas.value = totalDespesas; // Display as positive here, negative in template
+
+      // Saldo logic: Receitas - Despesas, if negative show 0
+      const saldoCalculado = totalReceitas - totalDespesas;
+      this.kpis.saldo.value = Math.max(0, saldoCalculado);
+
       const combined = [
         ...receitas.map((r: ReceitaResponse) => ({ ...r, type: 'income', icon: 'pi pi-arrow-up' })),
         ...despesas.map((d: DespesaResponse) => ({ ...d, type: 'expense', icon: 'pi pi-arrow-down' }))
@@ -204,6 +226,46 @@ export class DashboardComponent implements OnInit {
 
       this.updateCharts(receitas, despesas);
     });
+  }
+
+  loadTrends() {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    
+    // Calculate previous month
+    let prevMonth = currentMonth - 1;
+    let prevYear = currentYear;
+    if (prevMonth === 0) {
+      prevMonth = 12;
+      prevYear = currentYear - 1;
+    }
+
+    const currentKey = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
+    const prevKey = `${prevYear}-${String(prevMonth).padStart(2, '0')}`;
+
+    // Get Current Month Data (for comparison base)
+    this.summaryService.getRelatorioMensal(currentKey).subscribe(current => {
+      this.summaryService.getRelatorioMensal(prevKey).subscribe(prev => {
+        this.calculateTrend(this.kpis.receitas, current.totalReceitas, prev.totalReceitas);
+        this.calculateTrend(this.kpis.despesas, current.totalDespesas, prev.totalDespesas);
+        // Saldo trend usually doesn't make sense as % change if crossing zero, but let's try difference
+        this.calculateTrend(this.kpis.saldo, current.saldo, prev.saldo);
+      }, err => {
+        // If no previous data, assume 0 trend
+        this.kpis.receitas.trend = 0;
+        this.kpis.despesas.trend = 0;
+        this.kpis.saldo.trend = 0;
+      });
+    });
+  }
+
+  private calculateTrend(kpi: any, current: number, previous: number) {
+    if (previous === 0) {
+      kpi.trend = current > 0 ? 100 : 0;
+    } else {
+      kpi.trend = ((current - previous) / Math.abs(previous)) * 100;
+    }
   }
 
   updateCharts(receitas: ReceitaResponse[], despesas: DespesaResponse[]) {

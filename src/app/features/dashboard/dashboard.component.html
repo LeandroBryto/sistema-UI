@@ -25,9 +25,9 @@
       <div class="kpi-content">
         <span class="kpi-label">Receitas</span>
         <span class="kpi-value">R$ {{ kpis.receitas.value | number:'1.2-2' }}</span>
-        <div class="kpi-trend ok">
-          <i class="pi pi-arrow-up"></i>
-          <span>12% vs mês anterior</span>
+        <div class="kpi-trend" [ngClass]="kpis.receitas.trend >= 0 ? 'ok' : 'warn'">
+          <i class="pi" [ngClass]="kpis.receitas.trend >= 0 ? 'pi-arrow-up' : 'pi-arrow-down'"></i>
+          <span>{{ kpis.receitas.trend | number:'1.1-1' }}% {{ kpis.receitas.trendLabel }}</span>
         </div>
       </div>
       <div class="kpi-icon-wrapper">
@@ -39,9 +39,9 @@
       <div class="kpi-content">
         <span class="kpi-label">Despesas</span>
         <span class="kpi-value">R$ {{ kpis.despesas.value | number:'1.2-2' }}</span>
-        <div class="kpi-trend warn">
-          <i class="pi pi-arrow-down"></i>
-          <span>5% vs mês anterior</span>
+        <div class="kpi-trend" [ngClass]="kpis.despesas.trend <= 0 ? 'ok' : 'warn'">
+          <i class="pi" [ngClass]="kpis.despesas.trend >= 0 ? 'pi-arrow-up' : 'pi-arrow-down'"></i>
+          <span>{{ kpis.despesas.trend | number:'1.1-1' }}% {{ kpis.despesas.trendLabel }}</span>
         </div>
       </div>
       <div class="kpi-icon-wrapper">
@@ -52,10 +52,12 @@
     <div class="card kpi-card">
       <div class="kpi-content">
         <span class="kpi-label">Saldo Atual</span>
-        <span class="kpi-value">R$ {{ kpis.saldo.value | number:'1.2-2' }}</span>
-        <div class="kpi-trend neutral">
-          <i class="pi pi-clock"></i>
-          <span>Atualizado agora</span>
+        <span class="kpi-value">
+          {{ kpis.saldo.value > 0 ? '+' : '' }}R$ {{ kpis.saldo.value | number:'1.2-2' }}
+        </span>
+        <div class="kpi-trend" [ngClass]="kpis.saldo.trend >= 0 ? 'ok' : 'warn'">
+          <i class="pi" [ngClass]="kpis.saldo.trend >= 0 ? 'pi-arrow-up' : 'pi-arrow-down'"></i>
+          <span>{{ kpis.saldo.trend | number:'1.1-1' }}% {{ kpis.saldo.trendLabel }}</span>
         </div>
       </div>
       <div class="kpi-icon-wrapper">
@@ -199,7 +201,7 @@
             </div>
             <span class="text-gray-300">Despesas</span>
           </div>
-          <span class="font-bold text-red-400">R$ {{ kpis.despesas.value | number:'1.2-2' }}</span>
+          <span class="font-bold text-red-400">{{ kpis.despesas.value > 0 ? '-' : '' }} R$ {{ kpis.despesas.value | number:'1.2-2' }}</span>
         </div>
       </div>
       
