@@ -20,9 +20,9 @@
       </thead>
       <tbody>
         <tr *ngFor="let r of rows">
-          <td>{{ r.tipo }}</td>
-          <td>{{ r.dataHora }}</td>
-          <td>{{ r.status }}</td>
+          <td data-label="Tipo">{{ r.tipo }}</td>
+          <td data-label="Data/Hora">{{ r.dataHora }}</td>
+          <td data-label="Status">{{ r.status }}</td>
         </tr>
       </tbody>
     </table>

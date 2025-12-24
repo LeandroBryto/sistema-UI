@@ -160,3 +160,68 @@ input[type="checkbox"] {
   vertical-align: middle;
   margin-right: 8px;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .settings-page {
+    padding: 16px;
+  }
+
+  .head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  /* Mobile Inputs */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  input[type="time"],
+  input[type="date"],
+  select,
+  button.primary {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  /* Responsive Table */
+  .table thead {
+    display: none;
+  }
+
+  .table, .table tbody, .table tr, .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .table td {
+    text-align: right;
+    padding: 8px 0;
+    border: none;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+    color: #94a3b8;
+  }
+}

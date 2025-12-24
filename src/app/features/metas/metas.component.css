@@ -293,4 +293,13 @@ h1 {
     padding: 12px 16px;
     font-size: 0.9rem;
   }
+
+  /* Mobile Inputs */
+  input, select, button,
+  :host ::ng-deep .p-inputtext,
+  :host ::ng-deep .p-dropdown,
+  :host ::ng-deep button {
+    min-height: 48px;
+    font-size: 16px; /* iOS zoom fix */
+  }
 }

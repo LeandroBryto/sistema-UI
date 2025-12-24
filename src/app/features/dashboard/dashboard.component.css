@@ -253,6 +253,15 @@
   .list-item > span:nth-child(2) {
     display: none;
   }
+
+  /* Mobile Inputs & Buttons */
+  input, select, button,
+  :host ::ng-deep .p-inputtext,
+  :host ::ng-deep .p-dropdown,
+  :host ::ng-deep .p-button {
+    min-height: 48px;
+    font-size: 16px; /* iOS zoom fix */
+  }
 }
 
 /* Small Mobile (< 480px) */
