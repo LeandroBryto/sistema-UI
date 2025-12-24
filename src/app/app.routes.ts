@@ -20,6 +20,9 @@ import { HomeComponent } from './features/home/home.component';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
+import { ContaComponent } from './features/conta/conta.component';
+import { contaAccessGuard } from './guards/conta-access.guard';
+
 export const routes: Routes = [
   // Public Routes
   { path: 'login', component: LoginComponent },
@@ -40,6 +43,9 @@ export const routes: Routes = [
       { path: 'investimentos', component: InvestimentosComponent },
       { path: 'metas', component: MetasComponent },
       { path: 'home', component: HomeComponent },
+      
+      // Restricted
+      { path: 'conta', component: ContaComponent, canActivate: [contaAccessGuard] },
       
       // Admin
       { path: 'admin', component: AdminComponent, canActivate: [roleGuard] },

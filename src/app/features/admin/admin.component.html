@@ -47,6 +47,7 @@
           <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
           <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
           <th pSortableColumn="role">Role <p-sortIcon field="role"></p-sortIcon></th>
+          <th>Acesso Conta</th>
           <th>Ações</th>
         </tr>
       </ng-template>
@@ -62,6 +63,12 @@
           <td>
             <span class="p-column-title">Role</span>
             <span class="chip info">{{ u.role }}</span>
+          </td>
+          <td>
+            <span class="p-column-title">Acesso Conta</span>
+            <p-checkbox [binary]="true" [ngModel]="hasContaAccess(u)" [disabled]="u.role === 'ADMIN'"
+                        (onChange)="toggleContaAccess(u, $event)" 
+                        [pTooltip]="u.role === 'ADMIN' ? 'Admin tem acesso total' : 'Conceder acesso à tela Conta'"></p-checkbox>
           </td>
           <td>
             <span class="p-column-title">Ações</span>

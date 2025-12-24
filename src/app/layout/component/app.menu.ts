@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
 import { AuthService } from '../../services/auth.service';
+import { PermissionService } from '../../services/permission.service';
 
 @Component({
     selector: 'app-menu',
@@ -19,14 +20,20 @@ import { AuthService } from '../../services/auth.service';
 export class AppMenu implements OnInit {
     model: MenuItem[] = [];
 
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService, private permissionService: PermissionService) {}
 
     ngOnInit() {
         this.model = [
             {
                 label: 'PRINCIPAL',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'] }
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'] },
+                    { 
+                        label: 'Minha Conta', 
+                        icon: 'pi pi-fw pi-user', 
+                        routerLink: ['/conta'],
+                        visible: this.permissionService.canAccessConta()
+                    }
                 ]
             },
             {

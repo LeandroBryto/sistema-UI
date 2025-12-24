@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -12,11 +12,14 @@ import { MessageService } from 'primeng/api';
 import { Router, RouterLink } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { AdminUserResponseDTO, MetricsSummaryDTO, AuditLogResponseDTO, ApplicationStatusDTO } from '../../models/admin.models';
+import { PermissionService } from '../../services/permission.service';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, DropdownModule, ButtonModule, DialogModule, PasswordModule, ToastModule, TableModule, InputTextModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, DropdownModule, ButtonModule,  FormsModule,DialogModule, PasswordModule, ToastModule, TableModule, InputTextModule, CheckboxModule, TooltipModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
   providers: [MessageService],
@@ -47,7 +50,13 @@ export class AdminComponent implements OnInit {
     auditLimit: [50],
   });
 
-  constructor(private admin: AdminService, private fb: FormBuilder, private router: Router, private toast: MessageService) {}
+  constructor(
+    private admin: AdminService, 
+    private fb: FormBuilder, 
+    private router: Router, 
+    private toast: MessageService,
+    public permissionService: PermissionService
+  ) {}
 
   ngOnInit(): void {
     this.load();
@@ -188,5 +197,22 @@ export class AdminComponent implements OnInit {
 
   refreshStatus(): void {
     this.admin.status().subscribe({ next: (s) => (this.status = s) });
+  }
+
+  hasContaAccess(u: AdminUserResponseDTO): boolean {
+    // Admin always has access
+    if (u.role === 'ADMIN') return true;
+    const allowed = this.permissionService.getAllowedUsernames();
+    return allowed.includes(u.username);
+  }
+
+  toggleContaAccess(u: AdminUserResponseDTO, event: any): void {
+    const isChecked = event.checked;
+    this.permissionService.toggleAccess(u.username, isChecked);
+    this.toast.add({
+      severity: 'success', 
+      summary: 'Permissão Atualizada', 
+      detail: `Acesso à tela de Conta ${isChecked ? 'concedido' : 'removido'} para ${u.username}`
+    });
   }
 }
