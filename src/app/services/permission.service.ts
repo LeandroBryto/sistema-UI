@@ -19,16 +19,12 @@ export class PermissionService {
   canAccessConta(): boolean {
     if (this.auth.isAdmin()) return true; // Admins always have access
     
-    // For now, we need the user ID. AuthService usually has it.
-    // If AuthService doesn't expose ID directly, we might need to decode token or fetch profile.
-    // Let's assume we can get it or use username if ID not available.
-    // Looking at AuthService (previous search), it has getUsername().
-    // Let's use username for mapping permissions as it's easier to retrieve without an async call.
     const username = this.auth.getUsername();
     if (!username) return false;
 
     const allowedUsernames = this.getAllowedUsernames();
-    return allowedUsernames.includes(username);
+    // Case insensitive check
+    return allowedUsernames.some(u => u.toLowerCase() === username.toLowerCase());
   }
 
   // Admin methods
@@ -44,15 +40,17 @@ export class PermissionService {
 
   grantAccess(username: string): void {
     const list = this.getAllowedUsernames();
-    if (!list.includes(username)) {
-      list.push(username);
+    // Avoid duplicates (case insensitive check)
+    if (!list.some(u => u.toLowerCase() === username.toLowerCase())) {
+      list.push(username); // Store original case just in case
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
     }
   }
 
   revokeAccess(username: string): void {
     let list = this.getAllowedUsernames();
-    list = list.filter(u => u !== username);
+    // Remove case insensitive
+    list = list.filter(u => u.toLowerCase() !== username.toLowerCase());
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
   }
 
