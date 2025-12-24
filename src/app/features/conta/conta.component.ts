@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink } from '@angular/router';
+import { ContasCartoesComponent } from '../contas-cartoes/contas-cartoes.component';
 
 @Component({
   selector: 'app-conta-restricted',
   standalone: true,
-  imports: [CommonModule, CardModule, ButtonModule, RouterLink],
+  imports: [CommonModule, CardModule, ButtonModule, RouterLink, ContasCartoesComponent],
   template: `
     <div class="page-container">
       <header class="page-header">
@@ -20,23 +21,15 @@ import { RouterLink } from '@angular/router';
         </div>
       </header>
 
-      <div class="card-section">
-        <p-card header="Dados da Conta" styleClass="glass-card">
+      <div class="card-section mb-4">
+        <p-card header="Status de Acesso" styleClass="glass-card">
           <p class="m-0">
             Esta é uma tela restrita. Se você está vendo isso, você é um Administrador ou recebeu permissão especial.
           </p>
-          <div class="mt-4">
-            <div class="grid">
-              <div class="col-12 md:col-6">
-                <strong>Status:</strong> <span class="text-green-400">Ativo</span>
-              </div>
-              <div class="col-12 md:col-6">
-                <strong>Nível de Acesso:</strong> Especial
-              </div>
-            </div>
-          </div>
         </p-card>
       </div>
+
+      <app-contas-cartoes [embedded]="true"></app-contas-cartoes>
     </div>
   `,
   styles: [`

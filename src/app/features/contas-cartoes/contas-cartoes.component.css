@@ -1,13 +1,11 @@
-:host {
-  display: block;
+.page-container {
+  padding: clamp(16px, 3vw, 24px);
+  min-height: 100vh;
+  color: #e2e8f0;
 }
 
-.page-container {
+.embedded-container {
   width: 100%;
-  min-height: 100vh;
-  padding: clamp(16px, 3vw, 24px);
-  /* Background delegated to global body style for consistency */
-  color: #e2e8f0;
 }
 
 .page-header {
@@ -22,8 +20,9 @@
 
 .header-content h1 {
   margin: 0;
-  color: #fff;
   font-size: 1.5rem;
+  color: #fff;
+  font-weight: 600;
 }
 
 .back-btn {
@@ -47,27 +46,20 @@
 
 .grid-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 24px;
-}
-
-@media (max-width: 768px) {
-  .grid-layout {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
 .card-section {
   background: rgba(13, 22, 38, 0.7);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  height: 100%;
 }
 
-.full-width {
+.card-section.full-width {
   grid-column: 1 / -1;
 }
 
@@ -75,53 +67,52 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .section-header h2 {
   margin: 0;
   font-size: 1.25rem;
-  color: #f1f5f9;
+  color: #fff;
+  font-weight: 500;
 }
 
 .items-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  gap: 16px;
 }
 
 .item-card {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 16px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 16px;
   border-radius: 12px;
-  transition: transform 0.2s, background 0.2s;
+  transition: all 0.2s;
 }
 
 .item-card:hover {
-  transform: translateX(4px);
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
 }
 
 .icon {
-  width: 40px;
-  height: 40px;
-  background: rgba(59, 130, 246, 0.1);
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  font-size: 20px;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  font-size: 24px;
 }
 
-.item-card.credit .icon {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.2);
-}
+.icon.CONTA_BANCARIA { color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
+.icon.DINHEIRO { color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+.icon.POUPANCA { color: #f472b6; background: rgba(244, 114, 182, 0.1); }
+.icon.INVESTIMENTO { color: #c084fc; background: rgba(192, 132, 252, 0.1); }
 
 .info h3 {
   margin: 0 0 4px 0;
@@ -131,26 +122,24 @@
 
 .balance {
   margin: 0;
-  font-weight: 700;
-  color: #34d399;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
 }
 
 .limit {
   margin: 0;
-  font-weight: 600;
+  font-size: 0.9rem;
   color: #94a3b8;
 }
 
-.empty-state {
-  text-align: center;
+.item-card small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
   color: #64748b;
-  padding: 20px;
-  font-style: italic;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 8px;
 }
 
-/* Categories */
 .categories-list {
   display: flex;
   flex-wrap: wrap;
@@ -161,10 +150,11 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -172,36 +162,40 @@
   background: none;
   border: none;
   color: inherit;
-  cursor: pointer;
   opacity: 0.6;
-  padding: 0 4px;
-  font-size: 1.2rem;
-  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.1rem;
+  margin-left: 4px;
 }
 
 .del-btn:hover {
   opacity: 1;
 }
 
-/* Forms in Dialogs */
-.form-dialog {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.empty-state {
+  text-align: center;
+  padding: 32px;
+  color: #94a3b8;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.form-dialog .field {
+  margin-bottom: 20px;
 }
 
-.field label {
-  font-weight: 500;
+.form-dialog label {
+  display: block;
+  margin-bottom: 8px;
   color: #e2e8f0;
+  font-weight: 500;
 }
 
-.field input, .field p-dropdown {
+.form-dialog input,
+.form-dialog .p-dropdown {
   width: 100%;
 }
 
@@ -218,88 +212,29 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 32px;
 }
 
-/* PrimeNG Overrides for Dark Mode Dialogs */
-:host ::ng-deep .p-dialog .p-dialog-header {
-  background: #1e293b;
-  color: #fff;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-:host ::ng-deep .p-dialog .p-dialog-content {
-  background: #1e293b;
-  color: #e2e8f0;
-  padding-top: 1.5rem;
-}
-
-:host ::ng-deep .p-dialog .p-dialog-footer {
-  background: #1e293b;
-  border-top: 1px solid rgba(255,255,255,0.1);
-}
-
-:host ::ng-deep .p-inputtext {
-  background: #0f172a;
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #fff;
-}
-
-:host ::ng-deep .p-dropdown {
-  background: #0f172a;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-
-:host ::ng-deep .p-dropdown .p-dropdown-label {
-  color: #fff;
-}
-
-:host ::ng-deep .p-dropdown-panel {
-  background: #1e293b;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-:host ::ng-deep .p-dropdown-item {
-  color: #e2e8f0;
-}
-
-:host ::ng-deep .p-dropdown-item:hover {
-  background: rgba(255,255,255,0.1);
-}
-
-/* Mobile Adjustments */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .page-container {
     padding: 16px;
   }
   
-  .header-content h1 {
-    font-size: 1.25rem;
+  .grid-layout {
+    grid-template-columns: 1fr;
   }
-  
+
   .item-card {
     padding: 12px;
   }
-  
-  .cat-tag {
-    font-size: 12px;
-    padding: 6px 10px;
-  }
-  
-  /* Stack dialog rows on mobile */
-  .row {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  :host ::ng-deep .p-dialog {
-    width: 90vw !important;
-  }
 
-  :host ::ng-deep .p-inputtext,
-  :host ::ng-deep .p-dropdown,
-  :host ::ng-deep button {
+  /* Ensure touch targets */
+  button, .p-button {
     min-height: 48px;
-    font-size: 16px; /* iOS zoom fix */
+  }
+  
+  input, select, .p-dropdown {
+    min-height: 48px;
+    font-size: 16px !important;
   }
 }

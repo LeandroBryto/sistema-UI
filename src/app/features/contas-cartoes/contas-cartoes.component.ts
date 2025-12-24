@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -78,6 +78,8 @@ export class ContasCartoesComponent implements OnInit {
     { label: 'Despesa', value: 'DESPESA' },
     { label: 'Receita', value: 'RECEITA' }
   ];
+
+  @Input() embedded = false;
 
   constructor(
     private fb: FormBuilder,

@@ -1,7 +1,7 @@
-<div class="page-container">
+<div [class.page-container]="!embedded" [class.embedded-container]="embedded">
   <p-toast position="top-right"></p-toast>
   
-  <header class="page-header">
+  <header class="page-header" *ngIf="!embedded">
     <div class="header-content">
       <a routerLink="/dashboard" class="back-btn">
         <i class="pi pi-arrow-left"></i>
