@@ -103,6 +103,17 @@ export class DespesasComponent implements OnInit {
   ngOnInit(): void {
     this.load();
     this.loadAuxiliares();
+    this.setupAutoClear();
+  }
+
+  setupAutoClear(): void {
+    this.form.controls.formaPagamento.valueChanges.subscribe(val => {
+      if (val === 'CARTAO_CREDITO') {
+        this.form.patchValue({ carteiraId: null });
+      } else {
+        this.form.patchValue({ cartaoCreditoId: null });
+      }
+    });
   }
 
   loadAuxiliares(): void {

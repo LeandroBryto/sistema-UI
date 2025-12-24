@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit {
   
   carteira = {
     saldo: 0,
-    meta: 50000
+    meta: 0
   };
 
   recentTransactions: any[] = [];
@@ -207,12 +207,45 @@ export class DashboardComponent implements OnInit {
   }
 
   updateCharts(receitas: ReceitaResponse[], despesas: DespesaResponse[]) {
+    // Inicializar arrays para os 12 meses
+    const receitaData = new Array(12).fill(0);
+    const despesaData = new Array(12).fill(0);
+
+    // Processar Receitas
+    receitas.forEach(r => {
+      // Data vem como YYYY-MM-DD. Split evita problemas de timezone.
+      if (r.data) {
+        const parts = r.data.split('-');
+        if (parts.length === 3) {
+          const monthIndex = parseInt(parts[1], 10) - 1; // 0-11
+          if (monthIndex >= 0 && monthIndex < 12) {
+            receitaData[monthIndex] += r.valor;
+          }
+        }
+      }
+    });
+
+    // Processar Despesas
+    despesas.forEach(d => {
+      if (d.data) {
+        const parts = d.data.split('-');
+        if (parts.length === 3) {
+          const monthIndex = parseInt(parts[1], 10) - 1; // 0-11
+          if (monthIndex >= 0 && monthIndex < 12) {
+            despesaData[monthIndex] += d.valor;
+          }
+        }
+      }
+    });
+
+    const labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
     this.revenueChart = {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      labels: labels,
       datasets: [
         {
           label: 'Receitas',
-          data: [65, 59, 80, 81, 56, 55], // Mock data for trend
+          data: receitaData,
           borderColor: '#34d399', // Green
           backgroundColor: 'rgba(52, 211, 153, 0.2)',
           tension: 0.4,
@@ -222,11 +255,11 @@ export class DashboardComponent implements OnInit {
     };
 
     this.expenseChart = {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      labels: labels,
       datasets: [
         {
           label: 'Despesas',
-          data: [28, 48, 40, 19, 86, 27], // Mock data
+          data: despesaData,
           borderColor: '#f87171', // Red
           backgroundColor: 'rgba(248, 113, 113, 0.2)',
           tension: 0.4,

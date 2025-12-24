@@ -17,19 +17,22 @@
       <div class="metas-grid">
         <div class="meta-card" *ngFor="let meta of metas">
           <div class="card-header">
-            <h3>{{ meta.nome }}</h3>
-            <span class="badge">{{ meta.progresso }}%</span>
+            <h3>{{ meta.meta }}</h3>
+            <span class="badge">{{ meta.percentualConcluido | number:'1.0-0' }}%</span>
           </div>
           <div class="card-body">
-            <p-progressBar [value]="meta.progresso" [showValue]="false" [style]="{'height': '10px'}"></p-progressBar>
+            <p-progressBar [value]="meta.percentualConcluido" [showValue]="false" [style]="{'height': '10px'}"></p-progressBar>
             <div class="values">
-              <span>Atual: <strong>R$ {{ meta.atual | number }}</strong></span>
-              <span>Alvo: <strong>R$ {{ meta.alvo | number }}</strong></span>
+              <span>Atual: <strong>R$ {{ meta.valorAcumulado | number:'1.2-2' }}</strong></span>
+              <span>Alvo: <strong>R$ {{ meta.valorMeta | number:'1.2-2' }}</strong></span>
             </div>
           </div>
           <div class="card-footer">
-            <button pButton label="Adicionar Valor" class="p-button-outlined p-button-sm"></button>
+            <!-- <button pButton label="Adicionar Valor" class="p-button-outlined p-button-sm"></button> -->
           </div>
+        </div>
+        <div *ngIf="metas.length === 0" class="empty-state">
+          Nenhuma meta definida.
         </div>
       </div>
     </p-tabPanel>

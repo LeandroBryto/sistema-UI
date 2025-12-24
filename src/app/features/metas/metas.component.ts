@@ -13,6 +13,8 @@ import { TabViewModule } from 'primeng/tabview';
 import { OrcamentoService } from '../../services/orcamento.service';
 import { CategoriaService } from '../../services/categoria.service';
 import { OrcamentoResponse, OrcamentoRequest } from '../../models/orcamento.models';
+import { GoalService } from '../../services/goal.service';
+import { GoalResponse } from '../../models/goal.models';
 import { CategoriaResponse } from '../../models/categoria.models';
 
 @Component({
@@ -35,12 +37,8 @@ import { CategoriaResponse } from '../../models/categoria.models';
   styleUrls: ['./metas.component.css']
 })
 export class MetasComponent implements OnInit {
-  // Metas (código existente)
-  metas = [
-    { nome: 'Reserva de Emergência', atual: 5000, alvo: 15000, progresso: 33 },
-    { nome: 'Viagem Fim de Ano', atual: 2000, alvo: 8000, progresso: 25 },
-    { nome: 'Trocar de Carro', atual: 15000, alvo: 60000, progresso: 25 }
-  ];
+  // Metas (Real data from GoalService)
+  metas: GoalResponse[] = [];
 
   // Orçamentos
   orcamentos: OrcamentoResponse[] = [];
@@ -53,12 +51,21 @@ export class MetasComponent implements OnInit {
   constructor(
     private orcamentoService: OrcamentoService,
     private categoriaService: CategoriaService,
+    private goalService: GoalService,
     private toast: MessageService
   ) {}
 
   ngOnInit(): void {
     this.loadOrcamentos();
     this.loadCategorias();
+    this.loadMetas();
+  }
+
+  loadMetas(): void {
+    this.goalService.list().subscribe({
+      next: (data) => this.metas = data,
+      error: () => this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar metas.' })
+    });
   }
 
   loadOrcamentos(): void {
