@@ -15,5 +15,7 @@ export interface DespesaRequest {
 
 export interface DespesaResponse extends DespesaRequest {
   id: number;
+  cartaoId?: number | null;
+  nomeCartao?: string | null;
 }
 

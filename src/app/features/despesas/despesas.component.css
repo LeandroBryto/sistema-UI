@@ -6,10 +6,10 @@
   width: 100%;
   min-height: 100vh;
   padding: clamp(16px, 3vw, 32px);
-  /* Background delegated to global body style for consistency */
   color: #e2e8f0;
 }
 
+/* HEADER & SUMMARY */
 .header {
   display: flex;
   justify-content: space-between;
@@ -58,6 +58,7 @@
   font-size: 0.9rem;
 }
 
+/* CARDS GENERICS */
 .card {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
@@ -75,49 +76,15 @@
   font-weight: 600;
 }
 
+/* LAYOUT GRID */
 .grid.two {
   display: grid;
-  grid-template-columns: minmax(320px, 380px) 1fr;
+  grid-template-columns: minmax(320px, 400px) 1fr;
   gap: 24px;
   align-items: start;
 }
 
-@media (max-width: 1200px) {
-  .grid.two {
-    grid-template-columns: 1fr;
-  }
-  
-  .filters.card {
-     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 576px) {
-  .grid.two {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .page-container {
-    padding: 16px;
-  }
-}
-
-@media (max-width: 991px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .page-container {
-    padding: 1rem;
-  }
-}
-
-
-
-/* Filters */
+/* FILTERS */
 .filters.card {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -129,6 +96,13 @@
 .filters.card .row.actions {
   display: flex;
   justify-content: flex-end;
+}
+
+/* FORM STYLES */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .row {
@@ -143,31 +117,54 @@
   font-weight: 500;
 }
 
-/* Form Styles */
-.form-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-input, select, textarea {
+/* INPUTS (Global & PrimeNG Overrides) */
+/* Garante que inputs normais e do PrimeNG tenham o mesmo visual dark */
+input, select, textarea,
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep .p-dropdown {
   width: 100%;
-  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  outline: none;
-  background: rgba(0, 0, 0, 0.3);
   color: #f8fafc;
-  transition: all 0.2s;
   font-family: inherit;
+  transition: all 0.2s;
 }
 
-input:focus, select:focus, textarea:focus {
+:host ::ng-deep .p-inputtext:enabled:focus,
+:host ::ng-deep .p-dropdown:not(.p-disabled).p-focus {
   border-color: #60a5fa;
-  background: rgba(0, 0, 0, 0.5);
   box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.15);
 }
 
+/* Estilo para o 'R$' do InputGroup */
+:host ::ng-deep .p-inputgroup .p-inputgroup-addon {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 0;
+  color: #94a3b8;
+  min-width: 3rem;
+  justify-content: center;
+}
+
+/* Dropdown Panel (Lista de opções) */
+:host ::ng-deep .p-dropdown-panel {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+:host ::ng-deep .p-dropdown-item {
+  color: #e2e8f0;
+}
+
+:host ::ng-deep .p-dropdown-item:hover,
+:host ::ng-deep .p-dropdown-item.p-highlight {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Checkbox Row */
 .row.checkbox label {
   display: flex;
   align-items: center;
@@ -176,56 +173,17 @@ input:focus, select:focus, textarea:focus {
   color: #e2e8f0;
 }
 
-.row.checkbox input[type="checkbox"] {
-  width: auto;
-}
-
 .form-actions {
   margin-top: 24px;
   display: flex;
   gap: 12px;
 }
 
-button.primary, button.secondary {
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+.form-actions ::ng-deep button {
   flex: 1;
 }
 
-button.primary {
-  border: none;
-  background: #2563eb;
-  color: #fff;
-}
-
-button.primary:hover:not(:disabled) {
-  background: #1d4ed8;
-}
-
-button.primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-button.secondary {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: transparent;
-  color: #94a3b8;
-}
-
-button.secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #f8fafc;
-}
-
-/* Table Styles Override */
-:host ::ng-deep .p-table {
-  background: transparent;
-}
-
+/* TABLE STYLES (Deep Overrides) */
 :host ::ng-deep .p-datatable .p-datatable-header {
   background: transparent;
   border: none;
@@ -237,36 +195,51 @@ button.secondary:hover {
   color: #94a3b8;
   border-color: rgba(255, 255, 255, 0.1);
   padding: 12px 16px;
+  font-weight: 600;
 }
 
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr {
   background: transparent;
   color: #e2e8f0;
+  transition: background 0.2s;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background: rgba(255, 255, 255, 0.02);
 }
 
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
   border-color: rgba(255, 255, 255, 0.05);
   padding: 12px 16px;
+  vertical-align: middle;
 }
 
-:host ::ng-deep .p-datatable .p-sortable-column:hover {
+/* Sort Icons */
+:host ::ng-deep .p-sortable-column:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #f8fafc;
 }
 
-:host ::ng-deep .p-datatable .p-sortable-column.p-highlight {
+:host ::ng-deep .p-sortable-column.p-highlight {
   background: rgba(37, 99, 235, 0.15);
   color: #60a5fa;
 }
 
+:host ::ng-deep .p-sortable-column.p-highlight .p-sortable-column-icon {
+  color: #60a5fa;
+}
+
+/* Paginator */
 :host ::ng-deep .p-paginator {
   background: transparent;
   border: none;
   color: #94a3b8;
+  margin-top: 16px;
 }
 
 :host ::ng-deep .p-paginator .p-paginator-element {
   color: #94a3b8;
+  border-radius: 8px;
 }
 
 :host ::ng-deep .p-paginator .p-paginator-element:hover {
@@ -279,42 +252,24 @@ button.secondary:hover {
   color: #fff;
 }
 
-:host ::ng-deep .p-dropdown {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+/* Tags */
+:host ::ng-deep .p-tag {
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
 }
 
-:host ::ng-deep .p-dropdown-label {
-  color: #f8fafc;
-}
+/* RESPONSIVE MEDIA QUERIES */
 
-:host ::ng-deep .p-dropdown:not(.p-disabled):hover {
-  border-color: #60a5fa;
-}
-
-:host ::ng-deep .p-dropdown-panel {
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-:host ::ng-deep .p-dropdown-item {
-  color: #e2e8f0;
-}
-
-:host ::ng-deep .p-dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 1024px) {
+/* Tablet & Smaller Desktop */
+@media (max-width: 1200px) {
   .grid.two {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Stack form and list */
   }
   
   .form-card {
-    order: 2;
+    order: 2; /* List first, Form second (optional, or remove to keep form top) */
   }
   
   .list-card {
@@ -322,11 +277,8 @@ button.secondary:hover {
   }
 }
 
+/* Mobile */
 @media (max-width: 768px) {
-  .filters.card {
-    grid-template-columns: 1fr;
-  }
-  
   .header {
     flex-direction: column;
     align-items: flex-start;
@@ -336,73 +288,57 @@ button.secondary:hover {
   .summary {
     width: 100%;
     justify-content: space-between;
-    flex-wrap: wrap;
-  }
-}
-
-@media (max-width: 768px) {
-  .page-container {
-    padding: 16px;
   }
   
-  :host ::ng-deep .custom-input,
-  input, select, textarea {
-    font-size: 16px !important; /* Prevent iOS zoom */
-    min-height: 48px; /* Touch target size */
+  .filters.card {
+    grid-template-columns: 1fr;
   }
 
-  button, .p-button {
-    min-height: 48px; /* Touch target size */
+  /* Adjust inputs for touch */
+  :host ::ng-deep .p-inputtext, 
+  :host ::ng-deep .p-dropdown {
+    min-height: 48px; 
+  }
+
+  /* TABLE MOBILE CARD VIEW */
+  :host ::ng-deep .p-datatable-thead {
+    display: none; /* Hide header on mobile */
   }
   
-  .card {
-    padding: 16px;
-  }
-  
-  .form-actions {
+  :host ::ng-deep .p-datatable-tbody > tr {
+    display: flex;
     flex-direction: column;
-    gap: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.02);
   }
 
-  .form-actions button {
-    width: 100%;
-    margin: 0;
-  }
-  
-  /* Stack table on mobile if needed */
   :host ::ng-deep .p-datatable-tbody > tr > td {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border: none;
-    padding: 12px 0;
+    padding: 8px 0;
     text-align: right;
+    width: 100%;
   }
 
+  /* Force column title to show */
   :host ::ng-deep .p-datatable-tbody > tr > td .p-column-title {
-    font-weight: bold;
+    display: block; /* Ensure it's visible */
+    font-weight: 600;
+    color: #94a3b8;
     text-align: left;
     margin-right: auto;
   }
   
-  :host ::ng-deep .p-datatable-thead {
-    display: none;
-  }
-  
-  :host ::ng-deep .p-datatable-tbody > tr {
-    display: block;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 12px 0;
-  }
-
-  /* Specific adjustments for touch targets in table actions */
-  .actions {
-    display: flex;
-    gap: 8px;
+  /* Fix Action Buttons alignment on mobile */
+  :host ::ng-deep .p-datatable-tbody > tr > td.actions {
     justify-content: flex-end;
-  }
-
-  .actions button {
-    flex: 1;
+    margin-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 12px;
   }
 }

@@ -1,0 +1,10 @@
+export const CATEGORIAS_DESPESA = [
+  'ALUGUEL',
+  'COMIDA',
+  'TRANSPORTE',
+  'SAUDE',
+  'INVESTIMENTO',
+  'EDUCACAO',
+  'DIVIDA',
+  'OUTROS',
+];

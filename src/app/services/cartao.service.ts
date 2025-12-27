@@ -22,6 +22,10 @@ export class CartaoService {
     return this.http.post<CartaoCreditoResponse>(this.baseUrl, body);
   }
 
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
   listFaturas(idCartao: number): Observable<FaturaResponse[]> {
     return this.http.get<FaturaResponse[]>(`${this.baseUrl}/${idCartao}/faturas`);
   }

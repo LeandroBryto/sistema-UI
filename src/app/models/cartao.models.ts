@@ -1,9 +1,10 @@
 export interface CartaoCreditoRequest {
   nome: string;
-  idCarteira: number;
+  idCarteira?: number | null;
   limite: number;
   diaFechamento: number;
   diaVencimento: number;
+  nomeCarteira?: string;
 }
 
 export interface CartaoCreditoResponse extends CartaoCreditoRequest {

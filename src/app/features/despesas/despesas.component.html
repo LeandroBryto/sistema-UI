@@ -12,14 +12,19 @@
   <section class="filters card">
     <div class="row">
       <label>Início</label>
-      <input type="date" [formControl]="filtros.controls.startDate" />
+      <input type="date" pInputText [formControl]="filtros.controls.startDate" />
     </div>
     <div class="row">
       <label>Fim</label>
-      <input type="date" [formControl]="filtros.controls.endDate" />
+      <input type="date" pInputText [formControl]="filtros.controls.endDate" />
     </div>
     <div class="row actions">
-      <p-button [label]="loading ? 'Carregando...' : 'Aplicar Filtros'" severity="primary" [disabled]="loading" [loading]="loading" (onClick)="load()"></p-button>
+      <p-button [label]="loading ? 'Carregando...' : 'Aplicar Filtros'" 
+                severity="primary" 
+                [disabled]="loading" 
+                [loading]="loading" 
+                (onClick)="load()">
+      </p-button>
     </div>
   </section>
 
@@ -27,154 +32,194 @@
   <p-toast position="top-right"></p-toast>
 
   <div class="grid two">
+    
     <section class="card form-card">
       <h3>{{ editingId ? 'Editar Despesa' : 'Nova Despesa' }}</h3>
       <form [formGroup]="form" (ngSubmit)="save()">
         <div class="form-grid">
+          
           <div class="row">
             <label>Descrição</label>
-            <input type="text" formControlName="descricao" />
+            <input type="text" pInputText formControlName="descricao" placeholder="Ex: Mercado" />
           </div>
+
           <div class="row">
             <label>Categoria</label>
-            <select formControlName="categoria">
-              <option value="" disabled>Selecione</option>
-              <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
-            </select>
+            <p-dropdown [options]="categorias" 
+                        formControlName="categoria" 
+                        placeholder="Selecione" 
+                        [style]="{'width':'100%'}"
+                        [filter]="true">
+            </p-dropdown>
           </div>
+
           <div class="row">
             <label>Valor</label>
-            <input type="number" step="0.01" formControlName="valor" />
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon">R$</span>
+              <input type="number" pInputText step="0.01" formControlName="valor" />
+            </div>
           </div>
+
           <div class="row">
             <label>Data</label>
-            <input type="date" formControlName="data" />
+            <input type="date" pInputText formControlName="data" />
           </div>
+
           <div class="row">
             <div class="field">
               <label>Forma de Pagamento</label>
-              <p-dropdown [options]="formas" formControlName="formaPagamento" placeholder="Selecione..."></p-dropdown>
+              <p-dropdown [options]="formas" 
+                          formControlName="formaPagamento" 
+                          placeholder="Selecione..." 
+                          [style]="{'width':'100%'}">
+              </p-dropdown>
             </div>
             
-            <!-- Seleção dinâmica: Carteira ou Cartão -->
             <div class="field" *ngIf="form.get('formaPagamento')?.value === 'CARTAO_CREDITO'">
               <label>Cartão de Crédito</label>
-              <p-dropdown [options]="cartoes" formControlName="cartaoCreditoId" optionLabel="nome" optionValue="id" placeholder="Selecione o Cartão"></p-dropdown>
+              <p-dropdown [options]="cartoes" 
+                          formControlName="cartaoCreditoId" 
+                          optionLabel="nome" 
+                          optionValue="id" 
+                          placeholder="Selecione o Cartão"
+                          emptyMessage="Nenhum cartão encontrado"
+                          [style]="{'width':'100%'}">
+              </p-dropdown>
+              <small class="text-secondary" *ngIf="!cartoes.length">
+                Cadastre um cartão primeiro.
+              </small>
             </div>
 
-            <div class="field" *ngIf="form.get('formaPagamento')?.value && form.get('formaPagamento')?.value !== 'CARTAO_CREDITO'">
+            <div class="field" *ngIf="form.get('formaPagamento')?.value && ['PIX', 'DINHEIRO', 'CARTAO_DEBITO'].includes(form.get('formaPagamento')!.value)">
               <label>Conta de Saída</label>
-              <p-dropdown [options]="carteiras" formControlName="carteiraId" optionLabel="nome" optionValue="id" placeholder="Selecione a Conta"></p-dropdown>
+              <p-dropdown [options]="carteiras" 
+                          formControlName="carteiraId" 
+                          optionLabel="nome" 
+                          optionValue="id" 
+                          placeholder="Selecione a Conta"
+                          [style]="{'width':'100%'}">
+              </p-dropdown>
             </div>
 
             <div class="field">
               <label>Status</label>
-              <p-dropdown [options]="status" formControlName="statusPagamento" placeholder="Selecione..."></p-dropdown>
+              <p-dropdown [options]="statusForm" 
+                          formControlName="statusPagamento" 
+                          placeholder="Selecione..." 
+                          [style]="{'width':'100%'}">
+              </p-dropdown>
             </div>
           </div>
+
           <div class="row checkbox">
-            <label>
-              <input type="checkbox" formControlName="recorrente" />
+            <label class="flex align-items-center gap-2">
+              <input type="checkbox" formControlName="recorrente" style="width: 18px; height: 18px;" />
               Recorrente
             </label>
           </div>
-          <div class="row">
+
+          <div class="row" *ngIf="form.get('statusPagamento')?.value === 'PENDENTE'">
             <label>Notificar antes (dias)</label>
-            <input type="number" formControlName="notificarAntesVencimento" />
+            <input type="number" pInputText formControlName="notificarAntesVencimento" />
           </div>
+
           <div class="row wide">
             <label>Observações</label>
-            <textarea rows="3" formControlName="observacoes"></textarea>
+            <textarea pInputTextarea rows="3" formControlName="observacoes" class="w-full"></textarea>
           </div>
         </div>
+
         <div class="form-actions">
-          <button class="primary" type="submit" [disabled]="form.invalid || loading">
-            {{ editingId ? 'Salvar Alterações' : 'Criar' }}
-          </button>
-          <button type="button" class="secondary" (click)="resetForm()">Limpar</button>
+          <p-button type="submit" [label]="editingId ? 'Salvar Alterações' : 'Criar'" [disabled]="form.invalid || loading"></p-button>
+          <p-button type="button" label="Limpar" styleClass="p-button-secondary" (onClick)="resetForm()"></p-button>
         </div>
       </form>
     </section>
 
     <section class="card list-card">
       <div class="list-head">
-        <h3>Lista</h3>
-        <input pInputText type="text" placeholder="Filtrar..." [(ngModel)]="globalFilter" (input)="dt.filterGlobal(globalFilter, 'contains')" />
+        <h3>Lista de Gastos</h3>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" placeholder="Pesquisar..." [(ngModel)]="globalFilter" (input)="dt.filterGlobal(globalFilter, 'contains')" />
+        </span>
       </div>
-      <p-table #dt [value]="itens" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]" [responsiveLayout]="'stack'" styleClass="expenses-table">
+
+      <p-table #dt [value]="itens" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]" [responsiveLayout]="'stack'" styleClass="expenses-table" [globalFilterFields]="['descricao', 'categoria', 'nomeCartao', 'observacoes']">
+        
         <ng-template pTemplate="header">
           <tr>
-            <th pSortableColumn="descricao">Descrição <p-sortIcon field="descricao"></p-sortIcon>
-              <p-columnFilter field="descricao" type="text" display="menu"></p-columnFilter>
+            <th pSortableColumn="descricao">Descrição <p-sortIcon field="descricao"></p-sortIcon></th>
+            <th pSortableColumn="categoria">Categoria <p-sortIcon field="categoria"></p-sortIcon></th>
+            <th pSortableColumn="valor">Valor <p-sortIcon field="valor"></p-sortIcon></th>
+            <th pSortableColumn="data">Data <p-sortIcon field="data"></p-sortIcon></th>
+            
+            <th pSortableColumn="formaPagamento">Pagamento
+              <p-columnFilter field="formaPagamento" type="text" display="menu"></p-columnFilter>
             </th>
-            <th pSortableColumn="categoria">Categoria <p-sortIcon field="categoria"></p-sortIcon>
-              <p-columnFilter field="categoria" type="text" display="menu"></p-columnFilter>
-            </th>
-            <th pSortableColumn="valor">Valor <p-sortIcon field="valor"></p-sortIcon>
-              <p-columnFilter field="valor" type="numeric" display="menu"></p-columnFilter>
-            </th>
-            <th pSortableColumn="data">Data <p-sortIcon field="data"></p-sortIcon>
-              <p-columnFilter field="data" type="date" display="menu"></p-columnFilter>
-            </th>
-            <th>Forma
-              <p-columnFilter field="formaPagamento" display="menu">
-                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [options]="formas" [ngModel]="value" (onChange)="filter($event.value)" placeholder="Qualquer"></p-dropdown>
-                </ng-template>
-              </p-columnFilter>
-            </th>
-            <th>Status
-              <p-columnFilter field="statusPagamento" matchMode="equals" [showMatchModes]="false" display="menu">
-                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [options]="status" [ngModel]="value" (onChange)="filter($event.value)" placeholder="Qualquer"></p-dropdown>
-                </ng-template>
-              </p-columnFilter>
-            </th>
-            <th>Recorrente
-              <p-columnFilter field="recorrente" matchMode="equals" [showMatchModes]="false" display="menu">
-                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [options]="[{label: 'Sim', value: true}, {label: 'Não', value: false}]" [ngModel]="value" (onChange)="filter($event.value)" placeholder="Qualquer"></p-dropdown>
-                </ng-template>
-              </p-columnFilter>
-            </th>
-            <th>Observações
-              <p-columnFilter field="observacoes" type="text" display="menu"></p-columnFilter>
-            </th>
+            
+            <th pSortableColumn="statusPagamento">Status <p-sortIcon field="statusPagamento"></p-sortIcon></th>
             <th>Ações</th>
           </tr>
         </ng-template>
+
         <ng-template pTemplate="body" let-item>
           <tr>
-            <td><span class="p-column-title">Descrição</span>{{ item.descricao }}</td>
-            <td><span class="p-column-title">Categoria</span>{{ item.categoria }}</td>
-            <td><span class="p-column-title">Valor</span>R$ {{ item.valor | number : '1.2-2' }}</td>
-            <td><span class="p-column-title">Data</span>{{ item.data }}</td>
-            <td><span class="p-column-title">Forma</span>{{ item.formaPagamento }}</td>
+            <td><span class="p-column-title">Descrição</span>
+              <span class="font-bold">{{ item.descricao }}</span>
+              <div *ngIf="item.recorrente" class="text-xs text-500 mt-1"><i class="pi pi-refresh"></i> Recorrente</div>
+            </td>
+            
+            <td><span class="p-column-title">Categoria</span>
+              <p-tag [value]="item.categoria" severity="secondary"></p-tag>
+            </td>
+            
+            <td><span class="p-column-title">Valor</span>
+              <span class="text-primary font-bold">R$ {{ item.valor | number : '1.2-2' }}</span>
+            </td>
+            
+            <td><span class="p-column-title">Data</span>{{ item.data | date:'dd/MM/yyyy' }}</td>
+            
+            <td>
+              <span class="p-column-title">Pagamento</span>
+              <div class="flex flex-column gap-1">
+                <p-tag [value]="item.formaPagamento" [severity]="formaSeverity(item.formaPagamento)"></p-tag>
+                
+                <span *ngIf="item.formaPagamento === 'CARTAO_CREDITO' && item.nomeCartao" 
+                      class="text-sm text-600 font-italic flex align-items-center gap-1">
+                   <i class="pi pi-credit-card" style="font-size: 0.8rem"></i> 
+                   {{ item.nomeCartao }}
+                </span>
+                
+                </div>
+            </td>
+
             <td>
               <span class="p-column-title">Status</span>
-              <p-tag [value]="item.statusPagamento" [severity]="item.statusPagamento==='PAGO' ? 'success' : (item.statusPagamento==='ATRASADO' ? 'danger' : 'warning')"></p-tag>
+              <p-tag [value]="item.statusPagamento" 
+                     [severity]="item.statusPagamento==='PAGO' ? 'success' : (item.statusPagamento==='ATRASADO' ? 'danger' : 'warning')">
+              </p-tag>
             </td>
-            <td>
-              <span class="p-column-title">Recorrente</span>
-              <p-tag [value]="item.recorrente ? 'Sim' : 'Não'" [severity]="item.recorrente ? 'success' : 'secondary'"></p-tag>
-            </td>
-            <td>
-              <span class="p-column-title">Observações</span>
-              {{ item.observacoes }}
-              <span class="notify" *ngIf="item.notificarAntesVencimento">{{ item.notificarAntesVencimento }}d</span>
-            </td>
+
             <td class="actions">
               <span class="p-column-title">Ações</span>
-              <button pButton type="button" label="Editar" class="p-button-sm" (click)="edit(item)"></button>
-              <button pButton type="button" severity="danger" label="Excluir" class="p-button-sm" (click)="remove(item)"></button>
+              <div class="flex gap-2">
+                <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit(item)"></button>
+                <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="remove(item)"></button>
+              </div>
             </td>
           </tr>
         </ng-template>
+
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="9">Nenhuma despesa encontrada para o período.</td>
+            <td colspan="7" class="text-center p-4">
+              Nenhuma despesa encontrada para o período.
+            </td>
           </tr>
         </ng-template>
+
       </p-table>
     </section>
   </div>

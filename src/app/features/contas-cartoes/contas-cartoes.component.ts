@@ -53,7 +53,7 @@ export class ContasCartoesComponent implements OnInit {
 
   cartaoForm = this.fb.nonNullable.group({
     nome: ['', Validators.required],
-    idCarteira: [null as number | null, Validators.required],
+    idCarteira: [null as number | null],
     limite: [0, Validators.required],
     diaFechamento: [1, [Validators.required, Validators.min(1), Validators.max(31)]],
     diaVencimento: [10, [Validators.required, Validators.min(1), Validators.max(31)]]
