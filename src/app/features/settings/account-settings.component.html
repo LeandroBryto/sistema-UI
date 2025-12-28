@@ -6,22 +6,23 @@
     <a class="secondary link" routerLink="/dashboard">Voltar</a>
   </header>
 
-  <p-card header="Alterar Senha">
-    <form [formGroup]="securityForm" (ngSubmit)="changePassword()">
-      <div class="field">
-        <label for="currentPassword">Senha Atual</label>
-        <p-password id="currentPassword" formControlName="currentPassword" placeholder="Digite sua senha atual" [toggleMask]="true" [feedback]="false"></p-password>
-      </div>
-      <div class="field">
-        <label for="newPassword">Nova Senha</label>
-        <p-password id="newPassword" formControlName="newPassword" placeholder="Digite a nova senha (mín. 8 caracteres)" [toggleMask]="true" [feedback]="true"></p-password>
-      </div>
-      <div class="field">
-        <label for="confirmPassword">Confirmar Nova Senha</label>
-        <p-password id="confirmPassword" formControlName="confirmPassword" placeholder="Confirme a nova senha" [toggleMask]="true" [feedback]="false"></p-password>
-        <small *ngIf="securityForm.errors?.['mismatch']" class="p-error">As senhas não coincidem.</small>
-      </div>
-      <p-button type="submit" label="Alterar Senha" icon="pi pi-lock" [disabled]="securityForm.invalid" styleClass="p-button-primary"></p-button>
-    </form>
-  </p-card>
+  <form [formGroup]="securityForm" class="form-grid" (ngSubmit)="changePassword()">
+    <h3>Alterar Senha</h3>
+    <div class="row">
+      <label for="currentPassword">Senha Atual</label>
+      <p-password id="currentPassword" formControlName="currentPassword" placeholder="Digite sua senha atual" [toggleMask]="true" [feedback]="false" styleClass="w-full"></p-password>
+    </div>
+    <div class="row">
+      <label for="newPassword">Nova Senha</label>
+      <p-password id="newPassword" formControlName="newPassword" placeholder="Digite a nova senha (mín. 8 caracteres)" [toggleMask]="true" [feedback]="true" styleClass="w-full"></p-password>
+    </div>
+    <div class="row">
+      <label for="confirmPassword">Confirmar Nova Senha</label>
+      <p-password id="confirmPassword" formControlName="confirmPassword" placeholder="Confirme a nova senha" [toggleMask]="true" [feedback]="false" styleClass="w-full"></p-password>
+      <small *ngIf="securityForm.errors?.['mismatch']" class="p-error">As senhas não coincidem.</small>
+    </div>
+    <button class="primary" type="submit" [disabled]="securityForm.invalid">Alterar Senha</button>
+  </form>
+
+  <p class="caption">A senha deve ter pelo menos 8 caracteres. Após alterar, você será desconectado por segurança.</p>
 </div>

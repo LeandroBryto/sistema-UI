@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -18,8 +17,6 @@ import { ChangePasswordPayload } from '../../models/auth.models';
     CommonModule,
     RouterLink,
     ReactiveFormsModule,
-    CardModule,
-    InputTextModule,
     PasswordModule,
     ButtonModule,
     ToastModule
