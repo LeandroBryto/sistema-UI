@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0f172a;
+  background: #0f172a url('/assets/images/tela.jpg') no-repeat center center / cover;
   position: relative;
   font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
   overflow: hidden;
