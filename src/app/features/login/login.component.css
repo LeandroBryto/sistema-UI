@@ -302,8 +302,8 @@
   
   :host ::ng-deep .custom-input,
   :host ::ng-deep .login-button {
-    font-size: 16px; /* Prevents iOS zoom and improves readability */
-    padding: 14px; /* Larger touch target */
+    font-size: 16px; 
+    padding: 14px; 
   }
   
   .brand-title {
