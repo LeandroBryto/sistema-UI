@@ -46,9 +46,7 @@ export class LoginComponent {
       },
       error: (e) => {
         this.loading = false;
-        this.error =
-          e?.error?.message ||
-          'Falha ao entrar. Verifique suas credenciais e tente novamente.';
+        this.error = 'Falha ao entrar. Verifique suas credenciais e tente novamente.';
       },
     });
   }
