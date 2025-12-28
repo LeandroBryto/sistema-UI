@@ -20,3 +20,9 @@ export interface ForgotPasswordRequestDTO {
   email: string;
 }
 
+export interface ChangePasswordPayload {
+  senhaAtual: string;
+  novaSenha: string;
+  confirmaSenha: string;
+}
+

@@ -1,7 +1,27 @@
 <div class="settings-page">
+  <p-toast position="top-right"></p-toast>
+  
   <header class="head">
     <h2>Configurações da Conta</h2>
     <a class="secondary link" routerLink="/dashboard">Voltar</a>
   </header>
-  <p class="caption">Ajustes da sua conta serão exibidos aqui. Integração com backend será adicionada posteriormente.</p>
+
+  <p-card header="Alterar Senha">
+    <form [formGroup]="securityForm" (ngSubmit)="changePassword()">
+      <div class="field">
+        <label for="currentPassword">Senha Atual</label>
+        <p-password id="currentPassword" formControlName="currentPassword" placeholder="Digite sua senha atual" [toggleMask]="true" [feedback]="false"></p-password>
+      </div>
+      <div class="field">
+        <label for="newPassword">Nova Senha</label>
+        <p-password id="newPassword" formControlName="newPassword" placeholder="Digite a nova senha (mín. 8 caracteres)" [toggleMask]="true" [feedback]="true"></p-password>
+      </div>
+      <div class="field">
+        <label for="confirmPassword">Confirmar Nova Senha</label>
+        <p-password id="confirmPassword" formControlName="confirmPassword" placeholder="Confirme a nova senha" [toggleMask]="true" [feedback]="false"></p-password>
+        <small *ngIf="securityForm.errors?.['mismatch']" class="p-error">As senhas não coincidem.</small>
+      </div>
+      <p-button type="submit" label="Alterar Senha" icon="pi pi-lock" [disabled]="securityForm.invalid" styleClass="p-button-primary"></p-button>
+    </form>
+  </p-card>
 </div>

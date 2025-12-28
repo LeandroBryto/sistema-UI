@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { LoginPayload, RegisterPayload, PasswordResetPayload, ForgotPasswordRequestDTO } from '../models/auth.models';
+import { LoginPayload, RegisterPayload, PasswordResetPayload, ForgotPasswordRequestDTO, ChangePasswordPayload } from '../models/auth.models';
 import { EnvService } from './env.service';
 
 @Injectable({
@@ -74,6 +74,10 @@ export class AuthService {
 
   forgotPassword(payload: ForgotPasswordRequestDTO): Observable<void> {
     return this.http.post<void>(`${this.env.apiAuthBase()}/api/v1/auth/forgot-password`, payload);
+  }
+
+  changePassword(payload: ChangePasswordPayload): Observable<void> {
+    return this.http.post<void>(`${this.env.apiAuthBase()}/api/v1/auth/alterar-senha`, payload);
   }
 
   
