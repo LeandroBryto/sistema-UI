@@ -14,6 +14,9 @@
   <p-tabView>
     <!-- Aba Metas de Longo Prazo -->
     <p-tabPanel header="Metas de Longo Prazo">
+      <div class="metas-header">
+        <button pButton icon="pi pi-plus" label="Nova Meta" (click)="openMetaDialog()"></button>
+      </div>
       <div class="metas-grid">
         <div class="meta-card" *ngFor="let meta of metas">
           <div class="card-header">
@@ -28,7 +31,8 @@
             </div>
           </div>
           <div class="card-footer">
-            <!-- <button pButton label="Adicionar Valor" class="p-button-outlined p-button-sm"></button> -->
+            <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-warning p-button-sm" (click)="openMetaDialog(meta)"></button>
+            <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="deleteMeta(meta)"></button>
           </div>
         </div>
         <div *ngIf="metas.length === 0" class="empty-state">
@@ -89,3 +93,27 @@
     </div>
   </div>
 </p-dialog>
+
+<!-- Dialog Meta -->
+<p-dialog [header]="editingMetaId ? 'Editar Meta' : 'Nova Meta'" [(visible)]="showMetaDialog" [modal]="true" [style]="{width: '400px'}">
+  <div class="form-dialog">
+    <div class="field">
+      <label>Descrição da Meta</label>
+      <input pInputText [(ngModel)]="novaMeta.meta" placeholder="Ex: Viagem para Europa" />
+    </div>
+    <div class="field">
+      <label>Valor Alvo (R$)</label>
+      <input pInputText type="number" [(ngModel)]="novaMeta.valorMeta" />
+    </div>
+    <div class="field">
+      <label>Valor Inicial (R$)</label>
+      <input pInputText type="number" [(ngModel)]="novaMeta.valorAcumulado" placeholder="Opcional" />
+    </div>
+    <div class="actions">
+      <button pButton label="Cancelar" class="p-button-text" (click)="showMetaDialog=false"></button>
+      <button pButton [label]="editingMetaId ? 'Atualizar' : 'Salvar'" (click)="saveMeta()"></button>
+    </div>
+  </div>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>

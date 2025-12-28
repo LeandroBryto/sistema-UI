@@ -10,11 +10,13 @@ import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { TabViewModule } from 'primeng/tabview';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { OrcamentoService } from '../../services/orcamento.service';
 import { CategoriaService } from '../../services/categoria.service';
 import { OrcamentoResponse, OrcamentoRequest } from '../../models/orcamento.models';
 import { GoalService } from '../../services/goal.service';
-import { GoalResponse } from '../../models/goal.models';
+import { GoalResponse, GoalRequest } from '../../models/goal.models';
 import { CategoriaResponse } from '../../models/categoria.models';
 
 @Component({
@@ -30,9 +32,10 @@ import { CategoriaResponse } from '../../models/categoria.models';
     InputTextModule, 
     CardModule,
     ToastModule,
-    TabViewModule
+    TabViewModule,
+    ConfirmDialogModule
   ],
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './metas.component.html',
   styleUrls: ['./metas.component.css']
 })
@@ -48,11 +51,17 @@ export class MetasComponent implements OnInit {
   mesAtual = new Date().getMonth() + 1;
   anoAtual = new Date().getFullYear();
 
+  // Meta dialog
+  showMetaDialog = false;
+  novaMeta = { meta: '', valorMeta: 0, valorAcumulado: 0 };
+  editingMetaId: number | null = null;
+
   constructor(
     private orcamentoService: OrcamentoService,
     private categoriaService: CategoriaService,
     private goalService: GoalService,
-    private toast: MessageService
+    private toast: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -105,5 +114,54 @@ export class MetasComponent implements OnInit {
 
   getCategoriaNome(id: number): string {
     return this.categorias.find(c => c.id === id)?.nome || 'Categoria Desconhecida';
+  }
+
+  // Meta methods
+  openMetaDialog(meta?: GoalResponse): void {
+    if (meta) {
+      this.editingMetaId = meta.id;
+      this.novaMeta = { meta: meta.meta, valorMeta: meta.valorMeta, valorAcumulado: meta.valorAcumulado };
+    } else {
+      this.editingMetaId = null;
+      this.novaMeta = { meta: '', valorMeta: 0, valorAcumulado: 0 };
+    }
+    this.showMetaDialog = true;
+  }
+
+  saveMeta(): void {
+    const payload = this.novaMeta;
+    const req$ = this.editingMetaId
+      ? this.goalService.create(payload) // update(this.editingMetaId, payload)
+      : this.goalService.create(payload);
+
+    req$.subscribe({
+      next: () => {
+        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: this.editingMetaId ? 'Meta atualizada!' : 'Meta criada!' });
+        this.showMetaDialog = false;
+        this.editingMetaId = null;
+        this.loadMetas();
+      },
+      error: () => this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao salvar meta.' })
+    });
+  }
+
+  deleteMeta(meta: GoalResponse): void {
+    this.confirmationService.confirm({
+      message: `Tem certeza que deseja excluir a meta "${meta.meta}"? Esta ação não pode ser desfeita.`,
+      header: 'Confirmar Exclusão',
+      acceptLabel: 'Excluir',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.goalService.delete(meta.id).subscribe({
+          next: () => {
+            this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Meta excluída!' });
+            this.loadMetas();
+          },
+          error: () => this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao excluir meta.' })
+        });
+      }
+    });
   }
 }

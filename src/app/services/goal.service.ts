@@ -25,6 +25,10 @@ export class GoalService {
     return this.http.post<GoalResponse>(this.url(), body);
   }
 
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url()}/${id}`);
+  }
+
   cotacaoDolar(): Observable<CotacaoDolarDTO | null> {
     const url = `${this.env.apiBase()}/api/v1/meta/cotacao-dolar`;
     return this.http.get<CotacaoDolarDTO>(url, { observe: 'response' }).pipe(
