@@ -27,7 +27,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
 import { CalendarModule } from 'primeng/calendar';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-despesas',
@@ -45,8 +46,9 @@ import { MessageService } from 'primeng/api';
     TagModule,
     CalendarModule,
     ToastModule,
+    ConfirmDialogModule,
   ],
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './despesas.component.html',
   styleUrls: ['./despesas.component.css'],
 })
@@ -98,6 +100,7 @@ export class DespesasComponent implements OnInit {
     private fb: FormBuilder, 
     private api: DespesaService, 
     private toast: MessageService,
+    private confirmationService: ConfirmationService,
     private carteiraService: CarteiraService,
     private cartaoService: CartaoService,
     private categoriaService: CategoriaService
@@ -262,18 +265,28 @@ export class DespesasComponent implements OnInit {
   }
 
   remove(item: DespesaResponse): void {
-    if (!confirm('Confirma a exclusão desta despesa?')) return;
-    this.loading = true;
-    this.api.delete(item.id).subscribe({
-      next: () => {
-        this.loading = false;
-        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Despesa removida.' });
-        this.load();
-      },
-      error: (e) => {
-        this.loading = false;
-        this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao remover.' });
-      },
+    this.confirmationService.confirm({
+      message: `Tem certeza que deseja excluir a despesa "${item.descricao}"? Esta ação não pode ser desfeita.`,
+      header: 'Confirmar Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Excluir',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.loading = true;
+        this.api.delete(item.id).subscribe({
+          next: () => {
+            this.loading = false;
+            this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Despesa removida com sucesso.' });
+            this.load();
+          },
+          error: (e) => {
+            this.loading = false;
+            this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao remover a despesa.' });
+          },
+        });
+      }
     });
   }
 

@@ -14,7 +14,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-contas-cartoes',
@@ -28,9 +29,10 @@ import { MessageService } from 'primeng/api';
     DropdownModule, 
     DialogModule,
     CardModule,
-    ToastModule
+    ToastModule,
+    ConfirmDialogModule
   ],
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './contas-cartoes.component.html',
   styleUrls: ['./contas-cartoes.component.css']
 })
@@ -86,7 +88,8 @@ export class ContasCartoesComponent implements OnInit {
     private carteiraService: CarteiraService,
     private cartaoService: CartaoService,
     private categoriaService: CategoriaService,
-    private toast: MessageService
+    private toast: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -115,6 +118,48 @@ export class ContasCartoesComponent implements OnInit {
         this.loadAll();
       },
       error: () => this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao criar carteira.' })
+    });
+  }
+
+  deleteCarteira(carteira: CarteiraResponse): void {
+    this.confirmationService.confirm({
+      message: `Tem certeza que deseja excluir a carteira "${carteira.nome}"? Todos os dados associados serão perdidos.`,
+      header: 'Confirmar Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Excluir',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.carteiraService.delete(carteira.id).subscribe({
+          next: () => {
+            this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Carteira excluída com sucesso.' });
+            this.loadAll();
+          },
+          error: () => this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao excluir carteira.' })
+        });
+      }
+    });
+  }
+
+  deleteCartao(cartao: CartaoCreditoResponse): void {
+    this.confirmationService.confirm({
+      message: `Tem certeza que deseja excluir o cartão "${cartao.nome}"? Todos os dados associados serão perdidos.`,
+      header: 'Confirmar Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Excluir',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.cartaoService.delete(cartao.id).subscribe({
+          next: () => {
+            this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Cartão excluído com sucesso.' });
+            this.loadAll();
+          },
+          error: () => this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao excluir cartão.' })
+        });
+      }
     });
   }
 

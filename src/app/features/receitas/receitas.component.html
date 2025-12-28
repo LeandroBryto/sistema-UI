@@ -25,6 +25,7 @@
 
   <p class="error" *ngIf="error">{{ error }}</p>
   <p-toast position="top-right"></p-toast>
+  <p-confirmDialog></p-confirmDialog>
 
   <div class="grid two">
     <section class="card form-card">
@@ -112,8 +113,8 @@
             <td><span class="p-column-title">Observações</span>{{ item.observacoes }}</td>
             <td class="actions">
               <span class="p-column-title">Ações</span>
-              <button pButton type="button" label="Editar" class="p-button-sm" (click)="edit(item)"></button>
-              <button pButton type="button" severity="danger" label="Excluir" class="p-button-sm" (click)="remove(item)"></button>
+              <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-warning p-button-sm" (click)="edit(item)"></button>
+              <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="remove(item)"></button>
             </td>
           </tr>
         </ng-template>

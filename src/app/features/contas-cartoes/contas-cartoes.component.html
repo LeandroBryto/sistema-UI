@@ -1,5 +1,6 @@
 <div [class.page-container]="!embedded" [class.embedded-container]="embedded">
   <p-toast position="top-right"></p-toast>
+  <p-confirmDialog></p-confirmDialog>
   
   <header class="page-header" *ngIf="!embedded">
     <div class="header-content">
@@ -25,6 +26,9 @@
             <h3>{{ c.nome }}</h3>
             <p class="balance">R$ {{ c.saldoAtual | number:'1.2-2' }}</p>
           </div>
+          <div class="actions">
+            <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="deleteCarteira(c)"></button>
+          </div>
         </div>
         <div *ngIf="carteiras.length === 0" class="empty-state">Nenhuma carteira cadastrada.</div>
       </div>
@@ -43,6 +47,9 @@
             <h3>{{ card.nome }}</h3>
             <p class="limit">Limite: R$ {{ card.limite | number:'1.2-2' }}</p>
             <small>Fecha dia {{ card.diaFechamento }} • Vence dia {{ card.diaVencimento }}</small>
+          </div>
+          <div class="actions">
+            <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="deleteCartao(card)"></button>
           </div>
         </div>
         <div *ngIf="cartoes.length === 0" class="empty-state">Nenhum cartão cadastrado.</div>

@@ -25,4 +25,7 @@ export class CarteiraService {
   transfer(body: TransferenciaRequest): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/transferir`, body);
   }
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
 }

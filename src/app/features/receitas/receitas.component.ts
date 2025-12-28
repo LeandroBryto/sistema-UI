@@ -20,7 +20,8 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-receitas',
@@ -37,8 +38,9 @@ import { MessageService } from 'primeng/api';
     DropdownModule,
     TagModule,
     ToastModule,
+    ConfirmDialogModule,
   ],
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './receitas.component.html',
   styleUrls: ['./receitas.component.css'],
 })
@@ -84,6 +86,7 @@ export class ReceitasComponent implements OnInit {
     private fb: FormBuilder, 
     private api: ReceitaService, 
     private toast: MessageService,
+    private confirmationService: ConfirmationService,
     private carteiraService: CarteiraService,
     private categoriaService: CategoriaService
   ) {
@@ -156,19 +159,29 @@ export class ReceitasComponent implements OnInit {
   }
 
   remove(item: ReceitaResponse): void {
-    if (!confirm('Confirma a exclusão desta receita?')) return;
-    this.loading = true;
-    this.api.delete(item.id).subscribe({
-      next: () => {
-        this.loading = false;
-        this.success = 'Receita removida com sucesso.';
-        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Receita removida com sucesso.' });
-        this.load();
-      },
-      error: (e) => {
-        this.loading = false;
-        this.error = this.errorMsg(e) || 'Falha ao remover a receita. Tente novamente.';
-      },
+    this.confirmationService.confirm({
+      message: `Tem certeza que deseja excluir a receita "${item.descricao}"? Esta ação não pode ser desfeita.`,
+      header: 'Confirmar Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Excluir',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.loading = true;
+        this.api.delete(item.id).subscribe({
+          next: () => {
+            this.loading = false;
+            this.success = 'Receita removida com sucesso.';
+            this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Receita removida com sucesso.' });
+            this.load();
+          },
+          error: (e) => {
+            this.loading = false;
+            this.error = this.errorMsg(e) || 'Falha ao remover a receita. Tente novamente.';
+          },
+        });
+      }
     });
   }
 

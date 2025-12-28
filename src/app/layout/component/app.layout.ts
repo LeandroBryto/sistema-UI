@@ -28,6 +28,8 @@ export class AppLayout {
 
     menuOutsideClickListener: any;
 
+    resizeListener: any;
+
     @ViewChild(AppSidebar) appSidebar!: AppSidebar;
 
     @ViewChild(AppTopbar) appTopBar!: AppTopbar;
@@ -51,6 +53,15 @@ export class AppLayout {
             }
         });
 
+        // Adicionar listener para resize da janela
+        this.resizeListener = this.renderer.listen('window', 'resize', () => {
+            if (window.innerWidth > 991) {
+                // Em desktop, garantir que o menu mobile esteja fechado
+                this.layoutService.layoutState.update((prev) => ({ ...prev, staticMenuMobileActive: false }));
+                this.unblockBodyScroll();
+            }
+        });
+
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             this.hideMenu();
         });
@@ -65,7 +76,13 @@ export class AppLayout {
     }
 
     hideMenu() {
-        this.layoutService.layoutState.update((prev) => ({ ...prev, overlayMenuActive: false, staticMenuMobileActive: false, menuHoverActive: false }));
+        this.layoutService.layoutState.update((prev) => ({ 
+            ...prev, 
+            overlayMenuActive: false, 
+            staticMenuMobileActive: false, 
+            menuHoverActive: false,
+            staticMenuDesktopInactive: false // Garantir que desktop também feche se necessário
+        }));
         if (this.menuOutsideClickListener) {
             this.menuOutsideClickListener();
             this.menuOutsideClickListener = null;
@@ -99,6 +116,11 @@ export class AppLayout {
         };
     }
 
+    // Método auxiliar para toggle manual se necessário
+    toggleMenu() {
+        this.layoutService.onMenuToggle();
+    }
+
     ngOnDestroy() {
         if (this.overlayMenuOpenSubscription) {
             this.overlayMenuOpenSubscription.unsubscribe();
@@ -106,6 +128,10 @@ export class AppLayout {
 
         if (this.menuOutsideClickListener) {
             this.menuOutsideClickListener();
+        }
+
+        if (this.resizeListener) {
+            this.resizeListener();
         }
     }
 }

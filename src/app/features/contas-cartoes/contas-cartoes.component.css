@@ -91,11 +91,18 @@
   padding: 16px;
   border-radius: 12px;
   transition: all 0.2s;
+  position: relative;
 }
 
 .item-card:hover {
   background: rgba(255, 255, 255, 0.05);
   transform: translateY(-2px);
+}
+
+.item-card .actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
 }
 
 .icon {
