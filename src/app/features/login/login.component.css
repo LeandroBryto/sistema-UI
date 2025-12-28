@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Background delegated to global body style for consistency */
+  background: linear-gradient(135deg, #0b1424 0%, #1e293b 50%, #0f172a 100%);
   position: relative;
   font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
   overflow: hidden;
