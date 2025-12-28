@@ -172,7 +172,6 @@ export class ContasCartoesComponent implements OnInit {
   saveCartao(): void {
     if (this.cartaoForm.invalid) return;
     const val = this.cartaoForm.getRawValue();
-    if (!val.idCarteira) return;
     
     const payload: CartaoCreditoRequest = {
       nome: val.nome,
@@ -212,13 +211,24 @@ export class ContasCartoesComponent implements OnInit {
   }
 
   deleteCategoria(id: number): void {
-    if (!confirm('Deseja excluir esta categoria?')) return;
-    this.categoriaService.delete(id).subscribe({
-      next: () => {
-        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Categoria removida!' });
-        this.loadAll();
-      },
-      error: () => this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao remover categoria.' })
+    const cat = this.categorias.find(c => c.id === id);
+    if (!cat) return;
+    this.confirmationService.confirm({
+      message: `Tem certeza que deseja excluir a categoria "${cat.nome}"? Esta ação não pode ser desfeita.`,
+      header: 'Confirmar Exclusão',
+      acceptLabel: 'Excluir',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.categoriaService.delete(id).subscribe({
+          next: () => {
+            this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Categoria removida!' });
+            this.loadAll();
+          },
+          error: () => this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao remover categoria.' })
+        });
+      }
     });
   }
 }
