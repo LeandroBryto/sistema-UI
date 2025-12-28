@@ -6,15 +6,12 @@ import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { TabViewModule } from 'primeng/tabview';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-import { OrcamentoService } from '../../services/orcamento.service';
-import { CategoriaService } from '../../services/categoria.service';
-import { OrcamentoResponse, OrcamentoRequest } from '../../models/orcamento.models';
 import { GoalService } from '../../services/goal.service';
 import { GoalResponse, GoalRequest } from '../../models/goal.models';
 import { CategoriaResponse } from '../../models/categoria.models';
@@ -30,9 +27,9 @@ import { CategoriaResponse } from '../../models/categoria.models';
     ProgressBarModule, 
     DialogModule, 
     InputTextModule, 
+    InputTextareaModule,
     CardModule,
     ToastModule,
-    TabViewModule,
     ConfirmDialogModule
   ],
   providers: [MessageService, ConfirmationService],
@@ -43,30 +40,18 @@ export class MetasComponent implements OnInit {
   // Metas (Real data from GoalService)
   metas: GoalResponse[] = [];
 
-  // Orçamentos
-  orcamentos: OrcamentoResponse[] = [];
-  categorias: CategoriaResponse[] = [];
-  showOrcamentoDialog = false;
-  novoOrcamento = { idCategoria: 0, limiteMensal: 0, limiteAlerta: 0 };
-  mesAtual = new Date().getMonth() + 1;
-  anoAtual = new Date().getFullYear();
-
   // Meta dialog
   showMetaDialog = false;
-  novaMeta = { meta: '', valorMeta: 0, valorAcumulado: 0 };
+  novaMeta = { nomeDaMeta: '', valorMeta: 0, valorAcumulado: 0, observacao: '', previsaoConclusao: '' };
   editingMetaId: number | null = null;
 
   constructor(
-    private orcamentoService: OrcamentoService,
-    private categoriaService: CategoriaService,
     private goalService: GoalService,
     private toast: MessageService,
     private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
-    this.loadOrcamentos();
-    this.loadCategorias();
     this.loadMetas();
   }
 
@@ -77,61 +62,28 @@ export class MetasComponent implements OnInit {
     });
   }
 
-  loadOrcamentos(): void {
-    this.orcamentoService.list(this.mesAtual, this.anoAtual).subscribe(list => this.orcamentos = list);
-  }
-
-  loadCategorias(): void {
-    this.categoriaService.list().subscribe(list => this.categorias = list.filter(c => c.tipo === 'DESPESA'));
-  }
-
-  openOrcamentoDialog(): void {
-    this.novoOrcamento = { idCategoria: 0, limiteMensal: 0, limiteAlerta: 0 };
-    this.showOrcamentoDialog = true;
-  }
-
-  saveOrcamento(): void {
-    if (!this.novoOrcamento.idCategoria || this.novoOrcamento.limiteMensal <= 0) {
-      this.toast.add({ severity: 'warn', summary: 'Atenção', detail: 'Preencha os campos corretamente.' });
-      return;
-    }
-
-    const payload: OrcamentoRequest = {
-      ...this.novoOrcamento,
-      mes: this.mesAtual,
-      ano: this.anoAtual
-    };
-
-    this.orcamentoService.save(payload).subscribe({
-      next: () => {
-        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Orçamento definido!' });
-        this.showOrcamentoDialog = false;
-        this.loadOrcamentos();
-      },
-      error: () => this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao salvar orçamento.' })
-    });
-  }
-
-  getCategoriaNome(id: number): string {
-    return this.categorias.find(c => c.id === id)?.nome || 'Categoria Desconhecida';
-  }
-
   // Meta methods
   openMetaDialog(meta?: GoalResponse): void {
     if (meta) {
       this.editingMetaId = meta.id;
-      this.novaMeta = { meta: meta.meta, valorMeta: meta.valorMeta, valorAcumulado: meta.valorAcumulado };
+      this.novaMeta = { nomeDaMeta: meta.meta, valorMeta: meta.valorMeta, valorAcumulado: meta.valorAcumulado, observacao: meta.descricao || '', previsaoConclusao: meta.previsaoConclusao };
     } else {
       this.editingMetaId = null;
-      this.novaMeta = { meta: '', valorMeta: 0, valorAcumulado: 0 };
+      this.novaMeta = { nomeDaMeta: '', valorMeta: 0, valorAcumulado: 0, observacao: '', previsaoConclusao: '' };
     }
     this.showMetaDialog = true;
   }
 
   saveMeta(): void {
-    const payload = this.novaMeta;
+    const payload: GoalRequest = {
+      meta: this.novaMeta.nomeDaMeta,
+      descricao: this.novaMeta.observacao || undefined,
+      valorMeta: this.novaMeta.valorMeta,
+      valorAcumulado: this.novaMeta.valorAcumulado || undefined,
+      previsaoConclusao: this.novaMeta.previsaoConclusao || undefined
+    };
     const req$ = this.editingMetaId
-      ? this.goalService.create(payload) // update(this.editingMetaId, payload)
+      ? this.goalService.update(this.editingMetaId, payload)
       : this.goalService.create(payload);
 
     req$.subscribe({

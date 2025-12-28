@@ -25,6 +25,10 @@ export class GoalService {
     return this.http.post<GoalResponse>(this.url(), body);
   }
 
+  public update(id: number, body: GoalRequest): Observable<GoalResponse> {
+    return this.http.put<GoalResponse>(`${this.url()}/${id}`, body);
+  }
+
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.url()}/${id}`);
   }

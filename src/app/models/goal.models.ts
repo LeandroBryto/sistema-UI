@@ -1,17 +1,19 @@
 export interface GoalRequest {
   meta: string;
+  descricao?: string;
   valorMeta: number;
   valorAcumulado?: number;
+  previsaoConclusao?: string;
 }
 
 export interface GoalResponse {
   id: number;
   meta: string;
+  descricao: string;
   valorMeta: number;
   valorAcumulado: number;
-  dataCriacao: string;
-  previsaoConclusao: string;
   percentualConcluido: number;
+  previsaoConclusao: string;
 }
 
 export interface CotacaoDolarDTO {

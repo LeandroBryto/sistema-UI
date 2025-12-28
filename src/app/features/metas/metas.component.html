@@ -7,99 +7,45 @@
         <i class="pi pi-arrow-left"></i>
         <span>Voltar</span>
       </a>
-      <h1>Planejamento & Metas</h1>
+      <h1>Metas de Longo Prazo</h1>
     </div>
   </header>
 
-  <p-tabView>
-    <!-- Aba Metas de Longo Prazo -->
-    <p-tabPanel header="Metas de Longo Prazo">
-      <div class="metas-header">
-        <button pButton icon="pi pi-plus" label="Nova Meta" (click)="openMetaDialog()"></button>
+  <div class="metas-header">
+    <button pButton icon="pi pi-plus" label="Nova Meta" (click)="openMetaDialog()"></button>
+  </div>
+  <div class="metas-grid">
+    <div class="meta-card" *ngFor="let meta of metas">
+      <div class="card-header">
+        <h3>{{ meta.meta }}</h3>
+        <span class="badge">{{ meta.percentualConcluido | number:'1.0-0' }}%</span>
       </div>
-      <div class="metas-grid">
-        <div class="meta-card" *ngFor="let meta of metas">
-          <div class="card-header">
-            <h3>{{ meta.meta }}</h3>
-            <span class="badge">{{ meta.percentualConcluido | number:'1.0-0' }}%</span>
-          </div>
-          <div class="card-body">
-            <p-progressBar [value]="meta.percentualConcluido" [showValue]="false" [style]="{'height': '10px'}"></p-progressBar>
-            <div class="values">
-              <span>Atual: <strong>R$ {{ meta.valorAcumulado | number:'1.2-2' }}</strong></span>
-              <span>Alvo: <strong>R$ {{ meta.valorMeta | number:'1.2-2' }}</strong></span>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-warning p-button-sm" (click)="openMetaDialog(meta)"></button>
-            <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="deleteMeta(meta)"></button>
-          </div>
+      <div class="card-body">
+        <p-progressBar [value]="meta.percentualConcluido" [showValue]="false" [style]="{'height': '10px'}"></p-progressBar>
+        <div class="values">
+          <span>Atual: <strong>R$ {{ meta.valorAcumulado | number:'1.2-2' }}</strong></span>
+          <span>Alvo: <strong>R$ {{ meta.valorMeta | number:'1.2-2' }}</strong></span>
         </div>
-        <div *ngIf="metas.length === 0" class="empty-state">
-          Nenhuma meta definida.
-        </div>
+        <small *ngIf="meta.descricao">{{ meta.descricao }}</small>
+        <small *ngIf="meta.previsaoConclusao">Previsão: {{ meta.previsaoConclusao | date:'dd/MM/yyyy' }}</small>
       </div>
-    </p-tabPanel>
-
-    <!-- Aba Orçamento Mensal -->
-    <p-tabPanel header="Orçamento Mensal">
-      <div class="orcamento-header">
-        <h2>Orçamentos de {{ mesAtual }}/{{ anoAtual }}</h2>
-        <button pButton icon="pi pi-plus" label="Novo Limite" (click)="openOrcamentoDialog()"></button>
+      <div class="card-footer">
+        <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-warning p-button-sm" (click)="openMetaDialog(meta)"></button>
+        <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="deleteMeta(meta)"></button>
       </div>
-
-      <div class="orcamentos-list">
-        <div class="orcamento-item" *ngFor="let o of orcamentos">
-          <div class="orc-info">
-            <span class="cat-name">{{ getCategoriaNome(o.idCategoria) }}</span>
-            <span class="orc-values">R$ {{ o.totalGasto | number:'1.2-2' }} / R$ {{ o.limiteMensal | number:'1.2-2' }}</span>
-          </div>
-          <p-progressBar 
-            [value]="o.progressoPercentual" 
-            [showValue]="true" 
-            [style]="{'height': '20px'}"
-            [color]="o.progressoPercentual > 100 ? '#ef4444' : (o.progressoPercentual > 80 ? '#f59e0b' : '#22c55e')">
-          </p-progressBar>
-        </div>
-        <div *ngIf="orcamentos.length === 0" class="empty-state">
-          Nenhum orçamento definido para este mês.
-        </div>
-      </div>
-    </p-tabPanel>
-  </p-tabView>
-</div>
-
-<!-- Dialog Novo Orçamento -->
-<p-dialog header="Definir Orçamento" [(visible)]="showOrcamentoDialog" [modal]="true" [style]="{width: '400px'}">
-  <div class="form-dialog">
-    <div class="field">
-      <label>Categoria</label>
-      <select [(ngModel)]="novoOrcamento.idCategoria" class="p-inputtext" style="width: 100%">
-        <option [value]="0" disabled>Selecione...</option>
-        <option *ngFor="let c of categorias" [value]="c.id">{{ c.nome }}</option>
-      </select>
     </div>
-    <div class="field">
-      <label>Limite Mensal (R$)</label>
-      <input pInputText type="number" [(ngModel)]="novoOrcamento.limiteMensal" />
-    </div>
-    <div class="field">
-      <label>Alerta em (R$)</label>
-      <input pInputText type="number" [(ngModel)]="novoOrcamento.limiteAlerta" placeholder="Opcional" />
-    </div>
-    <div class="actions">
-      <button pButton label="Cancelar" class="p-button-text" (click)="showOrcamentoDialog=false"></button>
-      <button pButton label="Salvar" (click)="saveOrcamento()"></button>
+    <div *ngIf="metas.length === 0" class="empty-state">
+      Nenhuma meta definida.
     </div>
   </div>
-</p-dialog>
+</div>
 
 <!-- Dialog Meta -->
 <p-dialog [header]="editingMetaId ? 'Editar Meta' : 'Nova Meta'" [(visible)]="showMetaDialog" [modal]="true" [style]="{width: '400px'}">
   <div class="form-dialog">
     <div class="field">
-      <label>Descrição da Meta</label>
-      <input pInputText [(ngModel)]="novaMeta.meta" placeholder="Ex: Viagem para Europa" />
+      <label>Nome da Meta</label>
+      <input pInputText [(ngModel)]="novaMeta.nomeDaMeta" placeholder="Ex: Comprar Carro" />
     </div>
     <div class="field">
       <label>Valor Alvo (R$)</label>
@@ -108,6 +54,14 @@
     <div class="field">
       <label>Valor Inicial (R$)</label>
       <input pInputText type="number" [(ngModel)]="novaMeta.valorAcumulado" placeholder="Opcional" />
+    </div>
+    <div class="field">
+      <label>Observações</label>
+      <textarea pInputTextarea [(ngModel)]="novaMeta.observacao" placeholder="Observações opcionais" rows="3"></textarea>
+    </div>
+    <div class="field">
+      <label>Previsão de Conclusão</label>
+      <input pInputText type="date" [(ngModel)]="novaMeta.previsaoConclusao" />
     </div>
     <div class="actions">
       <button pButton label="Cancelar" class="p-button-text" (click)="showMetaDialog=false"></button>
