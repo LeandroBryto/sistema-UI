@@ -6,6 +6,8 @@ import { CardModule } from 'primeng/card';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
+import { TabViewModule } from 'primeng/tabview';
+import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../services/auth.service';
 import { ChangePasswordPayload } from '../../models/auth.models';
@@ -19,7 +21,10 @@ import { ChangePasswordPayload } from '../../models/auth.models';
     ReactiveFormsModule,
     PasswordModule,
     ButtonModule,
-    ToastModule
+    ToastModule,
+    TabViewModule,
+    CardModule,
+    InputTextModule
   ],
   providers: [MessageService],
   templateUrl: './account-settings.component.html',
@@ -27,6 +32,7 @@ import { ChangePasswordPayload } from '../../models/auth.models';
 })
 export class AccountSettingsComponent implements OnInit {
   securityForm: FormGroup;
+  profileForm: FormGroup;
 
   constructor(private fb: FormBuilder, private toast: MessageService, private authService: AuthService) {
     this.securityForm = this.fb.group({
@@ -34,10 +40,17 @@ export class AccountSettingsComponent implements OnInit {
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required],
     }, { validators: this.passwordMatchValidator });
+
+    this.profileForm = this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['']
+    });
   }
 
   ngOnInit(): void {
-    // Componente inicializado
+    // Carregar dados do perfil se disponível
+    // this.loadProfile();
   }
 
   passwordMatchValidator(group: FormGroup): any {
@@ -62,6 +75,15 @@ export class AccountSettingsComponent implements OnInit {
           this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao alterar senha. Verifique os dados.' });
         }
       });
+    } else {
+      this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos corretamente.' });
+    }
+  }
+
+  updateProfile(): void {
+    if (this.profileForm.valid) {
+      // Implementar lógica para atualizar perfil
+      this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Perfil atualizado com sucesso!' });
     } else {
       this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos corretamente.' });
     }

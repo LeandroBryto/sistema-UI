@@ -55,7 +55,7 @@ export class AppLayout {
 
         // Adicionar listener para resize da janela
         this.resizeListener = this.renderer.listen('window', 'resize', () => {
-            if (window.innerWidth > 991) {
+            if (window.innerWidth > 767) {
                 // Em desktop, garantir que o menu mobile esteja fechado
                 this.layoutService.layoutState.update((prev) => ({ ...prev, staticMenuMobileActive: false }));
                 this.unblockBodyScroll();

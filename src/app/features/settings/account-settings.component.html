@@ -1,28 +1,58 @@
 <div class="settings-page">
   <p-toast position="top-right"></p-toast>
-  
+
   <header class="head">
     <h2>Configurações da Conta</h2>
     <a class="secondary link" routerLink="/dashboard">Voltar</a>
   </header>
 
-  <form [formGroup]="securityForm" class="form-grid" (ngSubmit)="changePassword()">
-    <h3>Alterar Senha</h3>
-    <div class="row">
-      <label for="currentPassword">Senha Atual</label>
-      <p-password id="currentPassword" formControlName="currentPassword" placeholder="Digite sua senha atual" [toggleMask]="true" [feedback]="false" styleClass="w-full"></p-password>
-    </div>
-    <div class="row">
-      <label for="newPassword">Nova Senha</label>
-      <p-password id="newPassword" formControlName="newPassword" placeholder="Digite a nova senha (mín. 8 caracteres)" [toggleMask]="true" [feedback]="true" styleClass="w-full"></p-password>
-    </div>
-    <div class="row">
-      <label for="confirmPassword">Confirmar Nova Senha</label>
-      <p-password id="confirmPassword" formControlName="confirmPassword" placeholder="Confirme a nova senha" [toggleMask]="true" [feedback]="false" styleClass="w-full"></p-password>
-      <small *ngIf="securityForm.errors?.['mismatch']" class="p-error">As senhas não coincidem.</small>
-    </div>
-    <button class="primary" type="submit" [disabled]="securityForm.invalid">Alterar Senha</button>
-  </form>
+  <p-tabView>
+    <p-tabPanel header="Perfil">
+      <p-card>
+        <ng-template pTemplate="title">Informações do Perfil</ng-template>
+        <ng-template pTemplate="content">
+          <form [formGroup]="profileForm" class="form-grid">
+            <div class="row">
+              <label for="name">Nome Completo</label>
+              <input pInputText id="name" formControlName="name" placeholder="Digite seu nome completo" class="w-full">
+            </div>
+            <div class="row">
+              <label for="email">E-mail</label>
+              <input pInputText id="email" formControlName="email" placeholder="Digite seu e-mail" class="w-full" type="email">
+            </div>
+            <div class="row">
+              <label for="phone">Telefone</label>
+              <input pInputText id="phone" formControlName="phone" placeholder="Digite seu telefone" class="w-full" type="tel">
+            </div>
+            <p-button label="Salvar Perfil" type="button" (click)="updateProfile()" [disabled]="profileForm.invalid" styleClass="p-button-primary"></p-button>
+          </form>
+        </ng-template>
+      </p-card>
+    </p-tabPanel>
 
-  <p class="caption">A senha deve ter pelo menos 8 caracteres. Após alterar, você será desconectado por segurança.</p>
+    <p-tabPanel header="Segurança">
+      <p-card>
+        <ng-template pTemplate="title">Alterar Senha</ng-template>
+        <ng-template pTemplate="content">
+          <form [formGroup]="securityForm" class="form-grid" (ngSubmit)="changePassword()">
+            <div class="row">
+              <label for="currentPassword">Senha Atual</label>
+              <p-password id="currentPassword" formControlName="currentPassword" placeholder="Digite sua senha atual" [toggleMask]="true" [feedback]="false" styleClass="w-full"></p-password>
+            </div>
+            <div class="row">
+              <label for="newPassword">Nova Senha</label>
+              <p-password id="newPassword" formControlName="newPassword" placeholder="Digite a nova senha (mín. 8 caracteres)" [toggleMask]="true" [feedback]="true" styleClass="w-full"></p-password>
+            </div>
+            <div class="row">
+              <label for="confirmPassword">Confirmar Nova Senha</label>
+              <p-password id="confirmPassword" formControlName="confirmPassword" placeholder="Confirme a nova senha" [toggleMask]="true" [feedback]="false" styleClass="w-full"></p-password>
+              <small *ngIf="securityForm.errors?.['mismatch']" class="p-error">As senhas não coincidem.</small>
+            </div>
+            <p-button label="Alterar Senha" type="submit" [disabled]="securityForm.invalid" styleClass="p-button-primary"></p-button>
+          </form>
+          <p class="caption">A senha deve ter pelo menos 8 caracteres. Após alterar, você será desconectado por segurança.</p>
+        </ng-template>
+      </p-card>
+    </p-tabPanel>
+  </p-tabView>
 </div>
