@@ -1,87 +1,154 @@
 <div class="estudos-dashboard">
   <!-- Header -->
-  <div class="dashboard-header flex justify-content-between align-items-center mb-5">
-    <div>
-      <h1 class="text-3xl font-bold m-0">Sistema de Estudos</h1>
-      <p class="text-color-secondary mt-1">Acompanhe seu progresso acadêmico</p>
-    </div>
-    <div class="header-actions">
-      <button pButton label="VIRAR PREMIUM" icon="pi pi-star" class="p-button-warning" (click)="openUpgradeModal()"></button>
+  <div class="dashboard-header">
+    <h1>Sistema de Estudos</h1>
+    <p>Acompanhe seu progresso acadêmico e mantenha o foco nos estudos</p>
+  </div>
+
+  <!-- Gamificação Section -->
+  <div class="gamificacao-section" *ngIf="!loading">
+    <div class="gamificacao-cards">
+      <!-- Nível e XP -->
+      <p-card class="gamificacao-card nivel-card">
+        <div class="card-content">
+          <div class="nivel-info">
+            <div class="nivel-badge">
+              <span class="nivel-numero">{{ gamificacao.nivelAtual }}</span>
+              <span class="nivel-label">NÍVEL</span>
+            </div>
+            <div class="xp-info">
+              <span class="xp-atual">{{ gamificacao.xpTotal }}</span>
+              <span class="xp-separador">/</span>
+              <span class="xp-total">{{ xpParaProximoNivel }}</span>
+              <span class="xp-label">XP</span>
+            </div>
+          </div>
+          <p-progressBar [value]="progressoNivel" [showValue]="false" class="nivel-progress"></p-progressBar>
+        </div>
+      </p-card>
+
+      <!-- Moedas -->
+      <p-card class="gamificacao-card moedas-card">
+        <div class="card-content">
+          <div class="moedas-info">
+            <i class="pi pi-circle-fill moeda-icon"></i>
+            <div class="moedas-detalhes">
+              <span class="moedas-valor">{{ gamificacao.moedasNexus }}</span>
+              <span class="moedas-label">Moedas</span>
+            </div>
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Ofensiva (Sequência) -->
+      <p-card class="gamificacao-card ofensiva-card">
+        <div class="card-content">
+          <div class="ofensiva-info">
+            <i class="pi pi-fire ofensiva-icon"></i>
+            <div class="ofensiva-detalhes">
+              <span class="ofensiva-valor">{{ gamificacao.ofensivaAtual }}</span>
+              <span class="ofensiva-label">Dias Seguidos</span>
+            </div>
+          </div>
+        </div>
+      </p-card>
     </div>
   </div>
 
-  <!-- KPI Grid -->
-  <div class="kpi-grid">
-    <div class="card kpi-card">
-      <div class="kpi-content">
-        <span class="kpi-label">Cursos Ativos</span>
-        <span class="kpi-value">5</span>
-        <div class="kpi-trend ok">
-          <i class="pi pi-arrow-up"></i>
-          <span>2 novos este mês</span>
+  <!-- Agenda do Dia -->
+  <div class="agenda-section">
+    <h2>Agenda de Hoje</h2>
+    <div class="agenda-list" *ngIf="!loading">
+      <p-card class="agenda-item" *ngFor="let item of agendaHoje" (click)="iniciarSessao(item)">
+        <div class="agenda-content">
+          <div class="agenda-header">
+            <span class="agenda-materia">{{ item.titulo || 'Matéria' }}</span>
+            <span class="agenda-horario">{{ item.horarioInicio }} - {{ item.horarioFim }}</span>
+          </div>
+          <div class="agenda-actions">
+            <p-button label="Iniciar Sessão" icon="pi pi-play" styleClass="p-button-primary p-button-sm"></p-button>
+          </div>
         </div>
-      </div>
-      <div class="kpi-icon-wrapper">
-        <i class="pi pi-book text-xl text-blue-400"></i>
-      </div>
-    </div>
+      </p-card>
 
-    <div class="card kpi-card">
-      <div class="kpi-content">
-        <span class="kpi-label">Horas Estudadas</span>
-        <span class="kpi-value">120h</span>
-        <div class="kpi-trend ok">
-          <i class="pi pi-arrow-up"></i>
-          <span>15% este mês</span>
-        </div>
-      </div>
-      <div class="kpi-icon-wrapper">
-        <i class="pi pi-clock text-xl text-green-400"></i>
-      </div>
-    </div>
-
-    <div class="card kpi-card">
-      <div class="kpi-content">
-        <span class="kpi-label">Certificações</span>
-        <span class="kpi-value">3</span>
-        <div class="kpi-trend ok">
-          <i class="pi pi-check-circle"></i>
-          <span>1 nova este mês</span>
-        </div>
-      </div>
-      <div class="kpi-icon-wrapper">
-        <i class="pi pi-trophy text-xl text-yellow-400"></i>
-      </div>
-    </div>
-
-    <div class="card kpi-card">
-      <div class="kpi-content">
-        <span class="kpi-label">Progresso Médio</span>
-        <span class="kpi-value">75%</span>
-        <div class="kpi-trend ok">
-          <i class="pi pi-arrow-up"></i>
-          <span>5% este mês</span>
-        </div>
-      </div>
-      <div class="kpi-icon-wrapper">
-        <i class="pi pi-chart-line text-xl text-purple-400"></i>
+      <div class="empty-agenda" *ngIf="agendaHoje.length === 0">
+        <i class="pi pi-calendar empty-icon"></i>
+        <h3>Nada agendado para hoje</h3>
+        <p>Que tal adiantar algo ou criar uma nova sessão de estudo?</p>
+        <p-button label="Ver Agenda Completa" icon="pi pi-calendar" (onClick)="navegarParaAgenda()" styleClass="p-button-secondary"></p-button>
       </div>
     </div>
   </div>
 
-  <!-- Progress Section -->
-  <div class="grid mt-5">
-    <div class="col-12 md:col-6">
-      <p-card header="Curso de Angular">
-        <p>Progresso: 80%</p>
-        <p-progressBar [value]="80" [showValue]="true"></p-progressBar>
+  <!-- Progresso Semanal -->
+  <div class="progresso-section" *ngIf="!loading">
+    <h2>Seu Progresso Esta Semana</h2>
+    <div class="progresso-grid">
+      <p-card class="progresso-card">
+        <div class="progresso-content">
+          <div class="progresso-icon">
+            <i class="pi pi-calendar"></i>
+          </div>
+          <div class="progresso-info">
+            <span class="progresso-valor">{{ progressoSemanal.diasEstudados }}</span>
+            <span class="progresso-label">Dias Estudados</span>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card class="progresso-card">
+        <div class="progresso-content">
+          <div class="progresso-icon">
+            <i class="pi pi-clock"></i>
+          </div>
+          <div class="progresso-info">
+            <span class="progresso-valor">{{ progressoSemanal.minutosTotais }}</span>
+            <span class="progresso-label">Minutos de Estudo</span>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card class="progresso-card">
+        <div class="progresso-content">
+          <div class="progresso-icon">
+            <i class="pi pi-bookmark"></i>
+          </div>
+          <div class="progresso-info">
+            <span class="progresso-valor">{{ progressoSemanal.flashcardsRevisados }}</span>
+            <span class="progresso-label">Flashcards Revisados</span>
+          </div>
+        </div>
       </p-card>
     </div>
-    <div class="col-12 md:col-6">
-      <p-card header="Curso de TypeScript">
-        <p>Progresso: 60%</p>
-        <p-progressBar [value]="60" [showValue]="true"></p-progressBar>
-      </p-card>
+  </div>
+
+  <!-- Ações Rápidas -->
+  <div class="acoes-section">
+    <h2>Ações Rápidas</h2>
+    <div class="acoes-grid">
+      <p-button label="Modo Foco" icon="pi pi-clock" (onClick)="navegarParaModoFoco()" styleClass="p-button-primary acao-button">
+        <span class="acao-descricao">Iniciar sessão cronometrada</span>
+      </p-button>
+
+      <p-button label="Flashcards" icon="pi pi-bookmark" (onClick)="navegarParaFlashcards()" styleClass="p-button-success acao-button">
+        <span class="acao-descricao">Praticar com flashcards</span>
+      </p-button>
+
+      <p-button label="Matérias" icon="pi pi-list" (onClick)="navegarParaMaterias()" styleClass="p-button-info acao-button">
+        <span class="acao-descricao">Gerenciar matérias</span>
+      </p-button>
+
+      <p-button label="Agenda" icon="pi pi-calendar" (onClick)="navegarParaAgenda()" styleClass="p-button-warning acao-button">
+        <span class="acao-descricao">Planejar estudos</span>
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-section" *ngIf="loading">
+    <div class="loading-content">
+      <i class="pi pi-spin pi-spinner loading-icon"></i>
+      <p>Carregando seu dashboard...</p>
     </div>
   </div>
 </div>

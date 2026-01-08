@@ -7,13 +7,10 @@ export class EnvService {
     return environment.apiBaseAuth || 'http://localhost:8084';
   }
   apiAuthBase(): string {
-    return environment.apiBaseAuth;
+    return environment.apiBaseAuth || 'http://localhost:8084';
   }
-  isProd(): boolean {
-    return !!environment.production;
-  }
-  ambiente(): string {
-    return environment.ambiente;
+  apiEstudosBase(): string {
+    return environment.apiEstudosBase || 'http://localhost:8083';
   }
 }
 

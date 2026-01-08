@@ -11,41 +11,169 @@
       <p-button
         label="Nova Matéria"
         icon="pi pi-plus"
-        styleClass="p-button-primary">
+        styleClass="p-button-primary"
+        (click)="abrirDialogNovaMateria()">
       </p-button>
     </div>
   </header>
 
-  <div class="materias-grid">
-    <div
+  <!-- Loading State -->
+  <div class="loading-section" *ngIf="loading">
+    <div class="loading-content">
+      <i class="pi pi-spin pi-spinner loading-icon"></i>
+      <p>Carregando matérias...</p>
+    </div>
+  </div>
+
+  <!-- Grid de Matérias -->
+  <div class="materias-grid" *ngIf="!loading">
+    <p-card
       *ngFor="let materia of getMateriasFiltradas()"
       class="materia-card"
-      [style.background-color]="materia.corHex + '20'"
       [style.border-left-color]="materia.corHex">
 
       <div class="materia-header">
-        <div class="materia-icon" [style.color]="materia.corHex">
+        <div class="materia-icon" [style.color]="materia.corHex" [style.background-color]="materia.corHex + '20'">
           <i [class]="materia.icone"></i>
         </div>
         <div class="materia-info">
           <h3>{{ materia.nome }}</h3>
-          <p>{{ materia.topicosConcluidos }}/{{ materia.totalTopicos }} tópicos</p>
+          <div class="materia-meta">
+            <span class="materia-status" *ngIf="materia.arquivada">
+              <i class="pi pi-archive"></i> Arquivada
+            </span>
+            <span class="materia-data" *ngIf="materia.dataCriacao">
+              Criada em {{ materia.dataCriacao | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div class="materia-progress">
-        <p-progressBar
-          [value]="calcularProgresso(materia)"
-          [showValue]="false"
-          [style]="{'height': '8px'}">
-        </p-progressBar>
-        <span class="progress-text">{{ calcularProgresso(materia) | number:'1.0-0' }}% concluído</span>
-      </div>
-
       <div class="materia-actions">
-        <p-button label="Ver Detalhes" icon="pi pi-eye" styleClass="p-button-text p-button-sm"></p-button>
-        <p-button label="Editar" icon="pi pi-pencil" styleClass="p-button-text p-button-sm"></p-button>
+        <p-button
+          label="Ver Detalhes"
+          icon="pi pi-eye"
+          styleClass="p-button-text p-button-sm"
+          pTooltip="Ver tópicos e flashcards">
+        </p-button>
+
+        <p-button
+          label="Arquivar"
+          icon="pi pi-archive"
+          styleClass="p-button-text p-button-warning p-button-sm"
+          (click)="arquivarMateria(materia)"
+          *ngIf="!materia.arquivada"
+          pTooltip="Arquivar matéria">
+        </p-button>
+
+        <p-button
+          label="Excluir"
+          icon="pi pi-trash"
+          styleClass="p-button-text p-button-danger p-button-sm"
+          (click)="excluirMateria(materia)"
+          pTooltip="Excluir matéria permanentemente">
+        </p-button>
+      </div>
+    </p-card>
+
+    <!-- Estado Vazio -->
+    <div class="empty-state" *ngIf="getMateriasFiltradas().length === 0">
+      <div class="empty-content">
+        <i class="pi pi-book empty-icon"></i>
+        <h3>{{ mostrarArquivadas ? 'Nenhuma matéria arquivada' : 'Nenhuma matéria encontrada' }}</h3>
+        <p>
+          {{ mostrarArquivadas
+             ? 'Você não possui matérias arquivadas.'
+             : 'Comece criando sua primeira matéria de estudo!' }}
+        </p>
+        <p-button
+          *ngIf="!mostrarArquivadas"
+          label="Criar Primeira Matéria"
+          icon="pi pi-plus"
+          styleClass="p-button-primary"
+          (click)="abrirDialogNovaMateria()">
+        </p-button>
       </div>
     </div>
   </div>
+
+  <!-- Modal: Nova Matéria -->
+  <p-dialog
+    [(visible)]="mostrarDialogNovaMateria"
+    [modal]="true"
+    [style]="{width: '500px'}"
+    [draggable]="false"
+    [resizable]="false"
+    header="Nova Matéria">
+
+    <div class="form-group">
+      <label for="nome">Nome da Matéria *</label>
+      <input
+        pInputText
+        id="nome"
+        [(ngModel)]="novaMateria.nome"
+        placeholder="Ex: Matemática, Português, Física..."
+        class="form-control"
+        maxlength="100">
+      <small class="form-help">O nome deve ser único e é obrigatório.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="cor">Cor da Matéria</label>
+      <div class="color-picker-container">
+        <p-colorPicker
+          [(ngModel)]="novaMateria.corHex"
+          format="hex"
+          [inline]="false">
+        </p-colorPicker>
+        <div class="color-preview" [style.background-color]="novaMateria.corHex">
+          <span class="color-hex">{{ novaMateria.corHex }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="icone">Ícone</label>
+      <p-dropdown
+        [options]="iconesDisponiveis"
+        [(ngModel)]="novaMateria.icone"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Selecione um ícone"
+        [showClear]="false">
+        <ng-template pTemplate="selectedItem" let-selectedItem>
+          <div class="icone-selecionado" *ngIf="selectedItem">
+            <i [class]="selectedItem.value"></i>
+            <span>{{ selectedItem.label }}</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="item" let-item>
+          <div class="icone-item">
+            <i [class]="item.value"></i>
+            <span>{{ item.label }}</span>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        (click)="mostrarDialogNovaMateria = false"
+        styleClass="p-button-text">
+      </p-button>
+
+      <p-button
+        label="Criar Matéria"
+        icon="pi pi-check"
+        (click)="salvarNovaMateria()"
+        [disabled]="!novaMateria.nome.trim()"
+        styleClass="p-button-primary">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Toast para mensagens -->
+  <p-toast></p-toast>
 </div>

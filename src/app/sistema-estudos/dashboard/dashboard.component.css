@@ -1,50 +1,414 @@
 .estudos-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 2rem;
+  background: #f8f9fa;
+  min-height: 100vh;
 }
-.kpi-grid {
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.dashboard-header h1 {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.dashboard-header p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+/* Gamificação Section */
+.gamificacao-section {
+  margin-bottom: 3rem;
+}
+
+.gamificacao-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
 }
-.kpi-card {
-  position: relative;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+.gamificacao-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 }
-.kpi-content {
+
+.gamificacao-card:hover {
+  transform: translateY(-5px);
+}
+
+.gamificacao-card ::ng-deep .p-card-body {
+  padding: 2rem;
+}
+
+.nivel-card .card-content {
+  text-align: center;
+}
+
+.nivel-info {
+  margin-bottom: 1.5rem;
+}
+
+.nivel-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 15px;
+  margin-bottom: 1rem;
+}
+
+.nivel-numero {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.nivel-label {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  letter-spacing: 1px;
+}
+
+.xp-info {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem;
+  font-size: 1.1rem;
+  color: #495057;
+}
+
+.xp-atual, .xp-total {
+  font-weight: 600;
+}
+
+.xp-separador {
+  color: #6c757d;
+}
+
+.xp-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.nivel-progress ::ng-deep .p-progressbar {
+  height: 8px;
+  border-radius: 4px;
+}
+
+.nivel-progress ::ng-deep .p-progressbar .p-progressbar-value {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.moedas-card .card-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.moedas-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.moeda-icon {
+  font-size: 2rem;
+  color: #FFD700;
+}
+
+.moedas-detalhes {
+  display: flex;
+  flex-direction: column;
+}
+
+.moedas-valor {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.moedas-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.ofensiva-card .card-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ofensiva-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ofensiva-icon {
+  font-size: 2rem;
+  color: #FF6B6B;
+}
+
+.ofensiva-detalhes {
+  display: flex;
+  flex-direction: column;
+}
+
+.ofensiva-valor {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.ofensiva-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Agenda Section */
+.agenda-section {
+  margin-bottom: 3rem;
+}
+
+.agenda-section h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.agenda-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.agenda-item {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.agenda-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.agenda-item ::ng-deep .p-card-body {
+  padding: 1.5rem;
+}
+
+.agenda-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.agenda-header {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-.kpi-label {
-  font-size: 0.875rem;
-  color: #6b7280;
-  font-weight: 500;
+
+.agenda-materia {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
 }
-.kpi-value {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #1f2937;
+
+.agenda-horario {
+  font-size: 0.9rem;
+  color: #6c757d;
 }
-.kpi-trend {
+
+.empty-agenda {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.empty-agenda h3 {
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+.empty-agenda p {
+  color: #adb5bd;
+  margin-bottom: 1.5rem;
+}
+
+/* Progresso Section */
+.progresso-section {
+  margin-bottom: 3rem;
+}
+
+.progresso-section h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.progresso-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.progresso-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.progresso-card:hover {
+  transform: translateY(-2px);
+}
+
+.progresso-card ::ng-deep .p-card-body {
+  padding: 1.5rem;
+}
+
+.progresso-content {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+  gap: 1rem;
 }
-.kpi-trend.ok {
-  color: #10b981;
+
+.progresso-icon {
+  font-size: 2rem;
+  color: #667eea;
+  width: 50px;
+  text-align: center;
 }
-.kpi-trend.warn {
-  color: #f59e0b;
+
+.progresso-info {
+  display: flex;
+  flex-direction: column;
 }
-.kpi-icon-wrapper {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 0.5rem;
-  border-radius: 8px;
+
+.progresso-valor {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.progresso-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Ações Section */
+.acoes-section {
+  margin-bottom: 2rem;
+}
+
+.acoes-section h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.acoes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.acao-button {
+  padding: 1.5rem !important;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  text-align: left;
+  height: auto !important;
+}
+
+.acao-button ::ng-deep .p-button-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.acao-descricao {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-top: 0.25rem;
+}
+
+/* Loading State */
+.loading-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.loading-content {
+  text-align: center;
+}
+
+.loading-icon {
+  font-size: 2rem;
+  color: #667eea;
+  margin-bottom: 1rem;
+}
+
+.loading-content p {
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .estudos-dashboard {
+    padding: 1rem;
+  }
+
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+
+  .gamificacao-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .agenda-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .progresso-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .acoes-grid {
+    grid-template-columns: 1fr;
+  }
 }

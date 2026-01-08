@@ -4,5 +4,6 @@ export const environment = {
   ambiente: 'DESENVOLVIMENTO',
   apiBase: '',
   apiBaseAuth: 'http://localhost:8084',
+  apiEstudosBase: 'http://localhost:8083',
 };
 

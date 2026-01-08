@@ -23,7 +23,12 @@ export class AppMenu implements OnInit {
     constructor(private authService: AuthService, private permissionService: PermissionService) {}
 
     ngOnInit() {
-        const isPremium = this.authService.getPlano() === 'PREMIUM';
+        const plano = this.authService.getPlano();
+        const isPremium = plano === 'PREMIUM' || plano === 'premium';
+        const isFree = plano === 'FREE' || plano === 'free' || !plano;
+        const isLoggedIn = this.authService.isLoggedIn();
+
+        console.log('Menu Debug:', { plano, isPremium, isFree, isLoggedIn });
 
         this.model = [
             {
@@ -33,7 +38,7 @@ export class AppMenu implements OnInit {
                     { 
                         label: 'Sistema de Estudos', 
                         icon: 'pi pi-fw pi-book', 
-                        visible: !isPremium,
+                        visible: isLoggedIn && isFree,
                         items: [
                             { label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/estudos'] },
                             { label: 'Matérias', icon: 'pi pi-fw pi-list', routerLink: ['/estudos/materias'] },
