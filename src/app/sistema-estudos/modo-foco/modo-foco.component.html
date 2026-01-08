@@ -1,0 +1,92 @@
+<div class="modo-foco-container">
+  <div class="header">
+    <h1>Modo Foco</h1>
+    <p>Concentre-se nos estudos com sessões cronometradas</p>
+  </div>
+
+  <div class="timer-section">
+    <p-card class="timer-card">
+      <ng-template pTemplate="header">
+        <div class="timer-header">
+          <span class="materia-badge" [style.background-color]="materiaAtual.corHex">
+            {{ materiaAtual.nome }}
+          </span>
+        </div>
+      </ng-template>
+
+      <div class="timer-display">
+        <div class="timer-circle">
+          <span class="timer-text">{{ formatarTempo(tempoRestante) }}</span>
+        </div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <div class="timer-controls">
+          <p-button
+            *ngIf="!isRunning && !isPaused"
+            label="Iniciar"
+            icon="pi pi-play"
+            (onClick)="iniciarTimer()"
+            styleClass="p-button-success">
+          </p-button>
+
+          <p-button
+            *ngIf="isRunning"
+            label="Pausar"
+            icon="pi pi-pause"
+            (onClick)="pausarTimer()"
+            styleClass="p-button-warning">
+          </p-button>
+
+          <p-button
+            *ngIf="isPaused"
+            label="Retomar"
+            icon="pi pi-play"
+            (onClick)="retomarTimer()"
+            styleClass="p-button-success">
+          </p-button>
+
+          <p-button
+            label="Reiniciar"
+            icon="pi pi-refresh"
+            (onClick)="reiniciarTimer()"
+            styleClass="p-button-secondary">
+          </p-button>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+
+  <div class="anotacoes-section">
+    <p-card class="anotacoes-card">
+      <ng-template pTemplate="header">
+        <h3>Anotações da Sessão</h3>
+      </ng-template>
+
+      <textarea
+        pInputTextarea
+        [(ngModel)]="anotacoes"
+        placeholder="Digite suas anotações durante a sessão de estudo..."
+        rows="8"
+        class="anotacoes-textarea">
+      </textarea>
+    </p-card>
+  </div>
+
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-value">25</div>
+        <div class="stat-label">Minutos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">+50</div>
+        <div class="stat-label">XP</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">+10</div>
+        <div class="stat-label">Moedas</div>
+      </div>
+    </div>
+  </div>
+</div>
