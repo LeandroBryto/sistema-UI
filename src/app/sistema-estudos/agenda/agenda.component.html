@@ -1,0 +1,190 @@
+<div class="agenda-container">
+  <div class="header">
+    <h1>Agenda de Estudos</h1>
+    <p>Organize seus horários de estudo e revisões</p>
+  </div>
+
+  <div class="agenda-content">
+    <div class="calendar-section">
+      <p-card class="calendar-card">
+        <ng-template pTemplate="header">
+          <h3>Calendário</h3>
+        </ng-template>
+
+        <p-calendar
+          [(ngModel)]="dataSelecionada"
+          [inline]="true"
+          dateFormat="dd/mm/yy"
+          [showWeek]="true">
+        </p-calendar>
+
+        <ng-template pTemplate="footer">
+          <p-button
+            label="Novo Evento"
+            icon="pi pi-plus"
+            (onClick)="abrirDialogNovoEvento()"
+            styleClass="p-button-primary">
+          </p-button>
+        </ng-template>
+      </p-card>
+    </div>
+
+    <div class="events-section">
+      <p-card class="events-card">
+        <ng-template pTemplate="header">
+          <h3>{{ formatarData(dataSelecionada) }}</h3>
+        </ng-template>
+
+        <div class="events-list" *ngIf="getEventosDoDia(dataSelecionada).length > 0; else noEvents">
+          <div
+            class="event-item"
+            *ngFor="let evento of getEventosDoDia(dataSelecionada)"
+            [class.concluido]="evento.concluido">
+
+            <div class="event-header">
+              <div class="event-time">
+                {{ evento.horaInicio }} - {{ evento.horaFim }}
+              </div>
+              <div class="event-type" [style.background-color]="getCorTipo(evento.tipo)">
+                {{ getTextoTipo(evento.tipo) }}
+              </div>
+            </div>
+
+            <div class="event-content">
+              <h4>{{ evento.titulo }}</h4>
+              <p class="event-description">{{ evento.descricao }}</p>
+              <p class="event-subject">{{ evento.materia }}</p>
+            </div>
+
+            <div class="event-actions">
+              <p-button
+                icon="pi pi-check"
+                [icon]="evento.concluido ? 'pi pi-check-circle' : 'pi pi-circle'"
+                (onClick)="marcarComoConcluido(evento)"
+                [styleClass]="evento.concluido ? 'p-button-success p-button-text' : 'p-button-text'"
+                pTooltip="Marcar como concluído">
+              </p-button>
+
+              <p-button
+                icon="pi pi-trash"
+                (onClick)="excluirEvento(evento)"
+                styleClass="p-button-danger p-button-text"
+                pTooltip="Excluir evento">
+              </p-button>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noEvents>
+          <div class="no-events">
+            <i class="pi pi-calendar" style="font-size: 3rem; color: #ccc;"></i>
+            <h4>Nenhum evento para este dia</h4>
+            <p>Adicione um novo evento de estudo clicando no botão acima.</p>
+          </div>
+        </ng-template>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- Dialog para novo evento -->
+  <p-dialog
+    [(visible)]="mostrarDialog"
+    [modal]="true"
+    [style]="{width: '500px'}"
+    [draggable]="false"
+    [resizable]="false"
+    header="Novo Evento de Estudo">
+
+    <div class="form-group">
+      <label for="titulo">Título:</label>
+      <input
+        pInputText
+        id="titulo"
+        [(ngModel)]="novoEvento.titulo"
+        placeholder="Digite o título do evento..."
+        class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label for="materia">Matéria:</label>
+      <p-dropdown
+        [options]="materias"
+        [(ngModel)]="novoEvento.materia"
+        placeholder="Selecione a matéria"
+        optionLabel="label"
+        optionValue="value">
+      </p-dropdown>
+    </div>
+
+    <div class="form-group">
+      <label for="tipo">Tipo:</label>
+      <p-dropdown
+        [options]="tiposEvento"
+        [(ngModel)]="novoEvento.tipo"
+        placeholder="Selecione o tipo"
+        optionLabel="label"
+        optionValue="value">
+      </p-dropdown>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="horaInicio">Hora Início:</label>
+        <input
+          type="time"
+          pInputText
+          id="horaInicio"
+          [(ngModel)]="novoEvento.horaInicio"
+          class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="horaFim">Hora Fim:</label>
+        <input
+          type="time"
+          pInputText
+          id="horaFim"
+          [(ngModel)]="novoEvento.horaFim"
+          class="form-control">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="data">Data:</label>
+      <p-calendar
+        [(ngModel)]="novoEvento.data"
+        dateFormat="dd/mm/yy"
+        [showIcon]="true">
+      </p-calendar>
+    </div>
+
+    <div class="form-group">
+      <label for="descricao">Descrição:</label>
+      <textarea
+        pInputTextarea
+        id="descricao"
+        [(ngModel)]="novoEvento.descricao"
+        placeholder="Digite uma descrição (opcional)..."
+        rows="3"
+        class="form-control">
+      </textarea>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        (onClick)="mostrarDialog = false"
+        styleClass="p-button-text">
+      </p-button>
+
+      <p-button
+        label="Salvar"
+        icon="pi pi-check"
+        (onClick)="salvarEvento()"
+        [disabled]="!novoEvento.titulo || !novoEvento.materia"
+        styleClass="p-button-primary">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+</div>

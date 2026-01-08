@@ -1,0 +1,274 @@
+.agenda-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.header p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.agenda-content {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 2rem;
+}
+
+.calendar-section {
+  grid-column: 1;
+}
+
+.calendar-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+}
+
+.calendar-card ::ng-deep .p-card-header {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1.5rem;
+}
+
+.calendar-card ::ng-deep .p-card-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.3rem;
+}
+
+.calendar-card ::ng-deep .p-card-body {
+  padding: 1.5rem;
+}
+
+.calendar-card ::ng-deep .p-calendar {
+  width: 100%;
+}
+
+.calendar-card ::ng-deep .p-calendar .p-datepicker {
+  border: none;
+  background: transparent;
+}
+
+.calendar-card ::ng-deep .p-card-footer {
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.events-section {
+  grid-column: 2;
+}
+
+.events-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  min-height: 600px;
+}
+
+.events-card ::ng-deep .p-card-header {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1.5rem;
+}
+
+.events-card ::ng-deep .p-card-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.3rem;
+}
+
+.events-card ::ng-deep .p-card-body {
+  padding: 1.5rem;
+}
+
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.event-item {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.event-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.event-item.concluido {
+  background: #f8fff8;
+  border-color: #4CAF50;
+  opacity: 0.8;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.event-time {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.event-type {
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.event-content h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.event-description {
+  color: #6c757d;
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.event-subject {
+  color: #667eea;
+  font-weight: 600;
+  margin: 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.event-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.no-events {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6c757d;
+}
+
+.no-events h4 {
+  margin: 1rem 0;
+  font-size: 1.2rem;
+}
+
+.no-events p {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Dialog Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #495057;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-row .form-group {
+  margin-bottom: 0;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .agenda-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .calendar-section {
+    order: 2;
+  }
+
+  .events-section {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .agenda-container {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .calendar-card ::ng-deep .p-card-body {
+    padding: 1rem;
+  }
+
+  .events-card ::ng-deep .p-card-body {
+    padding: 1rem;
+  }
+
+  .event-item {
+    padding: 0.75rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
