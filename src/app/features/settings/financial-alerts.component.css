@@ -1,0 +1,89 @@
+.financial-alerts-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  min-height: 100vh;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.head h2 {
+  margin: 0;
+  color: #1f2937 !important;
+  font-weight: 600;
+}
+
+.secondary.link {
+  color: #6b7280 !important;
+  text-decoration: none;
+}
+
+.secondary.link:hover {
+  color: #374151 !important;
+}
+
+.alerts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.alert-card {
+  height: fit-content;
+  background-color: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-row label {
+  font-weight: 500;
+  color: #374151 !important;
+}
+
+.info-text {
+  font-size: 0.875rem;
+  color: #6b7280 !important;
+  margin: 0.5rem 0;
+}
+
+.cotacao-info {
+  font-size: 0.875rem;
+  color: #059669 !important;
+  font-weight: 500;
+  margin: 0.5rem 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+/* Forçar cores claras para garantir visibilidade */
+p-card .p-card-header {
+  background-color: #f9fafb !important;
+  color: #1f2937 !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+p-card .p-card-body {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+}

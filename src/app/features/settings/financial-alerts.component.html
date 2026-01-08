@@ -1,0 +1,134 @@
+<div class="financial-alerts-page">
+  <header class="head">
+    <h2>Sistema de Alertas Financeiros</h2>
+    <a class="secondary link" routerLink="/dashboard">Voltar</a>
+  </header>
+
+  <div class="alerts-grid">
+    <!-- Alertas de Cotação -->
+    <p-card header="Alertas de Cotação" class="alert-card">
+      <form [formGroup]="cotacaoForm">
+        <div class="form-row">
+          <label>Ativar alertas de cotação</label>
+          <p-inputSwitch formControlName="enabled"></p-inputSwitch>
+        </div>
+
+        <div class="form-row" *ngIf="cotacaoForm.get('enabled')?.value">
+          <label>Percentual de variação (%)</label>
+          <p-inputNumber
+            formControlName="percentual"
+            [min]="1"
+            [max]="100"
+            suffix="%"
+            [showButtons]="false">
+          </p-inputNumber>
+        </div>
+
+        <div class="form-row" *ngIf="cotacaoForm.get('enabled')?.value">
+          <label>Horário de envio</label>
+          <input pInputText type="time" formControlName="horario" />
+        </div>
+
+        <p class="info-text" *ngIf="cotacaoForm.get('enabled')?.value">
+          Você receberá um e-mail quando o dólar variar acima do percentual definido.
+        </p>
+
+        <p class="cotacao-info" *ngIf="cotacao">
+          Última cotação: {{ cotacao.data }} — R$ {{ cotacao.valor | number:'1.2-2' }}
+        </p>
+        <p class="cotacao-info" *ngIf="cotacao === null">
+          Sem cotação disponível no momento.
+        </p>
+      </form>
+    </p-card>
+
+    <!-- Alertas de Metas -->
+    <p-card header="Alertas de Metas" class="alert-card">
+      <form [formGroup]="metasForm">
+        <div class="form-row">
+          <label>Ativar alertas de metas</label>
+          <p-inputSwitch formControlName="enabled"></p-inputSwitch>
+        </div>
+
+        <div class="form-row" *ngIf="metasForm.get('enabled')?.value">
+          <label>Tipo de alerta</label>
+          <p-dropdown
+            formControlName="tipo"
+            [options]="tiposMeta"
+            optionLabel="label"
+            optionValue="value">
+          </p-dropdown>
+        </div>
+
+        <p class="info-text" *ngIf="metasForm.get('enabled')?.value">
+          Receba notificações quando suas metas financeiras forem atingidas ou estiverem próximas.
+        </p>
+      </form>
+    </p-card>
+
+    <!-- Alertas de Orçamento -->
+    <p-card header="Alertas de Orçamento" class="alert-card">
+      <form [formGroup]="orcamentoForm">
+        <div class="form-row">
+          <label>Ativar alertas de orçamento</label>
+          <p-inputSwitch formControlName="enabled"></p-inputSwitch>
+        </div>
+
+        <div class="form-row" *ngIf="orcamentoForm.get('enabled')?.value">
+          <label>Percentual limite (%)</label>
+          <p-inputNumber
+            formControlName="percentual"
+            [min]="1"
+            [max]="100"
+            suffix="%"
+            [showButtons]="false">
+          </p-inputNumber>
+        </div>
+
+        <p class="info-text" *ngIf="orcamentoForm.get('enabled')?.value">
+          Seja alertado quando suas despesas atingirem o percentual definido do orçamento mensal.
+        </p>
+      </form>
+    </p-card>
+
+    <!-- Alertas de Pagamentos -->
+    <p-card header="Lembretes de Pagamentos" class="alert-card">
+      <form [formGroup]="pagamentosForm">
+        <div class="form-row">
+          <label>Ativar lembretes de pagamentos</label>
+          <p-inputSwitch formControlName="enabled"></p-inputSwitch>
+        </div>
+
+        <div class="form-row" *ngIf="pagamentosForm.get('enabled')?.value">
+          <label>Dias antes do vencimento</label>
+          <p-inputNumber
+            formControlName="diasAntes"
+            [min]="1"
+            [max]="30"
+            suffix=" dias"
+            [showButtons]="true">
+          </p-inputNumber>
+        </div>
+
+        <p class="info-text" *ngIf="pagamentosForm.get('enabled')?.value">
+          Receba lembretes antecipados para contas e pagamentos próximos do vencimento.
+        </p>
+      </form>
+    </p-card>
+  </div>
+
+  <div class="actions">
+    <p-button
+      label="Salvar Configurações"
+      (click)="save()"
+      [loading]="saving"
+      [disabled]="saving">
+    </p-button>
+
+    <p-message
+      *ngIf="saved"
+      severity="success"
+      text="Configurações de alertas atualizadas com sucesso!">
+    </p-message>
+  </div>
+</div>
