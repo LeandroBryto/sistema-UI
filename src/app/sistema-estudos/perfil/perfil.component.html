@@ -1,0 +1,158 @@
+<div class="perfil-container">
+  <div class="header">
+    <h1>Perfil do Estudante</h1>
+    <p>Acompanhe seu progresso e conquistas</p>
+  </div>
+
+  <div class="perfil-content">
+    <!-- Informações do Perfil -->
+    <div class="perfil-info-section">
+      <p-card class="perfil-card">
+        <div class="perfil-header">
+          <div class="avatar-section">
+            <p-avatar
+              [label]="usuario.avatar"
+              size="xlarge"
+              [style]="{'background-color': usuario.corAvatar, 'color': '#ffffff'}">
+            </p-avatar>
+          </div>
+
+          <div class="info-section">
+            <div class="nome-section">
+              <h2>{{ usuario.nome }}</h2>
+              <p-button
+                icon="pi pi-pencil"
+                (onClick)="abrirDialogEditar()"
+                styleClass="p-button-text p-button-rounded"
+                pTooltip="Editar nome">
+              </p-button>
+            </div>
+
+            <div class="nivel-section">
+              <div class="nivel-badge">
+                <span class="nivel-label">Nível</span>
+                <span class="nivel-numero">{{ usuario.nivel }}</span>
+              </div>
+
+              <div class="xp-section">
+                <div class="xp-info">
+                  <span>{{ usuario.xp }} / {{ usuario.xpProximoNivel }} XP</span>
+                  <span>{{ (progressoNivel).toFixed(0) }}%</span>
+                </div>
+                <p-progressBar [value]="progressoNivel" [showValue]="false"></p-progressBar>
+              </div>
+            </div>
+
+            <div class="moedas-section">
+              <div class="moedas-display">
+                <i class="pi pi-circle-fill" style="color: #FFD700;"></i>
+                <span class="moedas-valor">{{ usuario.moedas }}</span>
+                <span class="moedas-label">Moedas</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="stats-section">
+      <h3>Estatísticas</h3>
+      <div class="stats-grid">
+        <div class="stat-card" *ngFor="let stat of estatisticas">
+          <div class="stat-icon" [style.color]="stat.cor">
+            <i [class]="stat.icone"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stat.valor }}</div>
+            <div class="stat-unit">{{ stat.unidade }}</div>
+            <div class="stat-title">{{ stat.titulo }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conquistas -->
+    <div class="conquistas-section">
+      <h3>Conquistas</h3>
+
+      <div class="conquistas-tabs">
+        <div class="tab-buttons">
+          <button class="tab-button active">Desbloqueadas</button>
+          <button class="tab-button">Bloqueadas</button>
+        </div>
+
+        <div class="conquistas-grid">
+          <div class="conquista-card unlocked" *ngFor="let conquista of getConquistasDesbloqueadas()">
+            <div class="conquista-icon">
+              <i [class]="conquista.icone"></i>
+            </div>
+            <div class="conquista-content">
+              <h4>{{ conquista.titulo }}</h4>
+              <p>{{ conquista.descricao }}</p>
+            </div>
+            <div class="conquista-badge">
+              <i class="pi pi-check-circle" style="color: #4CAF50;"></i>
+            </div>
+          </div>
+
+          <div class="conquista-card locked" *ngFor="let conquista of getConquistasBloqueadas()">
+            <div class="conquista-icon locked">
+              <i [class]="conquista.icone"></i>
+            </div>
+            <div class="conquista-content">
+              <h4>{{ conquista.titulo }}</h4>
+              <p>{{ conquista.descricao }}</p>
+              <div class="progress-section">
+                <div class="progress-text">
+                  {{ conquista.progresso }} / {{ conquista.progressoMax }}
+                </div>
+                <p-progressBar [value]="getProgressoConquista(conquista)" [showValue]="false"></p-progressBar>
+              </div>
+            </div>
+            <div class="conquista-badge">
+              <i class="pi pi-lock" style="color: #9E9E9E;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dialog para editar perfil -->
+  <p-dialog
+    [(visible)]="mostrarDialogEditar"
+    [modal]="true"
+    [style]="{width: '400px'}"
+    [draggable]="false"
+    [resizable]="false"
+    header="Editar Perfil">
+
+    <div class="form-group">
+      <label for="nome">Nome:</label>
+      <input
+        pInputText
+        id="nome"
+        [(ngModel)]="nomeEditado"
+        placeholder="Digite seu nome..."
+        class="form-control">
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        (onClick)="mostrarDialogEditar = false"
+        styleClass="p-button-text">
+      </p-button>
+
+      <p-button
+        label="Salvar"
+        icon="pi pi-check"
+        (onClick)="salvarPerfil()"
+        [disabled]="!nomeEditado.trim()"
+        styleClass="p-button-primary">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+</div>
