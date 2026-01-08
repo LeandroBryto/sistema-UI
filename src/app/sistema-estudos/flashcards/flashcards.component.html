@@ -1,0 +1,135 @@
+<div class="flashcards-container">
+  <div class="header">
+    <h1>Flashcards</h1>
+    <p>Pratique e memorize conceitos importantes</p>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-info">
+      <span>Progresso: {{ flashcardAtualIndex + 1 }} de {{ flashcards.length }}</span>
+      <span>{{ progresso.toFixed(0) }}% concluído</span>
+    </div>
+    <p-progressBar [value]="progresso" [showValue]="false"></p-progressBar>
+  </div>
+
+  <div class="flashcard-section" *ngIf="flashcards.length > 0">
+    <div class="flashcard-container">
+      <p-card class="flashcard-card" (click)="virarCartao()">
+        <div class="flashcard-content">
+          <div class="card-front" [class.flipped]="mostrarResposta">
+            <div class="card-text">
+              <h3>Pergunta</h3>
+              <p>{{ flashcardAtual.pergunta }}</p>
+            </div>
+            <div class="card-footer">
+              <span class="dificuldade-badge"
+                    [style.background-color]="getCorDificuldade(flashcardAtual.dificuldade)">
+                {{ getTextoDificuldade(flashcardAtual.dificuldade) }}
+              </span>
+              <small>Clique para ver a resposta</small>
+            </div>
+          </div>
+
+          <div class="card-back" [class.flipped]="mostrarResposta">
+            <div class="card-text">
+              <h3>Resposta</h3>
+              <p>{{ flashcardAtual.resposta }}</p>
+            </div>
+            <div class="card-footer">
+              <p-button
+                label="Marcar como Revisado"
+                icon="pi pi-check"
+                (onClick)="marcarComoRevisado(); $event.stopPropagation()"
+                styleClass="p-button-success p-button-sm">
+              </p-button>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="navigation-controls">
+      <p-button
+        label="Anterior"
+        icon="pi pi-chevron-left"
+        (onClick)="cartaoAnterior()"
+        [disabled]="flashcardAtualIndex === 0"
+        styleClass="p-button-secondary">
+      </p-button>
+
+      <p-button
+        label="Próximo"
+        icon="pi pi-chevron-right"
+        (onClick)="proximaCartao()"
+        [disabled]="flashcardAtualIndex === flashcards.length - 1"
+        styleClass="p-button-primary">
+      </p-button>
+    </div>
+  </div>
+
+  <div class="add-flashcard-section">
+    <p-card class="add-card">
+      <ng-template pTemplate="header">
+        <h3>Adicionar Novo Flashcard</h3>
+      </ng-template>
+
+      <div class="form-group">
+        <label for="pergunta">Pergunta:</label>
+        <input
+          pInputText
+          id="pergunta"
+          [(ngModel)]="novaPergunta"
+          placeholder="Digite a pergunta..."
+          class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="resposta">Resposta:</label>
+        <textarea
+          pInputTextarea
+          id="resposta"
+          [(ngModel)]="novaResposta"
+          placeholder="Digite a resposta..."
+          rows="3"
+          class="form-control">
+        </textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Dificuldade:</label>
+        <div class="dificuldade-options">
+          <label class="dificuldade-option">
+            <input type="radio" name="dificuldade" value="facil" [(ngModel)]="novaDificuldade">
+            <span class="dificuldade-label" style="background-color: #4CAF50;">Fácil</span>
+          </label>
+          <label class="dificuldade-option">
+            <input type="radio" name="dificuldade" value="medio" [(ngModel)]="novaDificuldade">
+            <span class="dificuldade-label" style="background-color: #FF9800;">Médio</span>
+          </label>
+          <label class="dificuldade-option">
+            <input type="radio" name="dificuldade" value="dificil" [(ngModel)]="novaDificuldade">
+            <span class="dificuldade-label" style="background-color: #F44336;">Difícil</span>
+          </label>
+        </div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Adicionar Flashcard"
+          icon="pi pi-plus"
+          (onClick)="adicionarFlashcard()"
+          [disabled]="!novaPergunta.trim() || !novaResposta.trim()"
+          styleClass="p-button-primary">
+        </p-button>
+      </ng-template>
+    </p-card>
+  </div>
+
+  <div class="empty-state" *ngIf="flashcards.length === 0">
+    <div class="empty-content">
+      <i class="pi pi-book" style="font-size: 3rem; color: #ccc;"></i>
+      <h3>Nenhum flashcard encontrado</h3>
+      <p>Adicione seu primeiro flashcard para começar a praticar!</p>
+    </div>
+  </div>
+</div>
