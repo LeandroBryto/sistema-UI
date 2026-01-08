@@ -4,46 +4,134 @@
       <div class="logo-icon">
         <i class="pi pi-lock"></i>
       </div>
-      <h1 class="brand-title">Recuperar Senha</h1>
-      <p class="text-gray-400 text-sm mt-2 text-center">Informe seu e-mail para receber uma senha temporária</p>
+      <h1 class="brand-title">{{ mode === 'forgot' ? 'Recuperar Senha' : 'Redefinir Senha' }}</h1>
+      <p class="text-gray-400 text-sm mt-2 text-center">
+        {{ mode === 'forgot' ? 'Informe seu e-mail para receber uma senha temporária' : 'Use a senha temporária recebida por e-mail' }}
+      </p>
     </div>
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
-      <div class="form-field">
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-envelope"></i>
-          <input 
-            pInputText 
-            type="email"
-            formControlName="email" 
-            placeholder="Email" 
-            class="custom-input" 
-          />
-        </span>
-        <small *ngIf="fieldErrors.email" class="p-error block mt-1">
-          {{ fieldErrors.email }}
-        </small>
-      </div>
+    <div *ngIf="mode === 'forgot'">
+      <form [formGroup]="forgotForm" (ngSubmit)="onForgotSubmit()" class="auth-form">
+        <div class="form-field">
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-envelope"></i>
+            <input 
+              pInputText 
+              type="email"
+              formControlName="email" 
+              placeholder="Email" 
+              class="custom-input" 
+            />
+          </span>
+          <small *ngIf="fieldErrors.email" class="p-error block mt-1">
+            {{ fieldErrors.email }}
+          </small>
+        </div>
 
-      <button 
-        pButton 
-        type="submit" 
-        [label]="loading ? 'ENVIANDO...' : (inCooldown() ? 'AGUARDE...' : 'ENVIAR')" 
-        class="auth-button" 
-        [loading]="loading"
-        [disabled]="form.invalid || loading || inCooldown()">
-      </button>
-      
-      <p class="text-center text-xs text-yellow-500 mt-2" *ngIf="inCooldown()">
-        Evite múltiplos envios. Aguarde alguns segundos.
-      </p>
+        <button 
+          pButton 
+          type="submit" 
+          [label]="loading ? 'ENVIANDO...' : (inCooldown() ? 'AGUARDE...' : 'ENVIAR')" 
+          class="auth-button" 
+          [loading]="loading"
+          [disabled]="forgotForm.invalid || loading || inCooldown()">
+        </button>
+        
+        <p class="text-center text-xs text-yellow-500 mt-2" *ngIf="inCooldown()">
+          Evite múltiplos envios. Aguarde alguns segundos.
+        </p>
 
-      <p-message *ngIf="success" severity="success" [text]="success" styleClass="w-full mt-3"></p-message>
-      <p-message *ngIf="error" severity="error" [text]="error" styleClass="w-full mt-3"></p-message>
+        <p-message *ngIf="success" severity="success" [text]="success" styleClass="w-full mt-3"></p-message>
+        <p-message *ngIf="error" severity="error" [text]="error" styleClass="w-full mt-3"></p-message>
 
-      <div class="login-link">
-        <a routerLink="/">Voltar para login</a>
-      </div>
-    </form>
+        <div class="text-center mt-3">
+          <button type="button" class="text-blue-500 underline" (click)="toggleMode()">Já tenho a senha temporária</button>
+        </div>
+      </form>
+    </div>
+
+    <div *ngIf="mode === 'reset'">
+      <form [formGroup]="resetForm" (ngSubmit)="onResetSubmit()" class="auth-form">
+        <div class="form-field">
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-envelope"></i>
+            <input 
+              pInputText 
+              type="email"
+              formControlName="email" 
+              placeholder="Email" 
+              class="custom-input" 
+            />
+          </span>
+          <small *ngIf="fieldErrors.email" class="p-error block mt-1">
+            {{ fieldErrors.email }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-key"></i>
+            <input 
+              pInputText 
+              formControlName="senhaTemporaria" 
+              placeholder="Senha Temporária" 
+              class="custom-input" 
+            />
+          </span>
+          <small *ngIf="fieldErrors.senhaTemporaria" class="p-error block mt-1">
+            {{ fieldErrors.senhaTemporaria }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock"></i>
+            <input 
+              pInputText 
+              type="password"
+              formControlName="novaSenha" 
+              placeholder="Nova Senha" 
+              class="custom-input" 
+            />
+          </span>
+          <small *ngIf="fieldErrors.novaSenha" class="p-error block mt-1">
+            {{ fieldErrors.novaSenha }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock"></i>
+            <input 
+              pInputText 
+              type="password"
+              formControlName="confirmNovaSenha" 
+              placeholder="Confirmar Nova Senha" 
+              class="custom-input" 
+            />
+          </span>
+        </div>
+
+        <button 
+          pButton 
+          type="submit" 
+          [label]="loading ? 'REDEFININDO...' : 'REDEFINIR SENHA'" 
+          class="auth-button" 
+          [loading]="loading"
+          [disabled]="resetForm.invalid || loading">
+        </button>
+
+        <p-message *ngIf="success" severity="success" [text]="success" styleClass="w-full mt-3"></p-message>
+        <p-message *ngIf="error" severity="error" [text]="error" styleClass="w-full mt-3"></p-message>
+
+        <div class="text-center mt-3">
+          <button type="button" class="text-blue-500 underline" (click)="toggleMode()">Voltar para recuperar senha</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="login-link">
+      <a routerLink="/login">Voltar para login</a>
+    </div>
   </div>
 </div>

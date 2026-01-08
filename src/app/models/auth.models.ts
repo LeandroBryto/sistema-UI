@@ -4,16 +4,16 @@ export interface LoginPayload {
 }
 
 export interface RegisterPayload {
-  email: string;
+  nomeCompleto: string;
   username: string;
-  telefone: string;
+  email: string;
   senha: string;
 }
 
 export interface PasswordResetPayload {
   email: string;
+  senhaTemporaria: string;
   novaSenha: string;
-  confirmarSenha: string;
 }
 
 export interface ForgotPasswordRequestDTO {

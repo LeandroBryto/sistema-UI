@@ -56,6 +56,16 @@ import { ThemeService } from '../../services/theme.service';
 
             <div class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
+                    <div class="flex align-items-center gap-2 mr-3" *ngIf="authService.getPlano() === 'PREMIUM'">
+                        <button type="button" class="layout-topbar-action" (click)="switchToEstudos()">
+                            <i class="pi pi-book"></i>
+                            <span>Estudos</span>
+                        </button>
+                        <button type="button" class="layout-topbar-action" (click)="switchToFinanceiro()">
+                            <i class="pi pi-chart-line"></i>
+                            <span>Financeiro</span>
+                        </button>
+                    </div>
                     <div class="flex align-items-center gap-2 mr-3">
                         <p-avatar 
                             [label]="authService.getUsername()?.charAt(0) || 'U'" 
@@ -94,6 +104,14 @@ export class AppTopbar {
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
         this.themeService.toggleTheme();
+    }
+    
+    switchToEstudos() {
+        this.router.navigate(['/estudos']);
+    }
+
+    switchToFinanceiro() {
+        this.router.navigate(['/dashboard']);
     }
     
     logout() {

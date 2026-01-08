@@ -6,11 +6,13 @@ import { AppTopbar } from './app.topbar';
 import { AppSidebar } from './app.sidebar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
+import { UpgradeModalComponent } from '../../shared/upgrade-modal/upgrade-modal.component';
+import { UpgradeService } from '../../services/upgrade.service';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter],
+    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, UpgradeModalComponent],
     template: `<div class="layout-wrapper" [ngClass]="containerClass">
         <app-topbar></app-topbar>
         <app-sidebar></app-sidebar>
@@ -21,6 +23,11 @@ import { LayoutService } from '../service/layout.service';
             <app-footer></app-footer>
         </div>
         <div class="layout-mask animate-fadein"></div>
+        <app-upgrade-modal 
+            [visible]="upgradeModalVisible" 
+            (visibleChange)="onUpgradeModalVisibleChange($event)"
+            (upgrade)="onUpgrade()">
+        </app-upgrade-modal>
     </div> `
 })
 export class AppLayout {
@@ -30,6 +37,8 @@ export class AppLayout {
 
     resizeListener: any;
 
+    upgradeModalVisible = false;
+
     @ViewChild(AppSidebar) appSidebar!: AppSidebar;
 
     @ViewChild(AppTopbar) appTopBar!: AppTopbar;
@@ -37,7 +46,8 @@ export class AppLayout {
     constructor(
         public layoutService: LayoutService,
         public renderer: Renderer2,
-        public router: Router
+        public router: Router,
+        private upgradeService: UpgradeService
     ) {
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {
@@ -64,6 +74,11 @@ export class AppLayout {
 
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             this.hideMenu();
+        });
+
+        // Subscribe to upgrade modal
+        this.upgradeService.showModal$.subscribe(visible => {
+            this.upgradeModalVisible = visible;
         });
     }
 
@@ -119,6 +134,19 @@ export class AppLayout {
     // Método auxiliar para toggle manual se necessário
     toggleMenu() {
         this.layoutService.onMenuToggle();
+    }
+
+    onUpgradeModalVisibleChange(visible: boolean) {
+        this.upgradeModalVisible = visible;
+        if (!visible) {
+            this.upgradeService.hideUpgradeModal();
+        }
+    }
+
+    onUpgrade() {
+        // Lógica para upgrade, por exemplo, redirecionar para página de pagamento
+        console.log('Upgrade clicked');
+        // this.router.navigate(['/upgrade']);
     }
 
     ngOnDestroy() {

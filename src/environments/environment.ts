@@ -1,11 +1,11 @@
 export const environment = {
-  production: true,
-  domain: 'prod',
-  ambiente: 'PRODUCAO',
-  apiBase: 'https://sistema-financeiro-zaovxq.fly.dev',
-  apiBaseAuth: 'https://sistema-financeiro-zaovxq.fly.dev',
+  production: false,
+  domain: 'dev',
+  ambiente: 'DESENVOLVIMENTO',
+  // apiBase: 'https://nexus-auth.fly.dev',
+   //apiBaseAuth: 'https://nexus-auth.fly.dev',
   // Para usar LOCAL, comente as linhas acima e descomente abaixo:
-  // apiBase: 'http://localhost:8080',
-  // apiBaseAuth: 'http://localhost:8080',
+  // apiBase: 'http://localhost:8084',
+   apiBaseAuth: 'http://localhost:8084',
 };
 

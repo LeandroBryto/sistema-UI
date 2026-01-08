@@ -42,11 +42,24 @@ export class LoginComponent {
     this.auth.login({ username, senha }).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigateByUrl('/dashboard');
+        const plano = this.auth.getPlano();
+        if (plano === 'PREMIUM') {
+          this.router.navigateByUrl('/dashboard');
+        } else {
+          this.router.navigateByUrl('/estudos');
+        }
       },
       error: (e) => {
         this.loading = false;
-        this.error = 'Falha ao entrar. Verifique suas credenciais e tente novamente.';
+        if (e?.status === 401) {
+          this.error = 'Credenciais inválidas. Verifique seu username e senha.';
+        } else if (e?.status === 403) {
+          this.error = 'Acesso negado. Sua conta pode estar bloqueada.';
+        } else if (e?.status === 400) {
+          this.error = 'Dados inválidos. Verifique os campos.';
+        } else {
+          this.error = 'Falha ao entrar. Tente novamente mais tarde.';
+        }
       },
     });
   }

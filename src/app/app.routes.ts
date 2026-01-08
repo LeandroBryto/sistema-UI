@@ -19,9 +19,11 @@ import { HomeComponent } from './features/home/home.component';
 
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
+import { planoGuard } from './guards/plano.guard';
 
 import { ContaComponent } from './features/conta/conta.component';
 import { contaAccessGuard } from './guards/conta-access.guard';
+import { EstudosComponent } from './features/estudos/estudos.component';
 
 export const routes: Routes = [
   // Public Routes
@@ -36,13 +38,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'receitas', component: ReceitasComponent },
-      { path: 'despesas', component: DespesasComponent },
-      { path: 'relatorios', component: RelatoriosComponent },
-      { path: 'investimentos', component: InvestimentosComponent },
-      { path: 'metas', component: MetasComponent },
+      { path: 'dashboard', component: DashboardComponent, canActivate: [planoGuard] },
+      { path: 'receitas', component: ReceitasComponent, canActivate: [planoGuard] },
+      { path: 'despesas', component: DespesasComponent, canActivate: [planoGuard] },
+      { path: 'relatorios', component: RelatoriosComponent, canActivate: [planoGuard] },
+      { path: 'investimentos', component: InvestimentosComponent, canActivate: [planoGuard] },
+      { path: 'metas', component: MetasComponent, canActivate: [planoGuard] },
       { path: 'home', component: HomeComponent },
+      { path: 'estudos', component: EstudosComponent },
       
       // Restricted
       { path: 'conta', component: ContaComponent, canActivate: [contaAccessGuard] },

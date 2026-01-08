@@ -8,7 +8,6 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { InputMaskModule } from 'primeng/inputmask';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { AuthService } from '../../services/auth.service';
@@ -16,7 +15,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, InputTextModule, PasswordModule, InputMaskModule, ButtonModule, MessageModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, InputTextModule, PasswordModule, ButtonModule, MessageModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
@@ -26,9 +25,9 @@ export class RegisterComponent {
   error: string | null = null;
 
   form = this.fb.nonNullable.group({
+    nomeCompleto: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     username: ['', [Validators.required]],
-    telefone: ['', [Validators.required]],
     senha: ['', [Validators.required, Validators.minLength(6)]],
     confirmSenha: ['', [Validators.required]],
   });
@@ -52,9 +51,9 @@ export class RegisterComponent {
       return;
     }
     const payload = {
+      nomeCompleto: raw.nomeCompleto,
       email: raw.email,
       username: raw.username,
-      telefone: (raw.telefone || '').replace(/\D/g, ''),
       senha: raw.senha,
     };
 
@@ -62,13 +61,22 @@ export class RegisterComponent {
       next: () => {
         this.loading = false;
         this.success = true;
-        this.router.navigateByUrl('/');
+        const plano = this.auth.getPlano();
+        if (plano === 'PREMIUM') {
+          this.router.navigateByUrl('/dashboard');
+        } else {
+          this.router.navigateByUrl('/estudos');
+        }
       },
       error: (e) => {
         this.loading = false;
-        this.error =
-          e?.error?.message ||
-          'Falha ao registrar. Verifique os dados e tente novamente.';
+        if (e?.status === 400) {
+          this.error = e?.error?.message || 'Dados inválidos. Verifique os campos e tente novamente.';
+        } else if (e?.status === 409) {
+          this.error = 'Usuário ou e-mail já cadastrado.';
+        } else {
+          this.error = 'Falha ao registrar. Tente novamente mais tarde.';
+        }
       },
     });
   }

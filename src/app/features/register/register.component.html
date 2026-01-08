@@ -9,6 +9,23 @@
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
       
+      <!-- Nome Completo -->
+      <div class="form-field">
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-user"></i>
+          <input 
+            pInputText 
+            type="text"
+            formControlName="nomeCompleto" 
+            placeholder="Nome Completo" 
+            class="custom-input" 
+          />
+        </span>
+        <small *ngIf="form.controls.nomeCompleto.touched && form.controls.nomeCompleto.invalid" class="p-error block mt-1">
+          Nome completo é obrigatório.
+        </small>
+      </div>
+
       <!-- Email -->
       <div class="form-field">
         <span class="p-input-icon-left w-full">
@@ -40,22 +57,6 @@
         </span>
         <small *ngIf="form.controls.username.touched && form.controls.username.invalid" class="p-error block mt-1">
           Usuário é obrigatório.
-        </small>
-      </div>
-
-      <!-- Telefone -->
-      <div class="form-field">
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-phone"></i>
-          <p-inputMask 
-            styleClass="custom-input w-full"
-            formControlName="telefone" 
-            mask="(99) 99999-9999" 
-            placeholder="(00) 00000-0000">
-          </p-inputMask>
-        </span>
-        <small *ngIf="form.controls.telefone.touched && form.controls.telefone.invalid" class="p-error block mt-1">
-          Telefone é obrigatório.
         </small>
       </div>
 
