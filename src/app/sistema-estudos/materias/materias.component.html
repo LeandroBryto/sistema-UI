@@ -1,0 +1,51 @@
+<div class="materias-container">
+  <header class="header">
+    <h1>Minhas Matérias</h1>
+    <div class="header-actions">
+      <p-button
+        label="Mostrar Arquivadas"
+        icon="pi pi-eye"
+        [outlined]="!mostrarArquivadas"
+        (click)="toggleArquivadas()">
+      </p-button>
+      <p-button
+        label="Nova Matéria"
+        icon="pi pi-plus"
+        styleClass="p-button-primary">
+      </p-button>
+    </div>
+  </header>
+
+  <div class="materias-grid">
+    <div
+      *ngFor="let materia of getMateriasFiltradas()"
+      class="materia-card"
+      [style.background-color]="materia.corHex + '20'"
+      [style.border-left-color]="materia.corHex">
+
+      <div class="materia-header">
+        <div class="materia-icon" [style.color]="materia.corHex">
+          <i [class]="materia.icone"></i>
+        </div>
+        <div class="materia-info">
+          <h3>{{ materia.nome }}</h3>
+          <p>{{ materia.topicosConcluidos }}/{{ materia.totalTopicos }} tópicos</p>
+        </div>
+      </div>
+
+      <div class="materia-progress">
+        <p-progressBar
+          [value]="calcularProgresso(materia)"
+          [showValue]="false"
+          [style]="{'height': '8px'}">
+        </p-progressBar>
+        <span class="progress-text">{{ calcularProgresso(materia) | number:'1.0-0' }}% concluído</span>
+      </div>
+
+      <div class="materia-actions">
+        <p-button label="Ver Detalhes" icon="pi pi-eye" styleClass="p-button-text p-button-sm"></p-button>
+        <p-button label="Editar" icon="pi pi-pencil" styleClass="p-button-text p-button-sm"></p-button>
+      </div>
+    </div>
+  </div>
+</div>
