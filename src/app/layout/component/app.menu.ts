@@ -23,11 +23,27 @@ export class AppMenu implements OnInit {
     constructor(private authService: AuthService, private permissionService: PermissionService) {}
 
     ngOnInit() {
+        const isPremium = this.authService.getPlano() === 'PREMIUM';
+
         this.model = [
             {
                 label: 'PRINCIPAL',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'] },
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'], visible: isPremium },
+                    { 
+                        label: 'Sistema de Estudos', 
+                        icon: 'pi pi-fw pi-book', 
+                        visible: !isPremium,
+                        items: [
+                            { label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/estudos'] },
+                            { label: 'Matérias', icon: 'pi pi-fw pi-list', routerLink: ['/estudos/materias'] },
+                            { label: 'Modo Foco', icon: 'pi pi-fw pi-clock', routerLink: ['/estudos/modo-foco'] },
+                            { label: 'Flashcards', icon: 'pi pi-fw pi-bookmark', routerLink: ['/estudos/flashcards'] },
+                            { label: 'Agenda', icon: 'pi pi-fw pi-calendar', routerLink: ['/estudos/agenda'] },
+                            { label: 'Perfil', icon: 'pi pi-fw pi-user', routerLink: ['/estudos/perfil'] },
+                            { label: 'Cronograma', icon: 'pi pi-fw pi-calendar-plus', routerLink: ['/estudos/cronograma'] }
+                        ]
+                    },
                     { 
                         label: 'Minha Conta', 
                         icon: 'pi pi-fw pi-user', 
@@ -39,16 +55,18 @@ export class AppMenu implements OnInit {
             {
                 label: 'GESTÃO',
                 items: [
-                    { label: 'Receitas', icon: 'pi pi-fw pi-wallet', routerLink: ['/receitas'] },
-                    { label: 'Despesas', icon: 'pi pi-fw pi-credit-card', routerLink: ['/despesas'] },
-                    { label: 'Investimentos', icon: 'pi pi-fw pi-chart-line', routerLink: ['/investimentos'] }
-                ]
+                    { label: 'Receitas', icon: 'pi pi-fw pi-wallet', routerLink: ['/receitas'], visible: isPremium },
+                    { label: 'Despesas', icon: 'pi pi-fw pi-credit-card', routerLink: ['/despesas'], visible: isPremium },
+                    { label: 'Investimentos', icon: 'pi pi-fw pi-chart-line', routerLink: ['/investimentos'], visible: isPremium }
+                ],
+                visible: isPremium
             },
             {
                 label: 'ANÁLISES',
                 items: [
-                    { label: 'Relatórios', icon: 'pi pi-fw pi-file', routerLink: ['/relatorios'] }
-                ]
+                    { label: 'Relatórios', icon: 'pi pi-fw pi-file', routerLink: ['/relatorios'], visible: isPremium }
+                ],
+                visible: isPremium
             },
             {
                 label: 'SISTEMA',
@@ -61,7 +79,8 @@ export class AppMenu implements OnInit {
                     },
                     { label: 'Configurações da Conta', icon: 'pi pi-fw pi-user-edit', routerLink: ['/config/conta'] },
                     { label: 'Notificações por E-mail', icon: 'pi pi-fw pi-envelope', routerLink: ['/config/notificacoes-email'] },
-                    { label: 'Alertas de Cotação', icon: 'pi pi-fw pi-bell', routerLink: ['/config/alertas-cotacao'] },
+                    { label: 'Alertas Financeiros', icon: 'pi pi-fw pi-bell', routerLink: ['/config/alertas-financeiros'], visible: isPremium },
+                    { label: 'Alertas de Cotação', icon: 'pi pi-fw pi-bell', routerLink: ['/config/alertas-cotacao'], visible: isPremium },
                     { label: 'Segurança', icon: 'pi pi-fw pi-lock', routerLink: ['/config/seguranca'] },
                     { label: 'Histórico de Notificações', icon: 'pi pi-fw pi-history', routerLink: ['/config/historico-notificacoes'] }
                 ]

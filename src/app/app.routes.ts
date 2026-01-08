@@ -13,6 +13,7 @@ import { AdminComponent } from './features/admin/admin.component';
 import { AccountSettingsComponent } from './features/settings/account-settings.component';
 import { EmailNotificationsComponent } from './features/settings/email-notifications.component';
 import { CotacaoAlertsComponent } from './features/settings/cotacao-alerts.component';
+import { FinancialAlertsComponent } from './features/settings/financial-alerts.component';
 import { SecuritySettingsComponent } from './features/settings/security-settings.component';
 import { NotificationsHistoryComponent } from './features/settings/notifications-history.component';
 import { HomeComponent } from './features/home/home.component';
@@ -23,7 +24,13 @@ import { planoGuard } from './guards/plano.guard';
 
 import { ContaComponent } from './features/conta/conta.component';
 import { contaAccessGuard } from './guards/conta-access.guard';
-import { EstudosComponent } from './features/estudos/estudos.component';
+import { DashboardComponent as SistemaEstudosDashboardComponent } from './sistema-estudos/dashboard/dashboard.component';
+import { CronogramaComponent } from './sistema-estudos/cronograma/cronograma.component';
+import { MateriasComponent } from './sistema-estudos/materias/materias.component';
+import { ModoFocoComponent } from './sistema-estudos/modo-foco/modo-foco.component';
+import { FlashcardsComponent } from './sistema-estudos/flashcards/flashcards.component';
+import { AgendaComponent } from './sistema-estudos/agenda/agenda.component';
+import { PerfilComponent } from './sistema-estudos/perfil/perfil.component';
 
 export const routes: Routes = [
   // Public Routes
@@ -45,7 +52,13 @@ export const routes: Routes = [
       { path: 'investimentos', component: InvestimentosComponent, canActivate: [planoGuard] },
       { path: 'metas', component: MetasComponent, canActivate: [planoGuard] },
       { path: 'home', component: HomeComponent },
-      { path: 'estudos', component: EstudosComponent },
+      { path: 'estudos', component: SistemaEstudosDashboardComponent },
+      { path: 'estudos/materias', component: MateriasComponent },
+      { path: 'estudos/modo-foco', component: ModoFocoComponent },
+      { path: 'estudos/flashcards', component: FlashcardsComponent },
+      { path: 'estudos/agenda', component: AgendaComponent },
+      { path: 'estudos/perfil', component: PerfilComponent },
+      { path: 'estudos/cronograma', component: CronogramaComponent },
       
       // Restricted
       { path: 'conta', component: ContaComponent, canActivate: [contaAccessGuard] },
@@ -56,7 +69,8 @@ export const routes: Routes = [
       // Settings
       { path: 'config/conta', component: AccountSettingsComponent },
       { path: 'config/notificacoes-email', component: EmailNotificationsComponent },
-      { path: 'config/alertas-cotacao', component: CotacaoAlertsComponent },
+      { path: 'config/alertas-cotacao', component: CotacaoAlertsComponent, canActivate: [planoGuard] },
+      { path: 'config/alertas-financeiros', component: FinancialAlertsComponent, canActivate: [planoGuard] },
       { path: 'config/seguranca', component: SecuritySettingsComponent },
       { path: 'config/historico-notificacoes', component: NotificationsHistoryComponent },
     ]
