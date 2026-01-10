@@ -12,12 +12,10 @@ import {
   TopicoEntity,
   SessaoEstudoEntity,
   FlashcardEntity,
-  ItemAgendaEntity,
   CriarTopicoRequest,
   CriarSessaoRequest,
   CriarFlashcardRequest,
   AvaliarFlashcardRequest,
-  CriarItemAgendaRequest,
   SessaoResponse,
   DashboardResponse,
   DificuldadeFlashcard,
@@ -124,27 +122,6 @@ export class EstudosService {
 
   excluirFlashcard(id: number): Observable<void> {
     return this.http.delete<void>(`${this.getApiUrl()}/flashcards/${id}`);
-  }
-
-  // Agenda
-  getAgendaSemanal(): Observable<ItemAgendaEntity[]> {
-    return this.http.get<ItemAgendaEntity[]>(`${this.getApiUrl()}/agenda`);
-  }
-
-  getAgendaHoje(): Observable<ItemAgendaEntity[]> {
-    return this.http.get<ItemAgendaEntity[]>(`${this.getApiUrl()}/agenda/hoje`);
-  }
-
-  criarItemAgenda(request: CriarItemAgendaRequest): Observable<ItemAgendaEntity> {
-    return this.http.post<ItemAgendaEntity>(`${this.getApiUrl()}/agenda`, request);
-  }
-
-  atualizarItemAgenda(id: number, item: Partial<ItemAgendaEntity>): Observable<ItemAgendaEntity> {
-    return this.http.put<ItemAgendaEntity>(`${this.getApiUrl()}/agenda/${id}`, item);
-  }
-
-  excluirItemAgenda(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.getApiUrl()}/agenda/${id}`);
   }
 
   // Utilitários

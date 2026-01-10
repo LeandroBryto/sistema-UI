@@ -126,15 +126,6 @@ export interface AvaliarFlashcardRequest {
   dificuldade: DificuldadeFlashcard;
 }
 
-export interface CriarItemAgendaRequest {
-  materiaId: number;
-  diaSemana: DiaSemana;
-  horarioInicio: string;
-  horarioFim: string;
-  titulo?: string;
-  descricao?: string;
-}
-
 // Responses
 export interface SessaoResponse {
   sessao: SessaoEstudoEntity;

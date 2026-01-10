@@ -8,18 +8,15 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 
-interface EventoEstudo {
-  id: number;
-  titulo: string;
-  descricao: string;
-  data: Date;
-  horaInicio: string;
-  horaFim: string;
-  materia: string;
-  tipo: 'estudo' | 'revisao' | 'prova';
-  concluido: boolean;
-}
+import { EstudosService } from '../../services/estudos.service';
+import { AgendaService } from '../../services/agenda.service';
+import { MateriaResponseDTO } from '../../models/estudos.models';
+import { AgendaResponseDTO, CriarItemAgendaRequest, DiaSemana } from '../../models/agenda.models';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sistema-estudos-agenda',
@@ -33,146 +30,245 @@ interface EventoEstudo {
     InputTextModule,
     InputTextareaModule,
     DropdownModule,
-    FormsModule
+    FormsModule,
+    ToastModule
   ],
   templateUrl: './agenda.component.html',
-  styleUrls: ['./agenda.component.css']
+  styleUrls: ['./agenda.component.css'],
+  providers: [MessageService]
 })
 export class AgendaComponent implements OnInit {
 
-  eventos: EventoEstudo[] = [
-    {
-      id: 1,
-      titulo: 'Revisão de Matemática',
-      descricao: 'Revisar funções quadráticas e trigonometria',
-      data: new Date(),
-      horaInicio: '14:00',
-      horaFim: '16:00',
-      materia: 'Matemática',
-      tipo: 'revisao',
-      concluido: false
-    },
-    {
-      id: 2,
-      titulo: 'Estudo de Física',
-      descricao: 'Estudar mecânica clássica',
-      data: new Date(Date.now() + 86400000), // amanhã
-      horaInicio: '09:00',
-      horaFim: '11:00',
-      materia: 'Física',
-      tipo: 'estudo',
-      concluido: false
-    }
-  ];
+  agendaSemanal: AgendaResponseDTO[] = [];
+  agendaHoje: AgendaResponseDTO[] = [];
+  materias: MateriaResponseDTO[] = [];
+  loading = true;
 
-  dataSelecionada: Date = new Date();
+  selectedItem: AgendaResponseDTO | null = null;
+  viewMode: 'semana' | 'hoje' = 'semana';
+
   mostrarDialog = false;
 
-  novoEvento: Partial<EventoEstudo> = {
-    titulo: '',
-    descricao: '',
-    data: new Date(),
-    horaInicio: '08:00',
-    horaFim: '10:00',
-    materia: '',
-    tipo: 'estudo'
+  novoItem: CriarItemAgendaRequest = {
+    materiaId: 0,
+    diaSemana: DiaSemana.SEGUNDA,
+    horarioInicio: '08:00',
+    horarioFim: '10:00'
   };
 
-  materias = [
-    { label: 'Matemática', value: 'Matemática' },
-    { label: 'Física', value: 'Física' },
-    { label: 'Química', value: 'Química' },
-    { label: 'Biologia', value: 'Biologia' },
-    { label: 'História', value: 'História' },
-    { label: 'Geografia', value: 'Geografia' },
-    { label: 'Português', value: 'Português' },
-    { label: 'Inglês', value: 'Inglês' }
+  diasSemana = [
+    { label: 'Segunda-feira', value: DiaSemana.SEGUNDA },
+    { label: 'Terça-feira', value: DiaSemana.TERCA },
+    { label: 'Quarta-feira', value: DiaSemana.QUARTA },
+    { label: 'Quinta-feira', value: DiaSemana.QUINTA },
+    { label: 'Sexta-feira', value: DiaSemana.SEXTA },
+    { label: 'Sábado', value: DiaSemana.SABADO },
+    { label: 'Domingo', value: DiaSemana.DOMINGO }
   ];
 
-  tiposEvento = [
-    { label: 'Estudo', value: 'estudo' },
-    { label: 'Revisão', value: 'revisao' },
-    { label: 'Prova', value: 'prova' }
-  ];
-
-  constructor() { }
+  constructor(
+    private estudosService: EstudosService,
+    private agendaService: AgendaService,
+    private messageService: MessageService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
+    this.carregarMaterias();
+    this.carregarAgenda();
   }
 
-  getEventosDoDia(data: Date): EventoEstudo[] {
-    return this.eventos.filter(evento =>
-      evento.data.toDateString() === data.toDateString()
-    ).sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
+  carregarMaterias(): void {
+    this.estudosService.getMaterias().subscribe({
+      next: (materias) => {
+        this.materias = materias;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar matérias:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar as matérias.'
+        });
+      }
+    });
   }
 
-  abrirDialogNovoEvento(): void {
-    this.novoEvento = {
-      titulo: '',
-      descricao: '',
-      data: this.dataSelecionada,
-      horaInicio: '08:00',
-      horaFim: '10:00',
-      materia: '',
-      tipo: 'estudo'
+  carregarAgenda(): void {
+    this.loading = true;
+    this.agendaService.getAgendaSemanal().subscribe({
+      next: (agenda) => {
+        this.agendaSemanal = agenda;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar agenda semanal:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar a agenda semanal.'
+        });
+        this.loading = false;
+      }
+    });
+
+    this.agendaService.getAgendaHoje().subscribe({
+      next: (agenda) => {
+        this.agendaHoje = agenda;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar agenda hoje:', error);
+      }
+    });
+  }
+
+  abrirDialog(): void {
+    this.novoItem = {
+      materiaId: this.materias.length > 0 ? this.materias[0].id : 0,
+      diaSemana: DiaSemana.SEGUNDA,
+      horarioInicio: '08:00',
+      horarioFim: '10:00'
     };
     this.mostrarDialog = true;
   }
 
-  salvarEvento(): void {
-    if (this.novoEvento.titulo && this.novoEvento.materia) {
-      const evento: EventoEstudo = {
-        id: this.eventos.length + 1,
-        titulo: this.novoEvento.titulo!,
-        descricao: this.novoEvento.descricao || '',
-        data: this.novoEvento.data!,
-        horaInicio: this.novoEvento.horaInicio!,
-        horaFim: this.novoEvento.horaFim!,
-        materia: this.novoEvento.materia!,
-        tipo: this.novoEvento.tipo as 'estudo' | 'revisao' | 'prova',
-        concluido: false
-      };
-
-      this.eventos.push(evento);
-      this.mostrarDialog = false;
+  salvarItem(): void {
+    if (!this.novoItem.materiaId || !this.novoItem.diaSemana || !this.novoItem.horarioInicio || !this.novoItem.horarioFim) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Preencha todos os campos obrigatórios.'
+      });
+      return;
     }
-  }
 
-  marcarComoConcluido(evento: EventoEstudo): void {
-    evento.concluido = !evento.concluido;
-  }
+    this.agendaService.criarItemAgenda(this.novoItem).subscribe({
+      next: (item) => {
+        this.mostrarDialog = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Item adicionado à agenda com sucesso!'
+        });
+        this.carregarAgenda(); // Recarregar para atualizar a lista
+      },
+      error: (error) => {
+        console.error('Erro ao criar item na agenda:', error);
+        let mensagem = 'Erro ao adicionar item à agenda.';
 
-  excluirEvento(evento: EventoEstudo): void {
-    const index = this.eventos.indexOf(evento);
-    if (index > -1) {
-      this.eventos.splice(index, 1);
-    }
-  }
+        if (error.error?.message) {
+          mensagem = error.error.message;
+        } else if (error.status === 400) {
+          mensagem = 'Dados inválidos. Verifique os campos.';
+        }
 
-  getCorTipo(tipo: string): string {
-    switch (tipo) {
-      case 'estudo': return '#4CAF50';
-      case 'revisao': return '#FF9800';
-      case 'prova': return '#F44336';
-      default: return '#9E9E9E';
-    }
-  }
-
-  getTextoTipo(tipo: string): string {
-    switch (tipo) {
-      case 'estudo': return 'Estudo';
-      case 'revisao': return 'Revisão';
-      case 'prova': return 'Prova';
-      default: return 'Desconhecido';
-    }
-  }
-
-  formatarData(data: Date): string {
-    return data.toLocaleDateString('pt-BR', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: mensagem
+        });
+      }
     });
+  }
+
+  excluirItem(item: AgendaResponseDTO): void {
+    if (confirm('Tem certeza que deseja remover este item da agenda?')) {
+      this.agendaService.excluirItemAgenda(item.id).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Item removido da agenda com sucesso!'
+          });
+          this.carregarAgenda(); // Recarregar para atualizar a lista
+        },
+        error: (error) => {
+          console.error('Erro ao excluir item da agenda:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Não foi possível remover o item da agenda.'
+          });
+        }
+      });
+    }
+  }
+
+  getAgendaPorDia(dia: DiaSemana): AgendaResponseDTO[] {
+    const diaString = this.diaSemanaEnumToString(dia);
+    return this.agendaSemanal.filter(item => item.diaSemana === diaString);
+  }
+
+  getNomeMateria(item: AgendaResponseDTO): string {
+    return item.nomeMateria;
+  }
+
+  getCorMateria(item: AgendaResponseDTO): string {
+    return item.corMateria;
+  }
+
+  isDiaAtual(dia: DiaSemana): boolean {
+    const hoje = new Date().getDay();
+    const diaMap = {
+      [DiaSemana.DOMINGO]: 0,
+      [DiaSemana.SEGUNDA]: 1,
+      [DiaSemana.TERCA]: 2,
+      [DiaSemana.QUARTA]: 3,
+      [DiaSemana.QUINTA]: 4,
+      [DiaSemana.SEXTA]: 5,
+      [DiaSemana.SABADO]: 6
+    };
+    return diaMap[dia] === hoje;
+  }
+
+  getTempoTotalDia(dia: DiaSemana): string {
+    const itens = this.getAgendaPorDia(dia);
+    let totalMinutos = 0;
+    itens.forEach(item => {
+      const inicio = this.parseTime(item.horarioInicio);
+      const fim = this.parseTime(item.horarioFim);
+      if (inicio && fim) {
+        totalMinutos += (fim - inicio) / (1000 * 60); // diferença em minutos
+      }
+    });
+    const horas = Math.floor(totalMinutos / 60);
+    const minutos = Math.floor(totalMinutos % 60);
+    return horas > 0 ? `${horas}h ${minutos}min` : `${minutos}min`;
+  }
+
+  private parseTime(time: string): number | null {
+    const [hours, minutes] = time.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes)) return null;
+    return new Date(0, 0, 0, hours, minutes).getTime();
+  }
+
+  iniciarEstudo(item: AgendaResponseDTO): void {
+    // Como não temos materiaId, talvez buscar por nome
+    const materia = this.materias.find(m => m.nome === item.nomeMateria);
+    if (materia) {
+      this.router.navigate(['/estudos/modo-foco'], { queryParams: { materiaId: materia.id } });
+    }
+  }
+
+  selecionarItem(item: AgendaResponseDTO): void {
+    this.selectedItem = this.selectedItem === item ? null : item;
+  }
+
+  alternarViewMode(mode: 'semana' | 'hoje'): void {
+    this.viewMode = mode;
+    this.selectedItem = null; // Reset selection
+  }
+
+  private diaSemanaEnumToString(dia: DiaSemana): string {
+    const map = {
+      [DiaSemana.DOMINGO]: 'SUNDAY',
+      [DiaSemana.SEGUNDA]: 'MONDAY',
+      [DiaSemana.TERCA]: 'TUESDAY',
+      [DiaSemana.QUARTA]: 'WEDNESDAY',
+      [DiaSemana.QUINTA]: 'THURSDAY',
+      [DiaSemana.SEXTA]: 'FRIDAY',
+      [DiaSemana.SABADO]: 'SATURDAY'
+    };
+    return map[dia] || 'MONDAY';
   }
 }

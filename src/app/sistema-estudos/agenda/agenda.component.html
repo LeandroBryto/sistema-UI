@@ -1,190 +1,204 @@
 <div class="agenda-container">
-  <div class="header">
+  <header class="header">
     <h1>Agenda de Estudos</h1>
-    <p>Organize seus horários de estudo e revisões</p>
+    <div class="header-actions">
+      <div class="view-toggle">
+        <p-button
+          label="Semana"
+          icon="pi pi-calendar"
+          [styleClass]="viewMode === 'semana' ? 'p-button-primary' : 'p-button-outlined'"
+          (click)="alternarViewMode('semana')">
+        </p-button>
+        <p-button
+          label="Hoje"
+          icon="pi pi-clock"
+          [styleClass]="viewMode === 'hoje' ? 'p-button-primary' : 'p-button-outlined'"
+          (click)="alternarViewMode('hoje')">
+        </p-button>
+      </div>
+      <p-button
+        label="Novo Item"
+        icon="pi pi-plus"
+        styleClass="p-button-success"
+        (click)="abrirDialog()">
+      </p-button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="loading-section" *ngIf="loading">
+    <div class="loading-content">
+      <i class="pi pi-spin pi-spinner loading-icon"></i>
+      <p>Carregando agenda...</p>
+    </div>
   </div>
 
-  <div class="agenda-content">
-    <div class="calendar-section">
-      <p-card class="calendar-card">
-        <ng-template pTemplate="header">
-          <h3>Calendário</h3>
-        </ng-template>
+  <!-- Agenda Semanal -->
+  <div class="agenda-semanal" *ngIf="!loading && viewMode === 'semana'">
+    <div class="dia-semana" *ngFor="let dia of diasSemana" [ngClass]="{'dia-atual': isDiaAtual(dia.value)}">
+      <div class="dia-header">
+        <h3><i class="pi pi-calendar"></i> {{ dia.label }}</h3>
+        <span class="tempo-total" *ngIf="getAgendaPorDia(dia.value).length > 0">
+          Total: {{ getTempoTotalDia(dia.value) }}
+        </span>
+      </div>
+      <div class="itens-dia">
+        <p-card
+          *ngFor="let item of getAgendaPorDia(dia.value)"
+          class="item-card"
+          [style.border-left-color]="getCorMateria(item)"
+          (click)="selecionarItem(item)"
+          [ngClass]="{'selected': selectedItem === item}">
 
-        <p-calendar
-          [(ngModel)]="dataSelecionada"
-          [inline]="true"
-          dateFormat="dd/mm/yy"
-          [showWeek]="true">
-        </p-calendar>
+          <div class="item-header">
+            <div class="item-materia">
+              <i class="pi pi-book"></i>
+              {{ getNomeMateria(item) }}
+            </div>
+            <div class="item-time">
+              {{ item.horarioInicio.substring(0, 5) }} - {{ item.horarioFim.substring(0, 5) }}
+            </div>
+          </div>
 
-        <ng-template pTemplate="footer">
-          <p-button
-            label="Novo Evento"
-            icon="pi pi-plus"
-            (onClick)="abrirDialogNovoEvento()"
-            styleClass="p-button-primary">
-          </p-button>
-        </ng-template>
-      </p-card>
+          <div class="item-actions" *ngIf="selectedItem === item">
+            <p-button
+              label="Iniciar Estudo"
+              icon="pi pi-play"
+              styleClass="p-button-text p-button-success p-button-sm"
+              (click)="iniciarEstudo(item)"
+              pTooltip="Iniciar sessão de estudo">
+            </p-button>
+            <p-button
+              label="Excluir"
+              icon="pi pi-trash"
+              styleClass="p-button-text p-button-danger p-button-sm"
+              (click)="excluirItem(item)">
+            </p-button>
+          </div>
+        </p-card>
+
+        <div class="empty-day" *ngIf="getAgendaPorDia(dia.value).length === 0">
+          <p>Nenhum item agendado</p>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="events-section">
-      <p-card class="events-card">
-        <ng-template pTemplate="header">
-          <h3>{{ formatarData(dataSelecionada) }}</h3>
-        </ng-template>
+  <!-- Agenda de Hoje -->
+  <div class="agenda-hoje" *ngIf="!loading && viewMode === 'hoje'">
+    <h2>Estudos de Hoje</h2>
+    <div class="itens-hoje">
+      <p-card
+        *ngFor="let item of agendaHoje"
+        class="item-card hoje"
+        [style.border-left-color]="getCorMateria(item)"
+        (click)="selecionarItem(item)"
+        [ngClass]="{'selected': selectedItem === item}">
 
-        <div class="events-list" *ngIf="getEventosDoDia(dataSelecionada).length > 0; else noEvents">
-          <div
-            class="event-item"
-            *ngFor="let evento of getEventosDoDia(dataSelecionada)"
-            [class.concluido]="evento.concluido">
-
-            <div class="event-header">
-              <div class="event-time">
-                {{ evento.horaInicio }} - {{ evento.horaFim }}
-              </div>
-              <div class="event-type" [style.background-color]="getCorTipo(evento.tipo)">
-                {{ getTextoTipo(evento.tipo) }}
-              </div>
-            </div>
-
-            <div class="event-content">
-              <h4>{{ evento.titulo }}</h4>
-              <p class="event-description">{{ evento.descricao }}</p>
-              <p class="event-subject">{{ evento.materia }}</p>
-            </div>
-
-            <div class="event-actions">
-              <p-button
-                icon="pi pi-check"
-                [icon]="evento.concluido ? 'pi pi-check-circle' : 'pi pi-circle'"
-                (onClick)="marcarComoConcluido(evento)"
-                [styleClass]="evento.concluido ? 'p-button-success p-button-text' : 'p-button-text'"
-                pTooltip="Marcar como concluído">
-              </p-button>
-
-              <p-button
-                icon="pi pi-trash"
-                (onClick)="excluirEvento(evento)"
-                styleClass="p-button-danger p-button-text"
-                pTooltip="Excluir evento">
-              </p-button>
-            </div>
+        <div class="item-header">
+          <div class="item-materia">
+            <i class="pi pi-book"></i>
+            {{ getNomeMateria(item) }}
+          </div>
+          <div class="item-time">
+            {{ item.horarioInicio.substring(0, 5) }} - {{ item.horarioFim.substring(0, 5) }}
           </div>
         </div>
 
-        <ng-template #noEvents>
-          <div class="no-events">
-            <i class="pi pi-calendar" style="font-size: 3rem; color: #ccc;"></i>
-            <h4>Nenhum evento para este dia</h4>
-            <p>Adicione um novo evento de estudo clicando no botão acima.</p>
-          </div>
-        </ng-template>
+        <div class="item-actions" *ngIf="selectedItem === item">
+          <p-button
+            label="Iniciar Estudo"
+            icon="pi pi-play"
+            styleClass="p-button-text p-button-success p-button-sm"
+            (click)="iniciarEstudo(item)"
+            pTooltip="Iniciar sessão de estudo">
+          </p-button>
+          <p-button
+            label="Excluir"
+            icon="pi pi-trash"
+            styleClass="p-button-text p-button-danger p-button-sm"
+            (click)="excluirItem(item)">
+          </p-button>
+        </div>
       </p-card>
+
+      <div class="empty-day" *ngIf="agendaHoje.length === 0">
+        <p>Nenhum item agendado para hoje</p>
+      </div>
     </div>
   </div>
 
-  <!-- Dialog para novo evento -->
+  <!-- Modal: Novo Item -->
   <p-dialog
     [(visible)]="mostrarDialog"
     [modal]="true"
     [style]="{width: '500px'}"
     [draggable]="false"
     [resizable]="false"
-    header="Novo Evento de Estudo">
+    header="Novo Item na Agenda">
 
     <div class="form-group">
-      <label for="titulo">Título:</label>
-      <input
-        pInputText
-        id="titulo"
-        [(ngModel)]="novoEvento.titulo"
-        placeholder="Digite o título do evento..."
-        class="form-control">
-    </div>
-
-    <div class="form-group">
-      <label for="materia">Matéria:</label>
+      <label for="materia">Matéria *</label>
       <p-dropdown
         [options]="materias"
-        [(ngModel)]="novoEvento.materia"
-        placeholder="Selecione a matéria"
-        optionLabel="label"
-        optionValue="value">
+        [(ngModel)]="novoItem.materiaId"
+        optionLabel="nome"
+        optionValue="id"
+        placeholder="Selecione uma matéria"
+        [style]="{'width':'100%'}">
       </p-dropdown>
     </div>
 
     <div class="form-group">
-      <label for="tipo">Tipo:</label>
+      <label for="diaSemana">Dia da Semana *</label>
       <p-dropdown
-        [options]="tiposEvento"
-        [(ngModel)]="novoEvento.tipo"
-        placeholder="Selecione o tipo"
+        [options]="diasSemana"
+        [(ngModel)]="novoItem.diaSemana"
         optionLabel="label"
-        optionValue="value">
+        optionValue="value"
+        placeholder="Selecione o dia"
+        [style]="{'width':'100%'}">
       </p-dropdown>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label for="horaInicio">Hora Início:</label>
+        <label for="horarioInicio">Horário Início *</label>
         <input
-          type="time"
           pInputText
-          id="horaInicio"
-          [(ngModel)]="novoEvento.horaInicio"
-          class="form-control">
+          type="time"
+          [(ngModel)]="novoItem.horarioInicio"
+          [style]="{'width':'100%'}">
       </div>
 
       <div class="form-group">
-        <label for="horaFim">Hora Fim:</label>
+        <label for="horarioFim">Horário Fim *</label>
         <input
-          type="time"
           pInputText
-          id="horaFim"
-          [(ngModel)]="novoEvento.horaFim"
-          class="form-control">
+          type="time"
+          [(ngModel)]="novoItem.horarioFim"
+          [style]="{'width':'100%'}">
       </div>
-    </div>
-
-    <div class="form-group">
-      <label for="data">Data:</label>
-      <p-calendar
-        [(ngModel)]="novoEvento.data"
-        dateFormat="dd/mm/yy"
-        [showIcon]="true">
-      </p-calendar>
-    </div>
-
-    <div class="form-group">
-      <label for="descricao">Descrição:</label>
-      <textarea
-        pInputTextarea
-        id="descricao"
-        [(ngModel)]="novoEvento.descricao"
-        placeholder="Digite uma descrição (opcional)..."
-        rows="3"
-        class="form-control">
-      </textarea>
     </div>
 
     <ng-template pTemplate="footer">
       <p-button
         label="Cancelar"
         icon="pi pi-times"
-        (onClick)="mostrarDialog = false"
+        (click)="mostrarDialog = false"
         styleClass="p-button-text">
       </p-button>
 
       <p-button
-        label="Salvar"
+        label="Adicionar"
         icon="pi pi-check"
-        (onClick)="salvarEvento()"
-        [disabled]="!novoEvento.titulo || !novoEvento.materia"
+        (click)="salvarItem()"
+        [disabled]="!novoItem.materiaId || !novoItem.diaSemana || !novoItem.horarioInicio || !novoItem.horarioFim"
         styleClass="p-button-primary">
       </p-button>
     </ng-template>
   </p-dialog>
+
+  <!-- Toast para mensagens -->
+  <p-toast></p-toast>
 </div>

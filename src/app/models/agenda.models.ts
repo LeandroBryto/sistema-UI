@@ -246,3 +246,41 @@ export interface CronogramaEstudo {
   horasConcluidas: number;
   progresso: number; // 0-100
 }
+
+// Modelos para Agenda Simples (itens semanais)
+export interface ItemAgendaEntity {
+  id?: number;
+  materiaId: number;
+  diaSemana: DiaSemana;
+  horarioInicio: string;
+  horarioFim: string;
+}
+
+export interface AgendaResponseDTO {
+  id: number;
+  nomeMateria: string;
+  corMateria: string;
+  diaSemana: string; // "MONDAY", "TUESDAY", etc.
+  horarioInicio: string; // "08:00:00"
+  horarioFim: string; // "10:00:00"
+}
+
+export interface CriarItemAgendaRequest {
+  materiaId: number;
+  diaSemana: DiaSemana;
+  horarioInicio: string;
+  horarioFim: string;
+  titulo?: string;
+  descricao?: string;
+}
+
+// Enums necessários
+export enum DiaSemana {
+  DOMINGO = 'DOMINGO',
+  SEGUNDA = 'SEGUNDA',
+  TERCA = 'TERCA',
+  QUARTA = 'QUARTA',
+  QUINTA = 'QUINTA',
+  SEXTA = 'SEXTA',
+  SABADO = 'SABADO'
+}

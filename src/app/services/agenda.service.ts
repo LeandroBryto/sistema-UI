@@ -30,6 +30,14 @@ import {
   CronogramaEstudo
 } from '../models/agenda.models';
 
+// Importando modelos de estudos para agenda simples
+import {
+  ItemAgendaEntity,
+  CriarItemAgendaRequest,
+  DiaSemana,
+  AgendaResponseDTO
+} from '../models/agenda.models';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -58,6 +66,10 @@ export class AgendaService {
 
   private getApiUrl(): string {
     return `${this.env.apiEstudosBase()}/api/v1/eventos`;
+  }
+
+  private getAgendaApiUrl(): string {
+    return `${this.env.apiEstudosBase()}/api/v1/agenda`;
   }
 
   // CRUD Eventos
@@ -464,6 +476,27 @@ export class AgendaService {
         return Object.values(cronogramasPorMateria);
       })
     );
+  }
+
+// Agenda Semanal (itens simples de agenda)
+  getAgendaSemanal(): Observable<AgendaResponseDTO[]> {
+    return this.http.get<AgendaResponseDTO[]>(`${this.getAgendaApiUrl()}/semanal`);
+  }
+
+  getAgendaHoje(): Observable<AgendaResponseDTO[]> {
+    return this.http.get<AgendaResponseDTO[]>(`${this.getAgendaApiUrl()}/hoje`);
+  }
+
+  criarItemAgenda(request: CriarItemAgendaRequest): Observable<ItemAgendaEntity> {
+    return this.http.post<ItemAgendaEntity>(this.getAgendaApiUrl(), request);
+  }
+
+  atualizarItemAgenda(id: number, item: Partial<ItemAgendaEntity>): Observable<ItemAgendaEntity> {
+    return this.http.put<ItemAgendaEntity>(`${this.getAgendaApiUrl()}/${id}`, item);
+  }
+
+  excluirItemAgenda(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.getAgendaApiUrl()}/${id}`);
   }
 
   // Utilitários
