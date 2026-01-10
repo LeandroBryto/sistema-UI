@@ -32,6 +32,7 @@ export interface MateriaResponseDTO {
   corHex: string;
   icone: string;
   arquivada: boolean;
+  quantidadeTopicos: number;
   dataCriacao?: Date;
 }
 

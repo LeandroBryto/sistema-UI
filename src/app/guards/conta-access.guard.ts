@@ -8,7 +8,7 @@ export const contaAccessGuard: CanActivateFn = (route, state) => {
   const permissionService = inject(PermissionService);
   const authService = inject(AuthService);
 
-  if (permissionService.canAccessConta()) {
+  if (permissionService.canAccessConta() || authService.getPlano() === 'PREMIUM') {
     return true;
   }
 

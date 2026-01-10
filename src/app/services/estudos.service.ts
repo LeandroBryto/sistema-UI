@@ -35,7 +35,7 @@ export class EstudosService {
   ) { }
 
   private getApiUrl(): string {
-    return `${this.env.apiBase()}/api/v1/estudos`;
+    return `${this.env.apiEstudosBase()}/api/v1`;
   }
 
   // Dashboard

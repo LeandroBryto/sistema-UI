@@ -40,27 +40,28 @@ export class MateriasComponent implements OnInit {
   materias: MateriaResponseDTO[] = [];
   loading = true;
 
-  mostrarArquivadas = false;
   mostrarDialogNovaMateria = false;
 
   novaMateria: MateriaRequestDTO = {
     nome: '',
     corHex: '#FF6B6B',
-    icone: 'pi pi-book'
+    icone: 'book'
   };
+
+  editandoMateria: MateriaResponseDTO | null = null;
 
   // Lista de ícones disponíveis
   iconesDisponiveis = [
-    { label: 'Livro', value: 'pi pi-book' },
-    { label: 'Calculadora', value: 'pi pi-calculator' },
-    { label: 'Relógio', value: 'pi pi-clock' },
-    { label: 'Globo', value: 'pi pi-globe' },
-    { label: 'Coração', value: 'pi pi-heart' },
-    { label: 'Estrela', value: 'pi pi-star' },
-    { label: 'Lápis', value: 'pi pi-pencil' },
-    { label: 'Atômico', value: 'pi pi-atom' },
-    { label: 'DNA', value: 'pi pi-dna' },
-    { label: 'Microscópio', value: 'pi pi-microscope' }
+    { label: 'Livro', value: 'book' },
+    { label: 'Calculadora', value: 'calculator' },
+    { label: 'Relógio', value: 'clock' },
+    { label: 'Globo', value: 'globe' },
+    { label: 'Coração', value: 'heart' },
+    { label: 'Estrela', value: 'star' },
+    { label: 'Lápis', value: 'pencil' },
+    { label: 'Atômico', value: 'atom' },
+    { label: 'DNA', value: 'dna' },
+    { label: 'Microscópio', value: 'microscope' }
   ];
 
   constructor(
@@ -81,29 +82,46 @@ export class MateriasComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao carregar matérias:', error);
+        let mensagem = 'Não foi possível carregar as matérias.';
+
+        if (error.status === 401) {
+          mensagem = 'Token inválido ou expirado. Faça login novamente.';
+        } else if (error.status === 403) {
+          mensagem = 'Acesso negado. Verifique suas permissões.';
+        } else if (error.status === 0) {
+          mensagem = 'Não foi possível conectar ao servidor. Verifique se o backend está rodando.';
+        }
+
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
-          detail: 'Não foi possível carregar as matérias.'
+          detail: mensagem
         });
         this.loading = false;
       }
     });
   }
 
-  toggleArquivadas(): void {
-    this.mostrarArquivadas = !this.mostrarArquivadas;
-  }
-
   getMateriasFiltradas(): MateriaResponseDTO[] {
-    return this.materias.filter(m => !m.arquivada || this.mostrarArquivadas);
+    return this.materias;
   }
 
   abrirDialogNovaMateria(): void {
+    this.editandoMateria = null;
     this.novaMateria = {
       nome: '',
       corHex: '#FF6B6B',
-      icone: 'pi pi-book'
+      icone: 'book'
+    };
+    this.mostrarDialogNovaMateria = true;
+  }
+
+  abrirDialogEditarMateria(materia: MateriaResponseDTO): void {
+    this.editandoMateria = materia;
+    this.novaMateria = {
+      nome: materia.nome,
+      corHex: materia.corHex,
+      icone: materia.icone
     };
     this.mostrarDialogNovaMateria = true;
   }
@@ -118,33 +136,87 @@ export class MateriasComponent implements OnInit {
       return;
     }
 
-    this.estudosService.criarMateria(this.novaMateria).subscribe({
-      next: (materia) => {
-        this.materias.push(materia);
-        this.mostrarDialogNovaMateria = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Matéria criada com sucesso!'
-        });
-      },
-      error: (error) => {
-        console.error('Erro ao criar matéria:', error);
-        let mensagem = 'Erro ao criar matéria.';
+    const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i;
+    if (!hexRegex.test(this.novaMateria.corHex)) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'A cor deve ser um código hexadecimal válido (ex: #FFFFFF).'
+      });
+      return;
+    }
 
-        if (error.error?.message) {
-          mensagem = error.error.message;
-        } else if (error.status === 400) {
-          mensagem = 'Dados inválidos. Verifique os campos.';
+    if (this.editandoMateria) {
+      // Atualizar
+      this.estudosService.atualizarMateria(this.editandoMateria.id, this.novaMateria).subscribe({
+        next: (materia) => {
+          const index = this.materias.findIndex(m => m.id === materia.id);
+          if (index !== -1) {
+            this.materias[index] = materia;
+          }
+          this.mostrarDialogNovaMateria = false;
+          this.editandoMateria = null;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Matéria atualizada com sucesso!'
+          });
+        },
+        error: (error) => {
+          console.error('Erro ao atualizar matéria:', error);
+          let mensagem = 'Erro ao atualizar matéria.';
+
+          if (error.status === 401) {
+            mensagem = 'Token inválido ou expirado. Faça login novamente.';
+          } else if (error.status === 403) {
+            mensagem = 'Acesso negado. Verifique suas permissões.';
+          } else if (error.error?.message) {
+            mensagem = error.error.message;
+          } else if (error.status === 400) {
+            mensagem = 'Dados inválidos. Verifique os campos.';
+          }
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: mensagem
+          });
         }
+      });
+    } else {
+      // Criar
+      this.estudosService.criarMateria(this.novaMateria).subscribe({
+        next: (materia) => {
+          this.materias.push(materia);
+          this.mostrarDialogNovaMateria = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Matéria criada com sucesso!'
+          });
+        },
+        error: (error) => {
+          console.error('Erro ao criar matéria:', error);
+          let mensagem = 'Erro ao criar matéria.';
 
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: mensagem
-        });
-      }
-    });
+          if (error.status === 401) {
+            mensagem = 'Token inválido ou expirado. Faça login novamente.';
+          } else if (error.status === 403) {
+            mensagem = 'Acesso negado. Verifique suas permissões.';
+          } else if (error.error?.message) {
+            mensagem = error.error.message;
+          } else if (error.status === 400) {
+            mensagem = 'Dados inválidos. Verifique os campos.';
+          }
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: mensagem
+          });
+        }
+      });
+    }
   }
 
   excluirMateria(materia: MateriaResponseDTO): void {
@@ -168,27 +240,6 @@ export class MateriasComponent implements OnInit {
         }
       });
     }
-  }
-
-  arquivarMateria(materia: MateriaResponseDTO): void {
-    this.estudosService.arquivarMateria(materia.id).subscribe({
-      next: () => {
-        materia.arquivada = true;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Matéria arquivada com sucesso!'
-        });
-      },
-      error: (error) => {
-        console.error('Erro ao arquivar matéria:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Não foi possível arquivar a matéria.'
-        });
-      }
-    });
   }
 
   // Método auxiliar para obter o label do ícone

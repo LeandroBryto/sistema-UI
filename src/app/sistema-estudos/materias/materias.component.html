@@ -3,12 +3,6 @@
     <h1>Minhas Matérias</h1>
     <div class="header-actions">
       <p-button
-        label="Mostrar Arquivadas"
-        icon="pi pi-eye"
-        [outlined]="!mostrarArquivadas"
-        (click)="toggleArquivadas()">
-      </p-button>
-      <p-button
         label="Nova Matéria"
         icon="pi pi-plus"
         styleClass="p-button-primary"
@@ -34,14 +28,11 @@
 
       <div class="materia-header">
         <div class="materia-icon" [style.color]="materia.corHex" [style.background-color]="materia.corHex + '20'">
-          <i [class]="materia.icone"></i>
+          <i [class]="'pi pi-' + materia.icone"></i>
         </div>
         <div class="materia-info">
           <h3>{{ materia.nome }}</h3>
           <div class="materia-meta">
-            <span class="materia-status" *ngIf="materia.arquivada">
-              <i class="pi pi-archive"></i> Arquivada
-            </span>
             <span class="materia-data" *ngIf="materia.dataCriacao">
               Criada em {{ materia.dataCriacao | date:'dd/MM/yyyy' }}
             </span>
@@ -51,19 +42,18 @@
 
       <div class="materia-actions">
         <p-button
+          label="Editar"
+          icon="pi pi-pencil"
+          styleClass="p-button-text p-button-sm"
+          (click)="abrirDialogEditarMateria(materia)"
+          pTooltip="Editar matéria">
+        </p-button>
+
+        <p-button
           label="Ver Detalhes"
           icon="pi pi-eye"
           styleClass="p-button-text p-button-sm"
           pTooltip="Ver tópicos e flashcards">
-        </p-button>
-
-        <p-button
-          label="Arquivar"
-          icon="pi pi-archive"
-          styleClass="p-button-text p-button-warning p-button-sm"
-          (click)="arquivarMateria(materia)"
-          *ngIf="!materia.arquivada"
-          pTooltip="Arquivar matéria">
         </p-button>
 
         <p-button
@@ -80,14 +70,11 @@
     <div class="empty-state" *ngIf="getMateriasFiltradas().length === 0">
       <div class="empty-content">
         <i class="pi pi-book empty-icon"></i>
-        <h3>{{ mostrarArquivadas ? 'Nenhuma matéria arquivada' : 'Nenhuma matéria encontrada' }}</h3>
+        <h3>Nenhuma matéria encontrada</h3>
         <p>
-          {{ mostrarArquivadas
-             ? 'Você não possui matérias arquivadas.'
-             : 'Comece criando sua primeira matéria de estudo!' }}
+          Comece criando sua primeira matéria de estudo!
         </p>
         <p-button
-          *ngIf="!mostrarArquivadas"
           label="Criar Primeira Matéria"
           icon="pi pi-plus"
           styleClass="p-button-primary"
@@ -104,7 +91,7 @@
     [style]="{width: '500px'}"
     [draggable]="false"
     [resizable]="false"
-    header="Nova Matéria">
+    [header]="editandoMateria ? 'Editar Matéria' : 'Nova Matéria'">
 
     <div class="form-group">
       <label for="nome">Nome da Matéria *</label>
@@ -165,7 +152,7 @@
       </p-button>
 
       <p-button
-        label="Criar Matéria"
+        [label]="editandoMateria ? 'Atualizar Matéria' : 'Criar Matéria'"
         icon="pi pi-check"
         (click)="salvarNovaMateria()"
         [disabled]="!novaMateria.nome.trim()"
