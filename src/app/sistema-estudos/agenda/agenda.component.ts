@@ -47,9 +47,11 @@ export class AgendaComponent implements OnInit {
   selectedItem: AgendaResponseDTO | null = null;
   viewMode: 'semana' | 'hoje' = 'semana';
 
+  editandoItem: AgendaResponseDTO | null = null;
+
   mostrarDialog = false;
 
-  novoItem: CriarItemAgendaRequest = {
+  itemForm: CriarItemAgendaRequest = {
     materiaId: 0,
     diaSemana: DiaSemana.SEGUNDA,
     horarioInicio: '08:00',
@@ -122,18 +124,31 @@ export class AgendaComponent implements OnInit {
     });
   }
 
-  abrirDialog(): void {
-    this.novoItem = {
-      materiaId: this.materias.length > 0 ? this.materias[0].id : 0,
-      diaSemana: DiaSemana.SEGUNDA,
-      horarioInicio: '08:00',
-      horarioFim: '10:00'
-    };
+  abrirDialog(item?: AgendaResponseDTO): void {
+    if (item) {
+      // Modo edição
+      this.editandoItem = item;
+      this.itemForm = {
+        materiaId: this.materias.find(m => m.nome === item.nomeMateria)?.id || 0,
+        diaSemana: this.stringToDiaSemanaEnum(item.diaSemana),
+        horarioInicio: item.horarioInicio.substring(0, 5),
+        horarioFim: item.horarioFim.substring(0, 5)
+      };
+    } else {
+      // Modo criação
+      this.editandoItem = null;
+      this.itemForm = {
+        materiaId: this.materias.length > 0 ? this.materias[0].id : 0,
+        diaSemana: DiaSemana.SEGUNDA,
+        horarioInicio: '08:00',
+        horarioFim: '10:00'
+      };
+    }
     this.mostrarDialog = true;
   }
 
   salvarItem(): void {
-    if (!this.novoItem.materiaId || !this.novoItem.diaSemana || !this.novoItem.horarioInicio || !this.novoItem.horarioFim) {
+    if (!this.itemForm.materiaId || !this.itemForm.diaSemana || !this.itemForm.horarioInicio || !this.itemForm.horarioFim) {
       this.messageService.add({
         severity: 'error',
         summary: 'Erro',
@@ -142,33 +157,66 @@ export class AgendaComponent implements OnInit {
       return;
     }
 
-    this.agendaService.criarItemAgenda(this.novoItem).subscribe({
-      next: (item) => {
-        this.mostrarDialog = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Item adicionado à agenda com sucesso!'
-        });
-        this.carregarAgenda(); // Recarregar para atualizar a lista
-      },
-      error: (error) => {
-        console.error('Erro ao criar item na agenda:', error);
-        let mensagem = 'Erro ao adicionar item à agenda.';
+    if (this.editandoItem) {
+      // Modo edição
+      this.agendaService.atualizarItemAgenda(this.editandoItem.id, this.itemForm).subscribe({
+        next: (item) => {
+          this.mostrarDialog = false;
+          this.editandoItem = null;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Item atualizado com sucesso!'
+          });
+          this.carregarAgenda();
+        },
+        error: (error) => {
+          console.error('Erro ao atualizar item na agenda:', error);
+          let mensagem = 'Erro ao atualizar item na agenda.';
 
-        if (error.error?.message) {
-          mensagem = error.error.message;
-        } else if (error.status === 400) {
-          mensagem = 'Dados inválidos. Verifique os campos.';
+          if (error.error?.message) {
+            mensagem = error.error.message;
+          } else if (error.status === 400) {
+            mensagem = 'Dados inválidos. Verifique os campos.';
+          }
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: mensagem
+          });
         }
+      });
+    } else {
+      // Modo criação
+      this.agendaService.criarItemAgenda(this.itemForm).subscribe({
+        next: (item) => {
+          this.mostrarDialog = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Item adicionado à agenda com sucesso!'
+          });
+          this.carregarAgenda();
+        },
+        error: (error) => {
+          console.error('Erro ao criar item na agenda:', error);
+          let mensagem = 'Erro ao adicionar item à agenda.';
 
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: mensagem
-        });
-      }
-    });
+          if (error.error?.message) {
+            mensagem = error.error.message;
+          } else if (error.status === 400) {
+            mensagem = 'Dados inválidos. Verifique os campos.';
+          }
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: mensagem
+          });
+        }
+      });
+    }
   }
 
   excluirItem(item: AgendaResponseDTO): void {
@@ -270,5 +318,18 @@ export class AgendaComponent implements OnInit {
       [DiaSemana.SABADO]: 'SATURDAY'
     };
     return map[dia] || 'MONDAY';
+  }
+
+  private stringToDiaSemanaEnum(dia: string): DiaSemana {
+    const map: { [key: string]: DiaSemana } = {
+      'SUNDAY': DiaSemana.DOMINGO,
+      'MONDAY': DiaSemana.SEGUNDA,
+      'TUESDAY': DiaSemana.TERCA,
+      'WEDNESDAY': DiaSemana.QUARTA,
+      'THURSDAY': DiaSemana.QUINTA,
+      'FRIDAY': DiaSemana.SEXTA,
+      'SATURDAY': DiaSemana.SABADO
+    };
+    return map[dia] || DiaSemana.SEGUNDA;
   }
 }

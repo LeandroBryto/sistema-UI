@@ -487,12 +487,12 @@ export class AgendaService {
     return this.http.get<AgendaResponseDTO[]>(`${this.getAgendaApiUrl()}/hoje`);
   }
 
-  criarItemAgenda(request: CriarItemAgendaRequest): Observable<ItemAgendaEntity> {
-    return this.http.post<ItemAgendaEntity>(this.getAgendaApiUrl(), request);
+  criarItemAgenda(request: CriarItemAgendaRequest): Observable<AgendaResponseDTO> {
+    return this.http.post<AgendaResponseDTO>(this.getAgendaApiUrl(), request);
   }
 
-  atualizarItemAgenda(id: number, item: Partial<ItemAgendaEntity>): Observable<ItemAgendaEntity> {
-    return this.http.put<ItemAgendaEntity>(`${this.getAgendaApiUrl()}/${id}`, item);
+  atualizarItemAgenda(id: number, request: CriarItemAgendaRequest): Observable<AgendaResponseDTO> {
+    return this.http.put<AgendaResponseDTO>(`${this.getAgendaApiUrl()}/${id}`, request);
   }
 
   excluirItemAgenda(id: number): Observable<void> {
