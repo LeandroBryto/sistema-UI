@@ -9,6 +9,7 @@
 .header {
   text-align: center;
   margin-bottom: 2rem;
+  position: relative;
 }
 
 .header h1 {
@@ -21,6 +22,29 @@
 .header p {
   color: #6c757d;
   font-size: 1.1rem;
+}
+
+.header-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.loading-section {
+  text-align: center;
+  padding: 3rem;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loading-icon {
+  font-size: 2rem;
+  color: #667eea;
 }
 
 .progress-section {
@@ -123,6 +147,67 @@
 .card-text p {
   font-size: 1.1rem;
   line-height: 1.6;
+}
+
+/* Botões de dificuldade de revisão */
+.review-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.review-buttons p-button {
+  flex: 1;
+  min-width: 120px;
+}
+
+.review-buttons .p-button {
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.review-buttons .p-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.review-buttons .p-button.dificil {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  border-color: #d32f2f;
+}
+
+.review-buttons .p-button.dificil:hover {
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+}
+
+.review-buttons .p-button.ruim {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  border-color: #f57c00;
+}
+
+.review-buttons .p-button.ruim:hover {
+  background: linear-gradient(135deg, #f57c00 0%, #ef6c00 100%);
+}
+
+.review-buttons .p-button.bom {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  border-color: #1976D2;
+}
+
+.review-buttons .p-button.bom:hover {
+  background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+}
+
+.review-buttons .p-button.facil {
+  background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+  border-color: #388E3C;
+}
+
+.review-buttons .p-button.facil:hover {
+  background: linear-gradient(135deg, #388E3C 0%, #2E7D32 100%);
 }
 
 .card-footer {

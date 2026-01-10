@@ -68,13 +68,6 @@ export interface FlashcardEntity {
   dataCriacao?: Date;
 }
 
-export enum DificuldadeFlashcard {
-  ERROU = 'ERROU',
-  DIFICIL = 'DIFICIL',
-  BOM = 'BOM',
-  FACIL = 'FACIL'
-}
-
 export interface ItemAgendaEntity {
   id?: number;
   materiaId: number;
@@ -141,4 +134,33 @@ export interface DashboardResponse {
     minutosTotais: number;
     flashcardsRevisados: number;
   };
+}
+
+// Flashcards
+export interface FlashcardRequestDTO {
+  pergunta: string;
+  resposta: string;
+  materiaId: number;
+}
+
+export interface FlashcardResponseDTO {
+  id: number;
+  pergunta: string;
+  resposta: string;
+  materiaNome: string;
+  ultimaDificuldade: DificuldadeFlashcard;
+  proximaRevisao: Date;
+  dataCriacao: Date;
+}
+
+export interface RevisaoFlashcardDTO {
+  dificuldade: DificuldadeFlashcard;
+}
+
+export enum DificuldadeFlashcard {
+  NAOVISTO = 'NAOVISTO',
+  ERROU = 'ERROU',
+  DIFICIL = 'DIFICIL',
+  BOM = 'BOM',
+  FACIL = 'FACIL'
 }

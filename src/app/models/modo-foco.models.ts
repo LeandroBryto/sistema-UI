@@ -1,37 +1,25 @@
 // Modelos específicos para a tela de Modo Foco
 
-export interface SessaoEstudoEntity {
-  id?: number;
-  usuarioId: number;
-  materiaId: number;
-  dataInicio: Date;
-  dataFim?: Date;
-  minutosTotais: number;
-  anotacoes?: string;
-  xpGanho?: number;
-  status: 'ATIVA' | 'FINALIZADA' | 'CANCELADA';
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export interface SessaoRequestDTO {
   materiaId: number;
+  dataInicio: Date;
+  dataFim: Date;
   anotacoes?: string;
 }
 
 export interface SessaoResponseDTO {
   id: number;
-  usuarioId: number;
-  materiaId: number;
-  materiaNome: string;
+  usuarioUsername: string;
+  materia: {
+    id: number;
+    nome: string;
+    corHex: string;
+  };
   dataInicio: Date;
-  dataFim?: Date;
+  dataFim: Date;
   minutosTotais: number;
-  anotacoes?: string;
   xpGanho: number;
-  status: 'ATIVA' | 'FINALIZADA' | 'CANCELADA';
-  createdAt: Date;
-  updatedAt: Date;
+  anotacoes?: string;
 }
 
 export interface TimerConfig {

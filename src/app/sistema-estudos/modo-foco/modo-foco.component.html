@@ -2,21 +2,80 @@
   <div class="header">
     <h1>Modo Foco</h1>
     <p>Concentre-se nos estudos com sessões cronometradas</p>
+    <div class="header-actions">
+      <p-button
+        label="Ver Histórico"
+        icon="pi pi-history"
+        styleClass="p-button-outlined"
+        (click)="toggleHistorico()">
+      </p-button>
+    </div>
   </div>
 
-  <div class="timer-section">
+  <!-- Seletor de Matéria -->
+  <div class="materia-selector-section" *ngIf="!loading">
+    <p-card class="materia-selector-card">
+      <div class="materia-selector-content">
+        <label for="materiaSelect">Selecione a matéria para estudar:</label>
+        <p-dropdown
+          id="materiaSelect"
+          [options]="materias"
+          [(ngModel)]="materiaSelecionada"
+          optionLabel="nome"
+          optionValue="this"
+          placeholder="Escolha uma matéria"
+          [disabled]="isRunning"
+          [style]="{'width': '100%'}">
+          <ng-template pTemplate="selectedItem" let-selectedMateria>
+            <div class="materia-option" *ngIf="selectedMateria">
+              <div class="materia-icon" [style.color]="selectedMateria.corHex">
+                <i [class]="'pi pi-' + selectedMateria.icone"></i>
+              </div>
+              <span>{{ selectedMateria.nome }}</span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="item" let-materia>
+            <div class="materia-option">
+              <div class="materia-icon" [style.color]="materia.corHex">
+                <i [class]="'pi pi-' + materia.icone"></i>
+              </div>
+              <span>{{ materia.nome }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Timer Section -->
+  <div class="timer-section" *ngIf="!loading && materiaSelecionada">
     <p-card class="timer-card">
       <ng-template pTemplate="header">
         <div class="timer-header">
-          <span class="materia-badge" [style.background-color]="materiaAtual.corHex">
-            {{ materiaAtual.nome }}
+          <span class="materia-badge" [style.background-color]="materiaSelecionada.corHex">
+            <i [class]="'pi pi-' + materiaSelecionada.icone"></i>
+            {{ materiaSelecionada.nome }}
           </span>
         </div>
       </ng-template>
 
+      <!-- Progress Bar -->
+      <div class="progress-section" *ngIf="isRunning || isPaused">
+        <p-progressBar [value]="getProgresso()" [showValue]="false"></p-progressBar>
+        <small>{{ getProgresso().toFixed(0) }}% concluído</small>
+      </div>
+
       <div class="timer-display">
-        <div class="timer-circle">
+        <div class="timer-circle" [class.active]="isRunning" [class.paused]="isPaused">
           <span class="timer-text">{{ formatarTempo(tempoRestante) }}</span>
+          <div class="timer-status" *ngIf="isRunning">
+            <i class="pi pi-play"></i>
+            Estudando
+          </div>
+          <div class="timer-status paused" *ngIf="isPaused">
+            <i class="pi pi-pause"></i>
+            Pausado
+          </div>
         </div>
       </div>
 
@@ -24,7 +83,7 @@
         <div class="timer-controls">
           <p-button
             *ngIf="!isRunning && !isPaused"
-            label="Iniciar"
+            label="Iniciar Sessão"
             icon="pi pi-play"
             (onClick)="iniciarTimer()"
             styleClass="p-button-success">
@@ -57,7 +116,7 @@
     </p-card>
   </div>
 
-  <div class="anotacoes-section">
+  <div class="anotacoes-section" *ngIf="materiaSelecionada">
     <p-card class="anotacoes-card">
       <ng-template pTemplate="header">
         <h3>Anotações da Sessão</h3>
@@ -67,26 +126,86 @@
         pInputTextarea
         [(ngModel)]="anotacoes"
         placeholder="Digite suas anotações durante a sessão de estudo..."
-        rows="8"
+        rows="6"
         class="anotacoes-textarea">
       </textarea>
     </p-card>
   </div>
 
-  <div class="stats-section">
+  <div class="stats-section" *ngIf="materiaSelecionada">
     <div class="stats-grid">
       <div class="stat-item">
-        <div class="stat-value">25</div>
-        <div class="stat-label">Minutos</div>
+        <div class="stat-value">{{ getMinutosEstudados() }}</div>
+        <div class="stat-label">Minutos Estudados</div>
       </div>
       <div class="stat-item">
-        <div class="stat-value">+50</div>
-        <div class="stat-label">XP</div>
+        <div class="stat-value">+{{ getXpEstimado() }}</div>
+        <div class="stat-label">XP Estimado</div>
       </div>
       <div class="stat-item">
-        <div class="stat-value">+10</div>
-        <div class="stat-label">Moedas</div>
+        <div class="stat-value">{{ historicoSessoes.length }}</div>
+        <div class="stat-label">Sessões Totais</div>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal: Histórico de Sessões -->
+  <p-dialog
+    [(visible)]="mostrarHistorico"
+    [modal]="true"
+    [style]="{width: '700px'}"
+    [header]="'Histórico de Sessões'"
+    [draggable]="false"
+    [resizable]="false">
+
+    <div class="historico-content">
+      <div class="historico-list" *ngIf="historicoSessoes.length > 0; else noHistorico">
+        <div class="historico-item" *ngFor="let sessao of historicoSessoes">
+          <div class="historico-header">
+            <span class="materia-name">{{ sessao.materia.nome }}</span>
+            <span class="xp-ganho">+{{ sessao.xpGanho }} XP</span>
+          </div>
+          <div class="historico-details">
+            <span>{{ sessao.dataInicio | date:'dd/MM/yyyy HH:mm' }} - {{ sessao.dataFim | date:'HH:mm' }}</span>
+            <span>{{ sessao.minutosTotais }} minutos</span>
+          </div>
+          <div class="historico-anotacoes" *ngIf="sessao.anotacoes">
+            {{ sessao.anotacoes }}
+          </div>
+        </div>
+      </div>
+      <ng-template #noHistorico>
+        <div class="empty-historico">
+          <i class="pi pi-clock"></i>
+          <p>Nenhuma sessão registrada ainda.</p>
+          <small>Complete sua primeira sessão para ver o histórico aqui!</small>
+        </div>
+      </ng-template>
+    </div>
+  </p-dialog>
+
+  <!-- Loading State -->
+  <div class="loading-section" *ngIf="loading">
+    <div class="loading-content">
+      <i class="pi pi-spin pi-spinner loading-icon"></i>
+      <p>Carregando matérias...</p>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && materias.length === 0">
+    <div class="empty-content">
+      <i class="pi pi-book empty-icon"></i>
+      <h3>Nenhuma matéria encontrada</h3>
+      <p>
+        Você precisa criar pelo menos uma matéria antes de usar o Modo Foco.
+      </p>
+      <p-button
+        label="Criar Matéria"
+        icon="pi pi-plus"
+        routerLink="/estudos/materias"
+        styleClass="p-button-primary">
+      </p-button>
     </div>
   </div>
 </div>

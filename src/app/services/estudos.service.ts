@@ -19,7 +19,10 @@ import {
   SessaoResponse,
   DashboardResponse,
   DificuldadeFlashcard,
-  DiaSemana
+  DiaSemana,
+  FlashcardRequestDTO,
+  FlashcardResponseDTO,
+  RevisaoFlashcardDTO
 } from '../models/estudos.models';
 
 @Injectable({
@@ -108,16 +111,16 @@ export class EstudosService {
     return this.http.get<FlashcardEntity[]>(`${this.getApiUrl()}/flashcards/materia/${materiaId}`);
   }
 
-  getFlashcardsParaRevisao(): Observable<FlashcardEntity[]> {
-    return this.http.get<FlashcardEntity[]>(`${this.getApiUrl()}/flashcards/revisao`);
+  getFlashcardsParaRevisao(): Observable<FlashcardResponseDTO[]> {
+    return this.http.get<FlashcardResponseDTO[]>(`${this.getApiUrl()}/flashcards/revisao`);
   }
 
-  criarFlashcard(request: CriarFlashcardRequest): Observable<FlashcardEntity> {
-    return this.http.post<FlashcardEntity>(`${this.getApiUrl()}/flashcards`, request);
+  criarFlashcard(request: FlashcardRequestDTO): Observable<FlashcardResponseDTO> {
+    return this.http.post<FlashcardResponseDTO>(`${this.getApiUrl()}/flashcards`, request);
   }
 
-  avaliarFlashcard(request: AvaliarFlashcardRequest): Observable<FlashcardEntity> {
-    return this.http.post<FlashcardEntity>(`${this.getApiUrl()}/flashcards/avaliar`, request);
+  revisarFlashcard(id: number, request: RevisaoFlashcardDTO): Observable<FlashcardResponseDTO> {
+    return this.http.post<FlashcardResponseDTO>(`${this.getApiUrl()}/flashcards/${id}/revisar`, request);
   }
 
   excluirFlashcard(id: number): Observable<void> {
@@ -161,6 +164,7 @@ export class EstudosService {
 
   formatarDificuldade(dificuldade: DificuldadeFlashcard): string {
     const mapa = {
+      [DificuldadeFlashcard.NAOVISTO]: 'Não visto',
       [DificuldadeFlashcard.ERROU]: 'Errei',
       [DificuldadeFlashcard.DIFICIL]: 'Difícil',
       [DificuldadeFlashcard.BOM]: 'Bom',
