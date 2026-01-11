@@ -16,14 +16,10 @@ export interface FinalizarEstudoRequestDTO {
 
 export interface SessaoResponseDTO {
   id: number;
-  usuarioUsername: string;
-  materia: {
-    id: number;
-    nome: string;
-    corHex: string;
-  };
-  dataInicio: Date;
-  dataFim: Date;
+  nomeMateria: string;
+  corMateria: string;
+  dataInicio: string;
+  dataFim: string;
   minutosTotais: number;
   xpGanho: number;
   anotacoes?: string;

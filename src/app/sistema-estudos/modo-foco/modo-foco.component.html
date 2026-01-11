@@ -2,14 +2,6 @@
   <div class="header">
     <h1>Modo Foco</h1>
     <p>Concentre-se nos estudos com sessões cronometradas</p>
-    <div class="header-actions">
-      <p-button
-        label="Ver Histórico"
-        icon="pi pi-history"
-        styleClass="p-button-outlined"
-        (click)="toggleHistorico()">
-      </p-button>
-    </div>
   </div>
 
   <!-- Seletor de Matéria -->
@@ -59,15 +51,14 @@
         </div>
       </ng-template>
 
-      <!-- Progress Bar -->
+      <!-- Progress Bar - Removido pois tempo é livre -->
       <div class="progress-section" *ngIf="isRunning || isPaused">
-        <p-progressBar [value]="getProgresso()" [showValue]="false"></p-progressBar>
-        <small>{{ getProgresso().toFixed(0) }}% concluído</small>
+        <small>Tempo estudado: {{ formatarTempo(tempoDecorrido) }}</small>
       </div>
 
       <div class="timer-display">
         <div class="timer-circle" [class.active]="isRunning" [class.paused]="isPaused">
-          <span class="timer-text">{{ formatarTempo(tempoRestante) }}</span>
+          <span class="timer-text">{{ formatarTempo(tempoDecorrido) }}</span>
           <div class="timer-status" *ngIf="isRunning">
             <i class="pi pi-play"></i>
             Estudando
@@ -174,20 +165,16 @@
     </div>
   </div>
 
-  <!-- Modal: Histórico de Sessões -->
-  <p-dialog
-    [(visible)]="mostrarHistorico"
-    [modal]="true"
-    [style]="{width: '700px'}"
-    [header]="'Histórico de Sessões'"
-    [draggable]="false"
-    [resizable]="false">
+  <!-- Loading State -->
 
     <div class="historico-content">
       <div class="historico-list" *ngIf="historicoSessoes.length > 0; else noHistorico">
         <div class="historico-item" *ngFor="let sessao of historicoSessoes">
           <div class="historico-header">
-            <span class="materia-name">{{ sessao.materia.nome }}</span>
+            <div class="materia-info">
+              <i class="pi pi-circle-fill" [style.color]="sessao.corMateria"></i>
+              <span class="materia-name">{{ sessao.nomeMateria }}</span>
+            </div>
             <span class="xp-ganho">+{{ sessao.xpGanho }} XP</span>
           </div>
           <div class="historico-details">
@@ -231,6 +218,29 @@
         routerLink="/estudos/materias"
         styleClass="p-button-primary">
       </p-button>
+    </div>
+  </div>
+
+  <!-- Histórico de Sessões -->
+  <div class="historico-section" *ngIf="historicoSessoes.length > 0">
+    <h2>Histórico de Sessões</h2>
+    <div class="historico-list">
+      <div class="historico-item" *ngFor="let sessao of historicoSessoes.slice(0, 10)">
+        <div class="historico-header">
+          <div class="materia-info">
+            <i class="pi pi-circle-fill" [style.color]="sessao.corMateria"></i>
+            <span class="materia-name">{{ sessao.nomeMateria }}</span>
+          </div>
+          <span class="xp-ganho">+{{ sessao.xpGanho }} XP</span>
+        </div>
+        <div class="historico-details">
+          <span>{{ sessao.dataInicio | date:'dd/MM/yyyy HH:mm' }} - {{ sessao.dataFim | date:'HH:mm' }}</span>
+          <span>{{ sessao.minutosTotais }} minutos</span>
+        </div>
+        <div class="historico-anotacoes" *ngIf="sessao.anotacoes">
+          {{ sessao.anotacoes }}
+        </div>
+      </div>
     </div>
   </div>
 </div>

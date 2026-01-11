@@ -6,7 +6,7 @@
   </div>
 
   <!-- Gamificação Section -->
-  <div class="gamificacao-section" *ngIf="!loading">
+  <div class="gamificacao-section" *ngIf="gamificacao">
     <div class="gamificacao-cards">
       <!-- Nível e XP -->
       <p-card class="gamificacao-card nivel-card">
@@ -81,7 +81,7 @@
   </div>
 
   <!-- Progresso Semanal -->
-  <div class="progresso-section" *ngIf="!loading">
+  <div class="progresso-section" *ngIf="progressoSemanal">
     <h2>Seu Progresso Esta Semana</h2>
     <div class="progresso-grid">
       <p-card class="progresso-card">
@@ -141,6 +141,29 @@
       <p-button label="Agenda" icon="pi pi-calendar" (onClick)="navegarParaAgenda()" styleClass="p-button-warning acao-button">
         <span class="acao-descricao">Planejar estudos</span>
       </p-button>
+    </div>
+  </div>
+
+  <!-- Histórico de Estudos -->
+  <div class="historico-section" *ngIf="historicoSessoes.length > 0">
+    <h2>Histórico de Estudos</h2>
+    <div class="historico-list">
+      <p-card class="historico-item" *ngFor="let sessao of historicoSessoes.slice(0, 5)">
+        <div class="historico-header">
+          <span class="historico-materia">{{ sessao.nomeMateria }}</span>
+          <span class="historico-data">{{ sessao.dataInicio | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="historico-details">
+          <span class="historico-duracao">{{ sessao.minutosTotais }} min</span>
+          <span class="historico-xp" *ngIf="sessao.xpGanho">+{{ sessao.xpGanho }} XP</span>
+        </div>
+        <div class="historico-anotacoes" *ngIf="sessao.anotacoes">
+          {{ sessao.anotacoes }}
+        </div>
+      </p-card>
+    </div>
+    <div class="ver-mais" *ngIf="historicoSessoes.length > 5">
+      <p-button label="Ver Todo Histórico" icon="pi pi-history" (onClick)="navegarParaModoFoco()" styleClass="p-button-outlined"></p-button>
     </div>
   </div>
 

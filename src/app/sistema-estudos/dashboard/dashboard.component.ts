@@ -5,7 +5,9 @@ import { CardModule } from 'primeng/card';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Router } from '@angular/router';
 import { EstudosService } from '../../services/estudos.service';
+import { ModoFocoService } from '../../services/modo-foco.service';
 import { DadosGamificacaoEntity, ItemAgendaEntity, DashboardResponse } from '../../models/estudos.models';
+import { SessaoResponseDTO } from '../../models/modo-foco.models';
 
 @Component({
   selector: 'app-sistema-estudos-dashboard',
@@ -16,29 +18,23 @@ import { DadosGamificacaoEntity, ItemAgendaEntity, DashboardResponse } from '../
 })
 export class DashboardComponent implements OnInit {
 
-  gamificacao: DadosGamificacaoEntity = {
-    nivelAtual: 1,
-    xpTotal: 0,
-    moedasNexus: 0,
-    ofensivaAtual: 0
-  };
+  gamificacao: DadosGamificacaoEntity | null = null;
 
   agendaHoje: ItemAgendaEntity[] = [];
-  progressoSemanal = {
-    diasEstudados: 0,
-    minutosTotais: 0,
-    flashcardsRevisados: 0
-  };
+  progressoSemanal: any = null;
+  historicoSessoes: SessaoResponseDTO[] = [];
 
   loading = true;
 
   constructor(
     private estudosService: EstudosService,
+    private modoFocoService: ModoFocoService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.carregarDashboard();
+    this.carregarHistorico();
   }
 
   carregarDashboard(): void {
@@ -52,40 +48,31 @@ export class DashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao carregar dashboard:', error);
-        // Dados mock para desenvolvimento
-        this.gamificacao = {
-          nivelAtual: 5,
-          xpTotal: 1250,
-          moedasNexus: 340,
-          ofensivaAtual: 7
-        };
-        this.agendaHoje = [
-          {
-            id: 1,
-            materiaId: 1,
-            diaSemana: 'SEGUNDA' as any,
-            horarioInicio: '14:00',
-            horarioFim: '15:30',
-            titulo: 'Revisão de Matemática'
-          }
-        ];
-        this.progressoSemanal = {
-          diasEstudados: 5,
-          minutosTotais: 420,
-          flashcardsRevisados: 45
-        };
         this.loading = false;
       }
     });
   }
 
+  carregarHistorico(): void {
+    this.modoFocoService.listarHistorico().subscribe({
+      next: (historico) => {
+        this.historicoSessoes = historico;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar histórico:', error);
+      }
+    });
+  }
+
   get progressoNivel(): number {
+    if (!this.gamificacao) return 0;
     // Assumindo que cada nível precisa de 500 XP
     const xpParaProximoNivel = this.gamificacao.nivelAtual * 500;
     return (this.gamificacao.xpTotal % 500) / 500 * 100;
   }
 
   get xpParaProximoNivel(): number {
+    if (!this.gamificacao) return 0;
     return this.gamificacao.nivelAtual * 500;
   }
 

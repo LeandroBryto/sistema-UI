@@ -37,8 +37,7 @@ import { SessaoRequestDTO, SessaoResponseDTO, FinalizarEstudoRequestDTO } from '
 export class ModoFocoComponent implements OnInit, OnDestroy {
 
   // Timer
-  tempoRestante = 25 * 60; // 25 minutos em segundos
-  tempoTotal = 25 * 60; // Para calcular progresso
+  tempoDecorrido = 0; // Tempo decorrido em segundos
   isRunning = false;
   isPaused = false;
   interval: any;
@@ -74,6 +73,7 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.carregarMaterias();
     this.carregarHistorico();
+    this.carregarEstadoTimer();
 
     // Processar query params da agenda
     this.route.queryParams.subscribe(params => {
@@ -89,6 +89,7 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.salvarEstadoTimer();
     if (this.interval) {
       clearInterval(this.interval);
     }
@@ -141,18 +142,16 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
     this.isPaused = false;
     this.dataInicio = new Date();
 
-    this.interval = setInterval(() => {
-      if (this.tempoRestante > 0) {
-        this.tempoRestante--;
+    this.salvarEstadoTimer();
 
-        // Processar ganho progressivo a cada minuto
-        const minutosAtuais = Math.floor((new Date().getTime() - this.dataInicio!.getTime()) / (1000 * 60));
-        if (minutosAtuais > this.ultimoMinutoProcessado) {
-          this.processarGanhoProgressivo(minutosAtuais - this.ultimoMinutoProcessado);
-          this.ultimoMinutoProcessado = minutosAtuais;
-        }
-      } else {
-        this.finalizarSessao();
+    this.interval = setInterval(() => {
+      this.tempoDecorrido++;
+
+      // Processar ganho progressivo a cada minuto
+      const minutosAtuais = Math.floor(this.tempoDecorrido / 60);
+      if (minutosAtuais > this.ultimoMinutoProcessado) {
+        this.processarGanhoProgressivo(minutosAtuais - this.ultimoMinutoProcessado);
+        this.ultimoMinutoProcessado = minutosAtuais;
       }
     }, 1000);
   }
@@ -163,6 +162,7 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
     if (this.interval) {
       clearInterval(this.interval);
     }
+    this.salvarEstadoTimer();
   }
 
   retomarTimer(): void {
@@ -198,16 +198,12 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
         this.messageService.add({
           severity: 'success',
           summary: 'Sessão Finalizada!',
-          detail: `Você estudou por ${minutosTotais} minutos. Verifique seu perfil para ver as recompensas!`
+          detail: `Você estudou por ${minutosTotais} minutos.`
         });
-
-        // Redirecionar para o perfil
-        setTimeout(() => {
-          this.router.navigate(['/sistema-estudos/perfil']);
-        }, 2000);
 
         // Resetar timer
         this.reiniciarTimer();
+        localStorage.removeItem('modoFocoEstado');
         this.materiaSelecionada = null;
         this.anotacoes = '';
         this.dataInicio = null;
@@ -224,8 +220,7 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
   }
 
   reiniciarTimer(): void {
-    this.tempoRestante = 25 * 60;
-    this.tempoTotal = 25 * 60;
+    this.tempoDecorrido = 0;
     this.isRunning = false;
     this.isPaused = false;
     this.dataInicio = null;
@@ -246,8 +241,7 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
   }
 
   getProgresso(): number {
-    if (this.tempoTotal === 0) return 0;
-    return ((this.tempoTotal - this.tempoRestante) / this.tempoTotal) * 100;
+    return 0; // Tempo livre, sem progresso definido
   }
 
   preCarregarMateria(materiaId: number): void {
@@ -301,4 +295,53 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
     this.dataInicio = null;
   }
 
+  private salvarEstadoTimer(): void {
+    const estado = {
+      tempoDecorrido: this.tempoDecorrido,
+      isRunning: this.isRunning,
+      isPaused: this.isPaused,
+      dataInicio: this.dataInicio ? this.dataInicio.toISOString() : null,
+      materiaSelecionada: this.materiaSelecionada,
+      anotacoes: this.anotacoes,
+      minutosEstudados: this.minutosEstudados,
+      xpGanhoTemporario: this.xpGanhoTemporario,
+      moedasGanhasTemporarias: this.moedasGanhasTemporarias,
+      ultimoMinutoProcessado: this.ultimoMinutoProcessado
+    };
+    localStorage.setItem('modoFocoEstado', JSON.stringify(estado));
+  }
+
+  private carregarEstadoTimer(): void {
+    const estadoStr = localStorage.getItem('modoFocoEstado');
+    if (estadoStr) {
+      try {
+        const estado = JSON.parse(estadoStr);
+        this.tempoDecorrido = estado.tempoDecorrido || 0;
+        this.isRunning = estado.isRunning || false;
+        this.isPaused = estado.isPaused || false;
+        this.dataInicio = estado.dataInicio ? new Date(estado.dataInicio) : null;
+        this.materiaSelecionada = estado.materiaSelecionada;
+        this.anotacoes = estado.anotacoes || '';
+        this.minutosEstudados = estado.minutosEstudados || 0;
+        this.xpGanhoTemporario = estado.xpGanhoTemporario || 0;
+        this.moedasGanhasTemporarias = estado.moedasGanhasTemporarias || 0;
+        this.ultimoMinutoProcessado = estado.ultimoMinutoProcessado || 0;
+
+        // Se estava rodando, reiniciar o interval
+        if (this.isRunning && !this.isPaused) {
+          this.interval = setInterval(() => {
+            this.tempoDecorrido++;
+            const minutosAtuais = Math.floor(this.tempoDecorrido / 60);
+            if (minutosAtuais > this.ultimoMinutoProcessado) {
+              this.processarGanhoProgressivo(minutosAtuais - this.ultimoMinutoProcessado);
+              this.ultimoMinutoProcessado = minutosAtuais;
+            }
+          }, 1000);
+        }
+      } catch (e) {
+        console.error('Erro ao carregar estado do timer:', e);
+        localStorage.removeItem('modoFocoEstado');
+      }
+    }
+  }
 }
