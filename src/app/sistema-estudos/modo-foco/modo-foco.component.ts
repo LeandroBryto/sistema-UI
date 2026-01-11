@@ -9,11 +9,12 @@ import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { ModoFocoService } from '../../services/modo-foco.service';
 import { EstudosService } from '../../services/estudos.service';
 import { MateriaResponseDTO } from '../../models/estudos.models';
-import { SessaoRequestDTO, SessaoResponseDTO } from '../../models/modo-foco.models';
+import { SessaoRequestDTO, SessaoResponseDTO, FinalizarEstudoRequestDTO } from '../../models/modo-foco.models';
 
 @Component({
   selector: 'app-sistema-estudos-modo-foco',
@@ -43,6 +44,12 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
   interval: any;
   dataInicio: Date | null = null;
 
+  // Ganho progressivo
+  minutosEstudados = 0;
+  xpGanhoTemporario = 0;
+  moedasGanhasTemporarias = 0;
+  ultimoMinutoProcessado = 0;
+
   // Dados
   materias: MateriaResponseDTO[] = [];
   materiaSelecionada: MateriaResponseDTO | null = null;
@@ -59,12 +66,26 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
   constructor(
     private modoFocoService: ModoFocoService,
     private estudosService: EstudosService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.carregarMaterias();
     this.carregarHistorico();
+
+    // Processar query params da agenda
+    this.route.queryParams.subscribe(params => {
+      if (params['materiaId']) {
+        const materiaId = +params['materiaId'];
+        // Aguardar carregamento das matérias antes de pré-carregar
+        setTimeout(() => this.preCarregarMateria(materiaId), 100);
+      }
+      if (params['anotacao']) {
+        this.anotacoes = params['anotacao'];
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -123,6 +144,13 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
     this.interval = setInterval(() => {
       if (this.tempoRestante > 0) {
         this.tempoRestante--;
+
+        // Processar ganho progressivo a cada minuto
+        const minutosAtuais = Math.floor((new Date().getTime() - this.dataInicio!.getTime()) / (1000 * 60));
+        if (minutosAtuais > this.ultimoMinutoProcessado) {
+          this.processarGanhoProgressivo(minutosAtuais - this.ultimoMinutoProcessado);
+          this.ultimoMinutoProcessado = minutosAtuais;
+        }
       } else {
         this.finalizarSessao();
       }
@@ -158,33 +186,38 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
     const dataFim = new Date();
     const minutosTotais = Math.floor((dataFim.getTime() - this.dataInicio.getTime()) / (1000 * 60));
 
-    const sessaoRequest: SessaoRequestDTO = {
+    const finalizarRequest: FinalizarEstudoRequestDTO = {
       materiaId: this.materiaSelecionada.id,
-      dataInicio: this.dataInicio,
-      dataFim: dataFim,
+      dataInicio: this.dataInicio.toISOString(),
+      dataFim: dataFim.toISOString(),
       anotacoes: this.anotacoes || undefined
     };
 
-    this.modoFocoService.registrarSessao(sessaoRequest).subscribe({
-      next: (sessao) => {
-        this.sessaoAtual = sessao;
-        this.carregarHistorico(); // Recarregar histórico
-
+    this.modoFocoService.finalizarEstudo(finalizarRequest).subscribe({
+      next: (response) => {
         this.messageService.add({
           severity: 'success',
           summary: 'Sessão Finalizada!',
-          detail: `Você ganhou ${sessao.xpGanho} XP estudando por ${minutosTotais} minutos.`
+          detail: `Você estudou por ${minutosTotais} minutos. Verifique seu perfil para ver as recompensas!`
         });
+
+        // Redirecionar para o perfil
+        setTimeout(() => {
+          this.router.navigate(['/sistema-estudos/perfil']);
+        }, 2000);
 
         // Resetar timer
         this.reiniciarTimer();
+        this.materiaSelecionada = null;
+        this.anotacoes = '';
+        this.dataInicio = null;
       },
       error: (error) => {
-        console.error('Erro ao registrar sessão:', error);
+        console.error('Erro ao finalizar estudo:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
-          detail: 'Não foi possível registrar a sessão.'
+          detail: 'Não foi possível finalizar a sessão.'
         });
       }
     });
@@ -197,6 +230,10 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
     this.isPaused = false;
     this.dataInicio = null;
     this.anotacoes = '';
+    this.minutosEstudados = 0;
+    this.xpGanhoTemporario = 0;
+    this.moedasGanhasTemporarias = 0;
+    this.ultimoMinutoProcessado = 0;
     if (this.interval) {
       clearInterval(this.interval);
     }
@@ -213,17 +250,55 @@ export class ModoFocoComponent implements OnInit, OnDestroy {
     return ((this.tempoTotal - this.tempoRestante) / this.tempoTotal) * 100;
   }
 
-  getXpEstimado(): number {
-    if (!this.dataInicio || !this.isRunning) return 0;
-    const minutosAtuais = Math.floor((new Date().getTime() - this.dataInicio.getTime()) / (1000 * 60));
-    return minutosAtuais * 10; // 10 XP por minuto
+  preCarregarMateria(materiaId: number): void {
+    // Aguardar carregamento das matérias e selecionar a específica
+    if (this.materias.length > 0) {
+      const materia = this.materias.find(m => m.id === materiaId);
+      if (materia) {
+        this.materiaSelecionada = materia;
+      }
+    }
   }
 
-  getMinutosEstudados(): number {
-    return Math.floor((25 * 60 - this.tempoRestante) / 60);
+  processarGanhoProgressivo(minutosNovos: number): void {
+    // Calcular ganho progressivo: 1 XP e 1 moeda por minuto
+    this.xpGanhoTemporario += minutosNovos * 1;
+    this.moedasGanhasTemporarias += minutosNovos * 1;
+    this.minutosEstudados += minutosNovos;
+  }
+
+  salvarAnotacoes(): void {
+    if (!this.anotacoes.trim()) return;
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Anotações Salvas',
+      detail: 'Suas anotações foram salvas localmente.'
+    });
   }
 
   toggleHistorico(): void {
     this.mostrarHistorico = !this.mostrarHistorico;
   }
+
+  cancelarSessao(): void {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+    this.isRunning = false;
+    this.isPaused = false;
+
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Sessão Cancelada',
+      detail: 'A sessão foi cancelada. Nenhum progresso foi salvo.'
+    });
+
+    // Resetar tudo
+    this.reiniciarTimer();
+    this.materiaSelecionada = null;
+    this.anotacoes = '';
+    this.dataInicio = null;
+  }
+
 }

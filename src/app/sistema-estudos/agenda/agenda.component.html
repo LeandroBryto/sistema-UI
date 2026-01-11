@@ -46,9 +46,7 @@
         <p-card
           *ngFor="let item of getAgendaPorDia(dia.value)"
           class="item-card"
-          [style.border-left-color]="getCorMateria(item)"
-          (click)="selecionarItem(item)"
-          [ngClass]="{'selected': selectedItem === item}">
+          [style.border-left-color]="getCorMateria(item)">
 
           <div class="item-header">
             <div class="item-materia">
@@ -60,7 +58,12 @@
             </div>
           </div>
 
-          <div class="item-actions" *ngIf="selectedItem === item">
+          <div class="item-observacao" *ngIf="item.observacao">
+            <i class="pi pi-info-circle"></i>
+            {{ item.observacao }}
+          </div>
+
+          <div class="item-actions">
             <p-button
               label="Editar"
               icon="pi pi-pencil"
@@ -193,6 +196,20 @@
           [(ngModel)]="itemForm.horarioFim"
           [style]="{'width':'100%'}">
       </div>
+    </div>
+
+    <div class="form-group">
+      <label for="observacao">Observação</label>
+      <textarea
+        pInputTextarea
+        id="observacao"
+        [(ngModel)]="itemForm.observacao"
+        placeholder="Ex: Focar em exercícios de Derivadas Parciais"
+        rows="2"
+        class="form-control"
+        maxlength="255">
+      </textarea>
+      <small class="form-help">Observação opcional sobre o que estudar neste horário.</small>
     </div>
 
     <ng-template pTemplate="footer">

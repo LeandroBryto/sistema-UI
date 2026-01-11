@@ -106,6 +106,22 @@
           </p-button>
 
           <p-button
+            *ngIf="isRunning || isPaused"
+            label="Parar Sessão"
+            icon="pi pi-stop"
+            (onClick)="finalizarSessao()"
+            styleClass="p-button-danger">
+          </p-button>
+
+          <p-button
+            *ngIf="isRunning || isPaused"
+            label="Cancelar Sessão"
+            icon="pi pi-times"
+            (onClick)="cancelarSessao()"
+            styleClass="p-button-secondary">
+          </p-button>
+
+          <p-button
             label="Reiniciar"
             icon="pi pi-refresh"
             (onClick)="reiniciarTimer()"
@@ -119,7 +135,16 @@
   <div class="anotacoes-section" *ngIf="materiaSelecionada">
     <p-card class="anotacoes-card">
       <ng-template pTemplate="header">
-        <h3>Anotações da Sessão</h3>
+        <div class="anotacoes-header">
+          <h3>Anotações da Sessão</h3>
+          <p-button
+            label="Salvar Anotações"
+            icon="pi pi-save"
+            (click)="salvarAnotacoes()"
+            styleClass="p-button-outlined p-button-sm"
+            [disabled]="!anotacoes.trim()">
+          </p-button>
+        </div>
       </ng-template>
 
       <textarea
@@ -135,16 +160,16 @@
   <div class="stats-section" *ngIf="materiaSelecionada">
     <div class="stats-grid">
       <div class="stat-item">
-        <div class="stat-value">{{ getMinutosEstudados() }}</div>
+        <div class="stat-value">{{ minutosEstudados }}</div>
         <div class="stat-label">Minutos Estudados</div>
       </div>
       <div class="stat-item">
-        <div class="stat-value">+{{ getXpEstimado() }}</div>
-        <div class="stat-label">XP Estimado</div>
+        <div class="stat-value">+{{ xpGanhoTemporario }}</div>
+        <div class="stat-label">XP Ganho</div>
       </div>
       <div class="stat-item">
-        <div class="stat-value">{{ historicoSessoes.length }}</div>
-        <div class="stat-label">Sessões Totais</div>
+        <div class="stat-value">+{{ moedasGanhasTemporarias }}</div>
+        <div class="stat-label">Moedas Ganhas</div>
       </div>
     </div>
   </div>

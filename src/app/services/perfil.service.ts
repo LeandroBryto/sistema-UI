@@ -24,7 +24,8 @@ import {
   StatusMeta,
   RelatorioProgresso,
   AtualizarPerfilDTO,
-  AtualizarConfiguracaoDTO
+  AtualizarConfiguracaoDTO,
+  PerfilCompletoResponse
 } from '../models/perfil.models';
 
 @Injectable({
@@ -86,6 +87,10 @@ export class PerfilService {
         return perfil;
       })
     );
+  }
+
+  getMeuPerfil(): Observable<PerfilCompletoResponse> {
+    return this.http.get<PerfilCompletoResponse>(`${this.getApiUrl()}/meus-dados`);
   }
 
   atualizarPerfil(request: AtualizarPerfilDTO): Observable<PerfilResponseDTO> {

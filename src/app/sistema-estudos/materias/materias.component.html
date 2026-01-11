@@ -32,6 +32,7 @@
         </div>
         <div class="materia-info">
           <h3>{{ materia.nome }}</h3>
+          <p class="materia-descricao" *ngIf="materia.descricao">{{ materia.descricao }}</p>
           <div class="materia-meta">
             <span class="materia-data" *ngIf="materia.dataCriacao">
               Criada em {{ materia.dataCriacao | date:'dd/MM/yyyy' }}
@@ -103,6 +104,20 @@
         class="form-control"
         maxlength="100">
       <small class="form-help">O nome deve ser único e é obrigatório.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="descricao">Descrição</label>
+      <textarea
+        pInputTextarea
+        id="descricao"
+        [(ngModel)]="novaMateria.descricao"
+        placeholder="Ex: Cálculo I - Limites e Derivadas"
+        rows="2"
+        class="form-control"
+        maxlength="255">
+      </textarea>
+      <small class="form-help">Descrição opcional da matéria/disciplina.</small>
     </div>
 
     <div class="form-group">

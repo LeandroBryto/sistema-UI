@@ -44,6 +44,7 @@ export class MateriasComponent implements OnInit {
 
   novaMateria: MateriaRequestDTO = {
     nome: '',
+    descricao: '',
     corHex: '#FF6B6B',
     icone: 'book'
   };

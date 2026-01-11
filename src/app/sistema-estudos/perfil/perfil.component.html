@@ -1,43 +1,38 @@
 <div class="perfil-container">
   <div class="header">
     <h1>Perfil do Estudante</h1>
-    <p>Acompanhe seu progresso e conquistas</p>
+    <p>Acompanhe seu progresso</p>
   </div>
 
   <div class="perfil-content">
     <!-- Informações do Perfil -->
-    <div class="perfil-info-section">
+    <div class="perfil-info-section" *ngIf="perfil">
       <p-card class="perfil-card">
         <div class="perfil-header">
           <div class="avatar-section">
             <p-avatar
-              [label]="usuario.avatar"
+              [image]="avatarUrl"
+              label="U"
               size="xlarge"
-              [style]="{'background-color': usuario.corAvatar, 'color': '#ffffff'}">
+              [style]="{'background-color': '#667eea', 'color': '#ffffff'}">
             </p-avatar>
           </div>
 
           <div class="info-section">
             <div class="nome-section">
-              <h2>{{ usuario.nome }}</h2>
-              <p-button
-                icon="pi pi-pencil"
-                (onClick)="abrirDialogEditar()"
-                styleClass="p-button-text p-button-rounded"
-                pTooltip="Editar nome">
-              </p-button>
+              <h2>Usuário</h2>
             </div>
 
             <div class="nivel-section">
               <div class="nivel-badge">
                 <span class="nivel-label">Nível</span>
-                <span class="nivel-numero">{{ usuario.nivel }}</span>
+                <span class="nivel-numero">{{ perfil.resumo.nivel }}</span>
               </div>
 
               <div class="xp-section">
                 <div class="xp-info">
-                  <span>{{ usuario.xp }} / {{ usuario.xpProximoNivel }} XP</span>
-                  <span>{{ (progressoNivel).toFixed(0) }}%</span>
+                  <span>{{ perfil.resumo.xp }} / {{ perfil.resumo.nivel * 1000 }} XP</span>
+                  <span>{{ progressoNivel.toFixed(0) }}%</span>
                 </div>
                 <p-progressBar [value]="progressoNivel" [showValue]="false"></p-progressBar>
               </div>
@@ -46,8 +41,16 @@
             <div class="moedas-section">
               <div class="moedas-display">
                 <i class="pi pi-circle-fill" style="color: #FFD700;"></i>
-                <span class="moedas-valor">{{ usuario.moedas }}</span>
+                <span class="moedas-valor">{{ perfil.resumo.moedas }}</span>
                 <span class="moedas-label">Moedas</span>
+              </div>
+            </div>
+
+            <div class="sequencia-section">
+              <div class="sequencia-display">
+                <i class="pi pi-fire" style="color: #F44336;"></i>
+                <span class="sequencia-valor">{{ perfil.resumo.ofensiva }}</span>
+                <span class="sequencia-label">Dias Seguidos</span>
               </div>
             </div>
           </div>
@@ -55,104 +58,64 @@
       </p-card>
     </div>
 
-    <!-- Estatísticas -->
-    <div class="stats-section">
-      <h3>Estatísticas</h3>
+    <!-- Estatísticas Adicionais -->
+    <div class="stats-section" *ngIf="perfil">
       <div class="stats-grid">
-        <div class="stat-card" *ngFor="let stat of estatisticas">
-          <div class="stat-icon" [style.color]="stat.cor">
-            <i [class]="stat.icone"></i>
-          </div>
+        <p-card class="stat-card">
           <div class="stat-content">
-            <div class="stat-value">{{ stat.valor }}</div>
-            <div class="stat-unit">{{ stat.unidade }}</div>
-            <div class="stat-title">{{ stat.titulo }}</div>
+            <i class="pi pi-clock" style="color: #2196F3;"></i>
+            <div class="stat-info">
+              <span class="stat-value">{{ perfil.resumo.totalMinutos }}</span>
+              <span class="stat-label">Minutos Totais</span>
+            </div>
           </div>
-        </div>
+        </p-card>
+
+        <p-card class="stat-card">
+          <div class="stat-content">
+            <i class="pi pi-play-circle" style="color: #4CAF50;"></i>
+            <div class="stat-info">
+              <span class="stat-value">{{ perfil.resumo.totalSessoes }}</span>
+              <span class="stat-label">Sessões de Estudo</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="stat-card">
+          <div class="stat-content">
+            <i class="pi pi-trophy" style="color: #FF9800;"></i>
+            <div class="stat-info">
+              <span class="stat-value">{{ perfil.resumo.totalConquistas }}</span>
+              <span class="stat-label">Conquistas</span>
+            </div>
+          </div>
+        </p-card>
       </div>
     </div>
 
-    <!-- Conquistas -->
-    <div class="conquistas-section">
-      <h3>Conquistas</h3>
-
-      <div class="conquistas-tabs">
-        <div class="tab-buttons">
-          <button class="tab-button active">Desbloqueadas</button>
-          <button class="tab-button">Bloqueadas</button>
-        </div>
-
-        <div class="conquistas-grid">
-          <div class="conquista-card unlocked" *ngFor="let conquista of getConquistasDesbloqueadas()">
+    <!-- Últimas Conquistas -->
+    <div class="conquistas-section" *ngIf="perfil">
+      <h3>Últimas Conquistas</h3>
+      <div class="conquistas-list" *ngIf="perfil.ultimasConquistas.length > 0; else noConquistas">
+        <p-card class="conquista-card" *ngFor="let conquista of perfil.ultimasConquistas">
+          <div class="conquista-content">
             <div class="conquista-icon">
-              <i [class]="conquista.icone"></i>
+              <img [src]="conquista.icone" [alt]="conquista.nome" onerror="this.src='assets/default-achievement.png'">
             </div>
-            <div class="conquista-content">
-              <h4>{{ conquista.titulo }}</h4>
+            <div class="conquista-info">
+              <h4>{{ conquista.nome }}</h4>
               <p>{{ conquista.descricao }}</p>
-            </div>
-            <div class="conquista-badge">
-              <i class="pi pi-check-circle" style="color: #4CAF50;"></i>
+              <small>{{ conquista.dataConquista | date:'dd/MM/yyyy HH:mm' }}</small>
             </div>
           </div>
-
-          <div class="conquista-card locked" *ngFor="let conquista of getConquistasBloqueadas()">
-            <div class="conquista-icon locked">
-              <i [class]="conquista.icone"></i>
-            </div>
-            <div class="conquista-content">
-              <h4>{{ conquista.titulo }}</h4>
-              <p>{{ conquista.descricao }}</p>
-              <div class="progress-section">
-                <div class="progress-text">
-                  {{ conquista.progresso }} / {{ conquista.progressoMax }}
-                </div>
-                <p-progressBar [value]="getProgressoConquista(conquista)" [showValue]="false"></p-progressBar>
-              </div>
-            </div>
-            <div class="conquista-badge">
-              <i class="pi pi-lock" style="color: #9E9E9E;"></i>
-            </div>
-          </div>
-        </div>
+        </p-card>
       </div>
+      <ng-template #noConquistas>
+        <div class="no-conquistas">
+          <i class="pi pi-trophy" style="font-size: 3rem; color: #ccc;"></i>
+          <p>Continue estudando para desbloquear conquistas!</p>
+        </div>
+      </ng-template>
     </div>
   </div>
-
-  <!-- Dialog para editar perfil -->
-  <p-dialog
-    [(visible)]="mostrarDialogEditar"
-    [modal]="true"
-    [style]="{width: '400px'}"
-    [draggable]="false"
-    [resizable]="false"
-    header="Editar Perfil">
-
-    <div class="form-group">
-      <label for="nome">Nome:</label>
-      <input
-        pInputText
-        id="nome"
-        [(ngModel)]="nomeEditado"
-        placeholder="Digite seu nome..."
-        class="form-control">
-    </div>
-
-    <ng-template pTemplate="footer">
-      <p-button
-        label="Cancelar"
-        icon="pi pi-times"
-        (onClick)="mostrarDialogEditar = false"
-        styleClass="p-button-text">
-      </p-button>
-
-      <p-button
-        label="Salvar"
-        icon="pi pi-check"
-        (onClick)="salvarPerfil()"
-        [disabled]="!nomeEditado.trim()"
-        styleClass="p-button-primary">
-      </p-button>
-    </ng-template>
-  </p-dialog>
 </div>

@@ -391,3 +391,142 @@
     flex-direction: column;
   }
 }
+
+/* Novos estilos para o layout atualizado */
+.stats-section {
+  margin-top: 2rem;
+}
+
+.stats-section h3 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.stat-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-content i {
+  font-size: 2rem;
+  opacity: 0.8;
+}
+
+.stat-info {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+  display: block;
+}
+
+.conquistas-section {
+  margin-top: 2rem;
+}
+
+.conquistas-section h3 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.conquistas-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1rem;
+}
+
+.conquista-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.conquista-card:hover {
+  transform: translateY(-2px);
+}
+
+.conquista-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.conquista-icon {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.conquista-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.conquista-info {
+  flex: 1;
+}
+
+.conquista-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.conquista-info p {
+  margin: 0 0 0.5rem 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.conquista-info small {
+  color: #9E9E9E;
+  font-size: 0.8rem;
+}
+
+.no-conquistas {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  color: #6c757d;
+}
+
+.no-conquistas i {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.no-conquistas p {
+  margin: 0;
+  font-size: 1.1rem;
+}

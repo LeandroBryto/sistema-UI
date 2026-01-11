@@ -6,6 +6,7 @@ import { EnvService } from './env.service';
 // Importando os modelos criados
 import {
   DadosGamificacaoEntity,
+  GamificacaoResponseDTO,
   MateriaEntity,
   MateriaRequestDTO,
   MateriaResponseDTO,
@@ -44,8 +45,8 @@ export class EstudosService {
     return this.http.get<DashboardResponse>(`${this.getApiUrl()}/dashboard`);
   }
 
-  getGamificacao(): Observable<DadosGamificacaoEntity> {
-    return this.http.get<DadosGamificacaoEntity>(`${this.getApiUrl()}/gamificacao`);
+  getGamificacao(): Observable<GamificacaoResponseDTO> {
+    return this.http.get<GamificacaoResponseDTO>(`${this.getApiUrl()}/gamificacao/perfil`);
   }
 
   // Matérias - Baseado no backend Java

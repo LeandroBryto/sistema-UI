@@ -7,6 +7,13 @@ export interface SessaoRequestDTO {
   anotacoes?: string;
 }
 
+export interface FinalizarEstudoRequestDTO {
+  materiaId: number;
+  dataInicio: string; // formato ISO "2023-10-27T14:00:00"
+  dataFim: string; // formato ISO "2023-10-27T14:50:00"
+  anotacoes?: string;
+}
+
 export interface SessaoResponseDTO {
   id: number;
   usuarioUsername: string;

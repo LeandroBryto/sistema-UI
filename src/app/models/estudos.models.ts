@@ -8,12 +8,21 @@ export interface DadosGamificacaoEntity {
   avatarUrlEquipado?: string;
 }
 
+export interface GamificacaoResponseDTO {
+  nivelAtual: number;
+  xpTotal: number;
+  moedasNexus: number;
+  ofensivaAtual: number;
+  avatarUrlEquipado?: string;
+}
+
 // Modelos atualizados baseados no backend Java
 
 export interface MateriaEntity {
   id?: number;
   usuarioUsername: string;
   nome: string;
+  descricao?: string;
   corHex: string;
   icone: string;
   arquivada: boolean;
@@ -22,6 +31,7 @@ export interface MateriaEntity {
 
 export interface MateriaRequestDTO {
   nome: string;
+  descricao?: string;
   corHex: string;
   icone: string;
 }
@@ -29,6 +39,7 @@ export interface MateriaRequestDTO {
 export interface MateriaResponseDTO {
   id: number;
   nome: string;
+  descricao?: string;
   corHex: string;
   icone: string;
   arquivada: boolean;
@@ -76,6 +87,7 @@ export interface ItemAgendaEntity {
   horarioFim: string; // formato HH:mm
   titulo?: string;
   descricao?: string;
+  observacao?: string;
   usuarioId?: number;
   dataCriacao?: Date;
 }

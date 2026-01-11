@@ -142,6 +142,28 @@ export interface ConfiguracaoPerfil {
   };
 }
 
+// Nova interface para o perfil completo conforme documentação
+export interface PerfilCompletoResponse {
+  resumo: {
+    id: number;
+    nivel: number;
+    xp: number;
+    moedas: number;
+    ofensiva: number;
+    avatar: string;
+    totalMinutos: number;
+    totalSessoes: number;
+    totalConquistas: number;
+  };
+  ultimasConquistas: Array<{
+    id: number;
+    nome: string;
+    descricao: string;
+    icone: string;
+    dataConquista: string;
+  }>;
+}
+
 // Enums
 export enum CategoriaAchievement {
   ESTUDO = 'ESTUDO',

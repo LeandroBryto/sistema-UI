@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { EnvService } from './env.service';
 
-// Importando os modelos específicos
 import {
   SessaoRequestDTO,
-  SessaoResponseDTO
+  SessaoResponseDTO,
+  FinalizarEstudoRequestDTO
 } from '../models/modo-foco.models';
 
 @Injectable({
@@ -28,7 +28,11 @@ export class ModoFocoService {
     return this.http.post<SessaoResponseDTO>(this.getApiUrl(), request);
   }
 
+  finalizarEstudo(request: FinalizarEstudoRequestDTO): Observable<any> {
+    return this.http.post(`${this.env.apiEstudosBase()}/api/v1/estudo/finalizar`, request);
+  }
+
   listarHistorico(): Observable<SessaoResponseDTO[]> {
-    return this.http.get<SessaoResponseDTO[]>(`${this.getApiUrl()}/historico`);
+    return this.http.get<SessaoResponseDTO[]>(`${this.env.apiEstudosBase()}/api/v1/estudo/historico`);
   }
 }

@@ -263,6 +263,7 @@ export interface AgendaResponseDTO {
   diaSemana: string; // "MONDAY", "TUESDAY", etc.
   horarioInicio: string; // "08:00:00"
   horarioFim: string; // "10:00:00"
+  observacao?: string;
 }
 
 export interface CriarItemAgendaRequest {
@@ -272,6 +273,7 @@ export interface CriarItemAgendaRequest {
   horarioFim: string;
   titulo?: string;
   descricao?: string;
+  observacao?: string;
 }
 
 // Enums necessários

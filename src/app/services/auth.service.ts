@@ -122,6 +122,23 @@ export class AuthService {
     return this.http.post<void>(`${this.env.apiAuthBase()}/api/v1/auth/alterar-senha`, payload);
   }
 
+  refreshToken(): Observable<AuthResponse> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+    return this.http.post<AuthResponse>(`${this.env.apiAuthBase()}/api/v1/auth/refresh`, { refreshToken }).pipe(
+      tap((res) => {
+        const authData = {
+          accessToken: res.access_token,
+          refreshToken: res.refresh_token
+        };
+        localStorage.setItem('auth', JSON.stringify(authData));
+        this.authState.next(authData);
+      })
+    );
+  }
+
   private extractRoleFromToken(token: string): string | null {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));

@@ -44,10 +44,10 @@ export class AgendaComponent implements OnInit {
   materias: MateriaResponseDTO[] = [];
   loading = true;
 
-  selectedItem: AgendaResponseDTO | null = null;
   viewMode: 'semana' | 'hoje' = 'semana';
 
   editandoItem: AgendaResponseDTO | null = null;
+  selectedItem: AgendaResponseDTO | null = null;
 
   mostrarDialog = false;
 
@@ -145,6 +145,10 @@ export class AgendaComponent implements OnInit {
       };
     }
     this.mostrarDialog = true;
+  }
+
+  selecionarItem(item: AgendaResponseDTO): void {
+    this.selectedItem = this.selectedItem === item ? null : item;
   }
 
   salvarItem(): void {
@@ -294,17 +298,16 @@ export class AgendaComponent implements OnInit {
     // Como não temos materiaId, talvez buscar por nome
     const materia = this.materias.find(m => m.nome === item.nomeMateria);
     if (materia) {
-      this.router.navigate(['/estudos/modo-foco'], { queryParams: { materiaId: materia.id } });
+      const queryParams: any = { materiaId: materia.id };
+      if (item.observacao) {
+        queryParams.anotacao = item.observacao;
+      }
+      this.router.navigate(['/estudos/modo-foco'], { queryParams });
     }
-  }
-
-  selecionarItem(item: AgendaResponseDTO): void {
-    this.selectedItem = this.selectedItem === item ? null : item;
   }
 
   alternarViewMode(mode: 'semana' | 'hoje'): void {
     this.viewMode = mode;
-    this.selectedItem = null; // Reset selection
   }
 
   private diaSemanaEnumToString(dia: DiaSemana): string {
