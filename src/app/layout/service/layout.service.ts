@@ -12,6 +12,7 @@ interface LayoutState {
     configSidebarVisible?: boolean;
     staticMenuMobileActive?: boolean;
     menuHoverActive?: boolean;
+    context?: 'financeiro' | 'estudos';
 }
 
 interface MenuChangeEvent {
@@ -33,7 +34,8 @@ export class LayoutService {
         overlayMenuActive: false,
         configSidebarVisible: false,
         staticMenuMobileActive: false,
-        menuHoverActive: false
+        menuHoverActive: false,
+        context: 'financeiro' // default
     };
 
     layoutConfig = signal<layoutConfig>(this._config);
@@ -45,6 +47,8 @@ export class LayoutService {
     private overlayOpen = new Subject<any>();
 
     private menuSource = new Subject<MenuChangeEvent>();
+
+    private contextChange = new Subject<'financeiro' | 'estudos'>();
 
     private resetSource = new Subject();
 
@@ -160,6 +164,14 @@ export class LayoutService {
 
     onMenuStateChange(event: MenuChangeEvent) {
         this.menuSource.next(event);
+    }
+
+    get contextChange$() {
+        return this.contextChange.asObservable();
+    }
+
+    notifyContextChange(context: 'financeiro' | 'estudos') {
+        this.contextChange.next(context);
     }
 
     reset() {

@@ -72,14 +72,34 @@ export class AppLayout {
             }
         });
 
-        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event) => {
+            const navEvent = event as NavigationEnd;
             this.hideMenu();
+            // Atualizar contexto baseado na nova rota
+            const newContext = navEvent.urlAfterRedirects.startsWith('/estudos') ? 'estudos' : 'financeiro';
+            console.log('Layout Debug - Navigation:', { url: navEvent.urlAfterRedirects, newContext });
+            this.layoutService.layoutState.update((prev) => {
+                console.log('Layout Debug - Context update:', { from: prev.context, to: newContext });
+                return { ...prev, context: newContext };
+            });
+            // Notificar mudança de contexto
+            this.layoutService.notifyContextChange(newContext);
         });
 
         // Subscribe to upgrade modal
         this.upgradeService.showModal$.subscribe(visible => {
             this.upgradeModalVisible = visible;
         });
+    }
+
+    ngOnInit() {
+        // Inicializar contexto baseado na rota atual
+        const currentUrl = this.router.url;
+        if (currentUrl.startsWith('/estudos')) {
+            this.layoutService.layoutState.update((prev) => ({ ...prev, context: 'estudos' }));
+        } else {
+            this.layoutService.layoutState.update((prev) => ({ ...prev, context: 'financeiro' }));
+        }
     }
 
     isOutsideClicked(event: MouseEvent) {

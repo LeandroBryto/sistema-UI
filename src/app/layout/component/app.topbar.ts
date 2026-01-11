@@ -113,10 +113,20 @@ export class AppTopbar {
     }
     
     switchToEstudos() {
+        console.log('Topbar Debug - switchToEstudos called');
+        this.layoutService.layoutState.update(state => {
+            console.log('Topbar Debug - Context update to estudos:', { from: state.context, to: 'estudos' });
+            return { ...state, context: 'estudos' };
+        });
         this.router.navigate(['/estudos']);
     }
 
     switchToFinanceiro() {
+        console.log('Topbar Debug - switchToFinanceiro called');
+        this.layoutService.layoutState.update(state => {
+            console.log('Topbar Debug - Context update to financeiro:', { from: state.context, to: 'financeiro' });
+            return { ...state, context: 'financeiro' };
+        });
         this.router.navigate(['/dashboard']);
     }
 

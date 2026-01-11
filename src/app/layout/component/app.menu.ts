@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
 import { AuthService } from '../../services/auth.service';
 import { PermissionService } from '../../services/permission.service';
+import { LayoutService } from '../service/layout.service';
 
 @Component({
     selector: 'app-menu',
@@ -17,76 +18,97 @@ import { PermissionService } from '../../services/permission.service';
         </ng-container>
     </ul> `
 })
-export class AppMenu implements OnInit {
+export class AppMenu implements OnInit, OnDestroy {
     model: MenuItem[] = [];
 
-    constructor(private authService: AuthService, private permissionService: PermissionService) {}
+    constructor(private authService: AuthService, private permissionService: PermissionService, private layoutService: LayoutService) {}
 
     ngOnInit() {
+        this.updateMenu();
+
+        // Inscrever-se nas mudanças de contexto
+        this.layoutService.contextChange$.subscribe((context) => {
+            console.log('Menu Debug - Context change received:', context);
+            this.updateMenu();
+        });
+    }
+
+    ngOnDestroy() {
+        // Cleanup se necessário
+    }
+
+    updateMenu() {
         const plano = this.authService.getPlano();
         const isPremium = plano === 'PREMIUM' || plano === 'premium';
-        const isFree = plano === 'FREE' || plano === 'free' || !plano;
         const isLoggedIn = this.authService.isLoggedIn();
+        const context = this.layoutService.layoutState().context || 'financeiro';
 
-        console.log('Menu Debug:', { plano, isPremium, isFree, isLoggedIn });
+        console.log('Menu Debug - updateMenu called:', { plano, isPremium, isLoggedIn, context, menuType: context === 'financeiro' ? 'FINANCEIRO' : 'ESTUDOS' });
 
-        this.model = [
+        if (context === 'financeiro') {
+            this.model = this.getFinanceiroMenu(isPremium, isLoggedIn);
+        } else {
+            this.model = this.getEstudosMenu(isLoggedIn);
+        }
+    }
+
+    private getFinanceiroMenu(isPremium: boolean, isLoggedIn: boolean): MenuItem[] {
+        return [
             {
                 label: 'PRINCIPAL',
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'], visible: isPremium },
-                    { 
-                        label: 'Sistema de Estudos', 
-                        icon: 'pi pi-fw pi-book', 
-                        visible: isLoggedIn && isFree,
-                        items: [
-                            { label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/estudos'] },
-                            { label: 'Matérias', icon: 'pi pi-fw pi-list', routerLink: ['/estudos/materias'] },
-                            { label: 'Modo Foco', icon: 'pi pi-fw pi-clock', routerLink: ['/estudos/modo-foco'] },
-                            { label: 'Flashcards', icon: 'pi pi-fw pi-bookmark', routerLink: ['/estudos/flashcards'] },
-                            { label: 'Agenda', icon: 'pi pi-fw pi-calendar', routerLink: ['/estudos/agenda'] },
-                            { label: 'Perfil', icon: 'pi pi-fw pi-user', routerLink: ['/estudos/perfil'] }
-                        ]
-                    },
-                    { 
-                        label: 'Minha Conta', 
-                        icon: 'pi pi-fw pi-user', 
-                        routerLink: ['/conta'],
-                        visible: this.permissionService.canAccessConta()
-                    }
+                    { label: 'Home', icon: 'pi pi-fw pi-home', routerLink: ['/home'], visible: !isPremium },
                 ]
             },
             {
-                label: 'GESTÃO',
+                label: 'FINANCEIRO',
                 items: [
-                    { label: 'Receitas', icon: 'pi pi-fw pi-wallet', routerLink: ['/receitas'], visible: isPremium },
-                    { label: 'Despesas', icon: 'pi pi-fw pi-credit-card', routerLink: ['/despesas'], visible: isPremium },
-                    { label: 'Investimentos', icon: 'pi pi-fw pi-chart-line', routerLink: ['/investimentos'], visible: isPremium }
-                ],
-                visible: isPremium
+                    { label: 'Receitas', icon: 'pi pi-fw pi-plus-circle', routerLink: ['/receitas'], visible: isPremium },
+                    { label: 'Despesas', icon: 'pi pi-fw pi-minus-circle', routerLink: ['/despesas'], visible: isPremium },
+                    { label: 'Relatórios', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/relatorios'], visible: isPremium },
+                    { label: 'Investimentos', icon: 'pi pi-fw pi-chart-line', routerLink: ['/investimentos'], visible: isPremium },
+                    { label: 'Metas', icon: 'pi pi-fw pi-target', routerLink: ['/metas'], visible: isPremium },
+                ]
             },
             {
-                label: 'ANÁLISES',
+                label: 'CONTA',
                 items: [
-                    { label: 'Relatórios', icon: 'pi pi-fw pi-file', routerLink: ['/relatorios'], visible: isPremium }
-                ],
-                visible: isPremium
+                    { label: 'Minha Conta', icon: 'pi pi-fw pi-user', routerLink: ['/conta'] },
+                ]
             },
             {
-                label: 'SISTEMA',
+                label: 'ADMIN',
                 items: [
-                    { 
-                        label: 'Painel de Controle', 
-                        icon: 'pi pi-fw pi-shield', 
-                        routerLink: ['/admin'],
-                        visible: this.authService.isAdmin()
-                    },
-                    { label: 'Configurações da Conta', icon: 'pi pi-fw pi-user-edit', routerLink: ['/config/conta'] },
-                    { label: 'Notificações por E-mail', icon: 'pi pi-fw pi-envelope', routerLink: ['/config/notificacoes-email'] },
+                    { label: 'Administração', icon: 'pi pi-fw pi-cog', routerLink: ['/admin'], visible: this.authService.isAdmin() },
+                ]
+            },
+            {
+                label: 'CONFIGURAÇÕES',
+                items: [
+                    { label: 'Conta', icon: 'pi pi-fw pi-user', routerLink: ['/config/conta'] },
+                    { label: 'Notificações por Email', icon: 'pi pi-fw pi-envelope', routerLink: ['/config/notificacoes-email'] },
+                    { label: 'Alertas de Cotações', icon: 'pi pi-fw pi-bell', routerLink: ['/config/alertas-cotacao'], visible: isPremium },
                     { label: 'Alertas Financeiros', icon: 'pi pi-fw pi-bell', routerLink: ['/config/alertas-financeiros'], visible: isPremium },
-                    { label: 'Alertas de Cotação', icon: 'pi pi-fw pi-bell', routerLink: ['/config/alertas-cotacao'], visible: isPremium },
-                    { label: 'Segurança', icon: 'pi pi-fw pi-lock', routerLink: ['/config/seguranca'] },
-                    { label: 'Histórico de Notificações', icon: 'pi pi-fw pi-history', routerLink: ['/config/historico-notificacoes'] }
+                    { label: 'Segurança', icon: 'pi pi-fw pi-shield', routerLink: ['/config/seguranca'] },
+                    { label: 'Histórico de Notificações', icon: 'pi pi-fw pi-history', routerLink: ['/config/historico-notificacoes'] },
+                ]
+            }
+        ];
+    }
+
+    private getEstudosMenu(isLoggedIn: boolean): MenuItem[] {
+        return [
+            {
+                label: 'ESTUDOS',
+                items: [
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/estudos'] },
+                    { label: 'Matérias', icon: 'pi pi-fw pi-list', routerLink: ['/estudos/materias'] },
+                    { label: 'Modo Foco', icon: 'pi pi-fw pi-clock', routerLink: ['/estudos/modo-foco'] },
+                    { label: 'Flashcards', icon: 'pi pi-fw pi-bookmark', routerLink: ['/estudos/flashcards'] },
+                    { label: 'Agenda', icon: 'pi pi-fw pi-calendar', routerLink: ['/estudos/agenda'] },
+                    { label: 'Perfil', icon: 'pi pi-fw pi-user', routerLink: ['/estudos/perfil'] },
+                    { label: 'Cronograma', icon: 'pi pi-fw pi-calendar-plus', routerLink: ['/estudos/cronograma'] }
                 ]
             }
         ];
