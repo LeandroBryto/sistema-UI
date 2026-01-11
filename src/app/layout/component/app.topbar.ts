@@ -66,6 +66,12 @@ import { ThemeService } from '../../services/theme.service';
                             <span>Financeiro</span>
                         </button>
                     </div>
+                    <div class="flex align-items-center gap-2 mr-3" *ngIf="authService.getPlano() !== 'PREMIUM'">
+                        <button type="button" class="layout-topbar-action bg-yellow-500 text-white" (click)="upgrade()">
+                            <i class="pi pi-star"></i>
+                            <span>Virar Premium</span>
+                        </button>
+                    </div>
                     <div class="flex align-items-center gap-2 mr-3">
                         <p-avatar 
                             [label]="authService.getUsername()?.charAt(0) || 'U'" 
@@ -112,6 +118,19 @@ export class AppTopbar {
 
     switchToFinanceiro() {
         this.router.navigate(['/dashboard']);
+    }
+
+    upgrade() {
+        this.authService.upgrade().subscribe({
+            next: () => {
+                // Atualizar o estado, talvez recarregar a página ou atualizar token
+                alert('Upgrade realizado com sucesso! Recarregue a página para aplicar as mudanças.');
+            },
+            error: (error) => {
+                console.error('Erro no upgrade:', error);
+                alert('Erro ao fazer upgrade. Tente novamente.');
+            }
+        });
     }
     
     logout() {

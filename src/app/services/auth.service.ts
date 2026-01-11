@@ -139,6 +139,22 @@ export class AuthService {
     );
   }
 
+  upgrade(): Observable<any> {
+    const username = this.getUsername();
+    if (!username) {
+      throw new Error('No username available');
+    }
+    return this.http.patch(`${this.env.apiAuthBase()}/api/v1/users/${username}/upgrade`, {}).pipe(
+      tap(() => {
+        // Após upgrade, tentar refresh token para obter novo payload com plano atualizado
+        const refreshToken = this.getRefreshToken();
+        if (refreshToken) {
+          this.refreshToken().subscribe();
+        }
+      })
+    );
+  }
+
   private extractRoleFromToken(token: string): string | null {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
