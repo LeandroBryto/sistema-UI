@@ -155,6 +155,13 @@ export class AuthService {
     );
   }
 
+  checkoutPremium(): Observable<{ pix_code: string; qr_code_base64: string }> {
+    return this.http.post<{ pix_code: string; qr_code_base64: string }>(
+      `${this.env.apiAuthBase()}/api/v1/pagamentos/checkout-premium`,
+      {}
+    );
+  }
+
   private extractRoleFromToken(token: string): string | null {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));

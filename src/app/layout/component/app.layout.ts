@@ -7,15 +7,17 @@ import { AppSidebar } from './app.sidebar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
 import { UpgradeModalComponent } from '../../shared/upgrade-modal/upgrade-modal.component';
+import { PixPaymentModalComponent } from '../../shared/pix-payment-modal/pix-payment-modal.component';
+import { AuthService } from '../../services/auth.service';
 import { UpgradeService } from '../../services/upgrade.service';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, UpgradeModalComponent],
+    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, UpgradeModalComponent, PixPaymentModalComponent],
     template: `<div class="layout-wrapper" [ngClass]="containerClass">
         <app-topbar></app-topbar>
-        <app-sidebar></app-sidebar>
+        <app-sidebar (upgradeRequested)="showPixModal()"></app-sidebar>
         <div class="layout-main-container">
             <div class="layout-main">
                 <router-outlet></router-outlet>
@@ -28,6 +30,14 @@ import { UpgradeService } from '../../services/upgrade.service';
             (visibleChange)="onUpgradeModalVisibleChange($event)"
             (upgrade)="onUpgrade()">
         </app-upgrade-modal>
+        <app-pix-payment-modal
+            [visible]="pixModalVisible"
+            [loading]="pixLoading"
+            [pixCode]="pixCode"
+            [qrCodeBase64]="qrCodeBase64"
+            (visibleChange)="onPixModalVisibleChange($event)"
+            (paymentConfirmed)="onPaymentConfirmed()">
+        </app-pix-payment-modal>
     </div> `
 })
 export class AppLayout {
@@ -39,6 +49,11 @@ export class AppLayout {
 
     upgradeModalVisible = false;
 
+    pixModalVisible = false;
+    pixLoading = false;
+    pixCode = '';
+    qrCodeBase64 = '';
+
     @ViewChild(AppSidebar) appSidebar!: AppSidebar;
 
     @ViewChild(AppTopbar) appTopBar!: AppTopbar;
@@ -47,7 +62,8 @@ export class AppLayout {
         public layoutService: LayoutService,
         public renderer: Renderer2,
         public router: Router,
-        private upgradeService: UpgradeService
+        private upgradeService: UpgradeService,
+        private authService: AuthService
     ) {
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {
@@ -166,7 +182,37 @@ export class AppLayout {
     onUpgrade() {
         // Lógica para upgrade, por exemplo, redirecionar para página de pagamento
         console.log('Upgrade clicked');
-        // this.router.navigate(['/upgrade']);
+        this.showPixModal();
+    }
+
+    showPixModal() {
+        this.pixModalVisible = true;
+        this.pixLoading = true;
+        this.pixCode = '';
+        this.qrCodeBase64 = '';
+
+        this.authService.checkoutPremium().subscribe({
+            next: (response) => {
+                this.pixLoading = false;
+                this.pixCode = response.pix_code;
+                this.qrCodeBase64 = response.qr_code_base64;
+            },
+            error: (error) => {
+                this.pixLoading = false;
+                console.error('Erro ao gerar PIX:', error);
+                alert('Não foi possível gerar o pagamento. Tente novamente.');
+                this.pixModalVisible = false;
+            }
+        });
+    }
+
+    onPixModalVisibleChange(visible: boolean) {
+        this.pixModalVisible = visible;
+    }
+
+    onPaymentConfirmed() {
+        // Recarregar a página ou fazer refresh do token para atualizar permissões
+        window.location.reload();
     }
 
     ngOnDestroy() {

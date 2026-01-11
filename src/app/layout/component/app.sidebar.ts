@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 import { AppMenu } from './app.menu';
 
 @Component({
@@ -6,11 +6,17 @@ import { AppMenu } from './app.menu';
     standalone: true,
     imports: [AppMenu],
     template: ` <div class="layout-sidebar">
-        <app-menu></app-menu>
+        <app-menu (upgradeRequested)="onUpgradeRequested()"></app-menu>
     </div>`
 })
 export class AppSidebar {
     @ViewChild(AppMenu) appMenu!: AppMenu;
 
+    @Output() upgradeRequested = new EventEmitter<void>();
+
     constructor(public el: ElementRef) {}
+
+    onUpgradeRequested() {
+        this.upgradeRequested.emit();
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
@@ -20,6 +20,8 @@ import { LayoutService } from '../service/layout.service';
 })
 export class AppMenu implements OnInit, OnDestroy {
     model: MenuItem[] = [];
+
+    @Output() upgradeRequested = new EventEmitter<void>();
 
     constructor(private authService: AuthService, private permissionService: PermissionService, private layoutService: LayoutService) {}
 
@@ -48,7 +50,7 @@ export class AppMenu implements OnInit, OnDestroy {
         if (context === 'financeiro') {
             this.model = this.getFinanceiroMenu(isPremium, isLoggedIn);
         } else {
-            this.model = this.getEstudosMenu(isLoggedIn);
+            this.model = this.getEstudosMenu(isPremium, isLoggedIn);
         }
     }
 
@@ -97,8 +99,8 @@ export class AppMenu implements OnInit, OnDestroy {
         ];
     }
 
-    private getEstudosMenu(isLoggedIn: boolean): MenuItem[] {
-        return [
+    private getEstudosMenu(isPremium: boolean, isLoggedIn: boolean): MenuItem[] {
+        const menu: MenuItem[] = [
             {
                 label: 'ESTUDOS',
                 items: [
@@ -112,5 +114,25 @@ export class AppMenu implements OnInit, OnDestroy {
                 ]
             }
         ];
+
+        // Adicionar seção de upgrade se não for premium
+        if (!isPremium) {
+            menu.push({
+                label: 'UPGRADE',
+                items: [
+                    {
+                        label: 'Virar Premium',
+                        icon: 'pi pi-fw pi-star',
+                        command: () => this.showUpgradeModal()
+                    }
+                ]
+            });
+        }
+
+        return menu;
+    }
+
+    private showUpgradeModal() {
+        this.upgradeRequested.emit();
     }
 }
