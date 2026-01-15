@@ -1,0 +1,16 @@
+:host ::ng-deep .p-tabview .p-tabview-nav {
+    border-bottom: 1px solid #dee2e6;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: border-color .2s;
+    font-weight: 600;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}

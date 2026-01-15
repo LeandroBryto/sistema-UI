@@ -33,6 +33,7 @@ import { AgendaComponent } from './sistema-estudos/agenda/agenda.component';
 import { PerfilComponent } from './sistema-estudos/perfil/perfil.component';
 import { TarefasComponent } from './sistema-estudos/tarefas/tarefas.component';
 import { CertificadosComponent } from './sistema-estudos/certificados/certificados.component';
+import { LojaComponent } from './sistema-estudos/loja/loja.component';
 
 export const routes: Routes = [
   // Public Routes
@@ -63,6 +64,7 @@ export const routes: Routes = [
       { path: 'estudos/cronograma', component: CronogramaComponent },
       { path: 'estudos/tarefas', component: TarefasComponent },
       { path: 'estudos/certificados', component: CertificadosComponent },
+      { path: 'estudos/loja', component: LojaComponent },
       
       // Restricted
       { path: 'conta', component: ContaComponent, canActivate: [contaAccessGuard] },
