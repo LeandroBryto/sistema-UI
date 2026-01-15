@@ -31,6 +31,7 @@ import { ModoFocoComponent } from './sistema-estudos/modo-foco/modo-foco.compone
 import { FlashcardsComponent } from './sistema-estudos/flashcards/flashcards.component';
 import { AgendaComponent } from './sistema-estudos/agenda/agenda.component';
 import { PerfilComponent } from './sistema-estudos/perfil/perfil.component';
+import { TarefasComponent } from './sistema-estudos/tarefas/tarefas.component';
 
 export const routes: Routes = [
   // Public Routes
@@ -59,6 +60,7 @@ export const routes: Routes = [
       { path: 'estudos/agenda', component: AgendaComponent },
       { path: 'estudos/perfil', component: PerfilComponent },
       { path: 'estudos/cronograma', component: CronogramaComponent },
+      { path: 'estudos/tarefas', component: TarefasComponent },
       
       // Restricted
       { path: 'conta', component: ContaComponent, canActivate: [contaAccessGuard] },

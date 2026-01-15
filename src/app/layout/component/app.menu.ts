@@ -109,6 +109,7 @@ export class AppMenu implements OnInit, OnDestroy {
                     { label: 'Modo Foco', icon: 'pi pi-fw pi-clock', routerLink: ['/estudos/modo-foco'] },
                     { label: 'Flashcards', icon: 'pi pi-fw pi-bookmark', routerLink: ['/estudos/flashcards'] },
                     { label: 'Agenda', icon: 'pi pi-fw pi-calendar', routerLink: ['/estudos/agenda'] },
+                    { label: 'Tarefas', icon: 'pi pi-fw pi-list-check', routerLink: ['/estudos/tarefas'] },
                     { label: 'Perfil', icon: 'pi pi-fw pi-user', routerLink: ['/estudos/perfil'] },
                     { label: 'Cronograma', icon: 'pi pi-fw pi-calendar-plus', routerLink: ['/estudos/cronograma'] }
                 ]

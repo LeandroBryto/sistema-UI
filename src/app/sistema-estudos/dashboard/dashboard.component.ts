@@ -98,4 +98,8 @@ export class DashboardComponent implements OnInit {
   navegarParaAgenda(): void {
     this.router.navigate(['/estudos/agenda']);
   }
+
+  navegarParaTarefas(): void {
+    this.router.navigate(['/estudos/tarefas']);
+  }
 }

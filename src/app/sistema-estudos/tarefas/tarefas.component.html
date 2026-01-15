@@ -1,0 +1,189 @@
+<div class="tarefas-container">
+  <div class="tarefas-header">
+    <div>
+      <h1>Quadro de Tarefas de Estudo</h1>
+      <p>Organize suas atividades por matéria e acompanhe o progresso</p>
+    </div>
+    <button pButton type="button" label="Nova Tarefa" icon="pi pi-plus" (click)="abrirDialogNova()"></button>
+  </div>
+
+  <div class="tarefas-board" *ngIf="!loading; else loadingTpl">
+    <div class="coluna">
+      <div class="coluna-header pendente">
+        <h2>Pendentes</h2>
+        <span class="badge">{{ tarefasPendentes.length }}</span>
+      </div>
+      <div class="coluna-body">
+        <p-card *ngFor="let tarefa of tarefasPendentes" class="tarefa-card" [style.border-left-color]="getCorMateria(tarefa)">
+          <div class="tarefa-header">
+            <div class="tarefa-materia">
+              <span class="materia-indicador" [style.background-color]="getCorMateria(tarefa)"></span>
+              <span class="materia-nome">{{ getNomeMateria(tarefa) }}</span>
+            </div>
+            <span class="prioridade" [ngClass]="tarefa.prioridade.toLowerCase()">{{ tarefa.prioridade }}</span>
+          </div>
+
+          <div class="tarefa-titulo">{{ tarefa.titulo }}</div>
+
+          <div class="tarefa-info">
+            <span *ngIf="tarefa.dataPrevista" class="info-item">
+              <i class="pi pi-calendar"></i>
+              {{ tarefa.dataPrevista | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+
+          <div class="tarefa-actions">
+            <button pButton type="button" icon="pi pi-play" class="p-button-text p-button-success" label="Iniciar" (click)="atualizarStatus(tarefa, 'EM_ANDAMENTO')"></button>
+            <button pButton type="button" icon="pi pi-check" class="p-button-text p-button-primary" label="Concluir" (click)="atualizarStatus(tarefa, 'CONCLUIDA')"></button>
+            <button pButton type="button" icon="pi pi-pencil" class="p-button-text" (click)="abrirDialogEditar(tarefa)"></button>
+            <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-danger" (click)="excluirTarefa(tarefa)"></button>
+          </div>
+        </p-card>
+
+        <div class="empty-column" *ngIf="tarefasPendentes.length === 0">
+          <i class="pi pi-inbox"></i>
+          <span>Nenhuma tarefa pendente</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="coluna">
+      <div class="coluna-header andamento">
+        <h2>Em Progresso</h2>
+        <span class="badge">{{ tarefasEmAndamento.length }}</span>
+      </div>
+      <div class="coluna-body">
+        <p-card *ngFor="let tarefa of tarefasEmAndamento" class="tarefa-card" [style.border-left-color]="getCorMateria(tarefa)">
+          <div class="tarefa-header">
+            <div class="tarefa-materia">
+              <span class="materia-indicador" [style.background-color]="getCorMateria(tarefa)"></span>
+              <span class="materia-nome">{{ getNomeMateria(tarefa) }}</span>
+            </div>
+            <span class="prioridade" [ngClass]="tarefa.prioridade.toLowerCase()">{{ tarefa.prioridade }}</span>
+          </div>
+
+          <div class="tarefa-titulo">{{ tarefa.titulo }}</div>
+
+          <div class="tarefa-info">
+            <span *ngIf="tarefa.dataPrevista" class="info-item">
+              <i class="pi pi-calendar"></i>
+              {{ tarefa.dataPrevista | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+
+          <div class="tarefa-actions">
+            <button pButton type="button" icon="pi pi-arrow-left" class="p-button-text" (click)="atualizarStatus(tarefa, 'PENDENTE')"></button>
+            <button pButton type="button" icon="pi pi-check" class="p-button-text p-button-primary" label="Concluir" (click)="atualizarStatus(tarefa, 'CONCLUIDA')"></button>
+            <button pButton type="button" icon="pi pi-pencil" class="p-button-text" (click)="abrirDialogEditar(tarefa)"></button>
+            <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-danger" (click)="excluirTarefa(tarefa)"></button>
+          </div>
+        </p-card>
+
+        <div class="empty-column" *ngIf="tarefasEmAndamento.length === 0">
+          <i class="pi pi-hourglass"></i>
+          <span>Nenhuma tarefa em progresso</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="coluna">
+      <div class="coluna-header concluida">
+        <h2>Concluídas</h2>
+        <span class="badge">{{ tarefasConcluidas.length }}</span>
+      </div>
+      <div class="coluna-body">
+        <p-card *ngFor="let tarefa of tarefasConcluidas" class="tarefa-card concluida" [style.border-left-color]="getCorMateria(tarefa)">
+          <div class="tarefa-header">
+            <div class="tarefa-materia">
+              <span class="materia-indicador" [style.background-color]="getCorMateria(tarefa)"></span>
+              <span class="materia-nome">{{ getNomeMateria(tarefa) }}</span>
+            </div>
+            <span class="prioridade" [ngClass]="tarefa.prioridade.toLowerCase()">{{ tarefa.prioridade }}</span>
+          </div>
+
+          <div class="tarefa-titulo">{{ tarefa.titulo }}</div>
+
+          <div class="tarefa-info">
+            <span *ngIf="tarefa.dataConclusao" class="info-item">
+              <i class="pi pi-check-circle"></i>
+              {{ tarefa.dataConclusao | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+
+          <div class="tarefa-actions">
+            <button pButton type="button" icon="pi pi-undo" class="p-button-text" label="Reabrir" (click)="atualizarStatus(tarefa, 'PENDENTE')"></button>
+            <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-danger" (click)="excluirTarefa(tarefa)"></button>
+          </div>
+        </p-card>
+
+        <div class="empty-column" *ngIf="tarefasConcluidas.length === 0">
+          <i class="pi pi-check-circle"></i>
+          <span>Nenhuma tarefa concluída ainda</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading-section">
+      <i class="pi pi-spin pi-spinner loading-icon"></i>
+      <p>Carregando tarefas...</p>
+    </div>
+  </ng-template>
+
+  <p-dialog
+    [(visible)]="dialogVisivel"
+    [modal]="true"
+    [style]="{ width: '500px' }"
+    [draggable]="false"
+    [resizable]="false"
+    [header]="tarefaEditando ? 'Editar Tarefa' : 'Nova Tarefa'">
+
+    <div class="form-field">
+      <label>Matéria</label>
+      <p-dropdown
+        [options]="materias"
+        [(ngModel)]="formTarefa.materiaId"
+        optionLabel="nome"
+        optionValue="id"
+        placeholder="Selecione uma matéria"
+        [style]="{ width: '100%' }">
+      </p-dropdown>
+    </div>
+
+    <div class="form-field">
+      <label>Título</label>
+      <input pInputText type="text" [(ngModel)]="formTarefa.titulo" />
+    </div>
+
+    <div class="form-field">
+      <label>Descrição</label>
+      <textarea pInputTextarea rows="3" [(ngModel)]="formTarefa.descricao"></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label>Prioridade</label>
+        <p-dropdown
+          [options]="prioridades"
+          [(ngModel)]="formTarefa.prioridade"
+          optionLabel="label"
+          optionValue="value"
+          [style]="{ width: '100%' }">
+        </p-dropdown>
+      </div>
+      <div class="form-field">
+        <label>Data prevista</label>
+        <p-calendar [(ngModel)]="dataPrevistaDate" dateFormat="dd/mm/yy" [showIcon]="true"></p-calendar>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <button pButton type="button" label="Cancelar" class="p-button-text" icon="pi pi-times" (click)="dialogVisivel = false"></button>
+      <button pButton type="button" label="Salvar" icon="pi pi-check" (click)="salvarTarefa()"></button>
+    </ng-template>
+  </p-dialog>
+
+  <p-toast position="top-right"></p-toast>
+</div>
+

@@ -176,3 +176,30 @@ export enum DificuldadeFlashcard {
   BOM = 'BOM',
   FACIL = 'FACIL'
 }
+
+export type TarefaStatus = 'PENDENTE' | 'EM_ANDAMENTO' | 'CONCLUIDA';
+
+export type TarefaPrioridade = 'BAIXA' | 'MEDIA' | 'ALTA';
+
+export interface TarefaEstudoRequestDTO {
+  materiaId: number;
+  titulo: string;
+  descricao?: string;
+  prioridade: TarefaPrioridade;
+  dataPrevista?: string;
+}
+
+export interface TarefaEstudoResponseDTO {
+  id: number;
+  materiaId: number;
+  materiaNome?: string;
+  titulo: string;
+  descricao?: string;
+  status: TarefaStatus;
+  prioridade: TarefaPrioridade;
+  dataPrevista?: string;
+  dataCriacao: string;
+  dataConclusao?: string;
+  ordem?: number;
+  xpRecompensa?: number;
+}

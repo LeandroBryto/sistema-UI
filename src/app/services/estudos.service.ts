@@ -23,7 +23,10 @@ import {
   DiaSemana,
   FlashcardRequestDTO,
   FlashcardResponseDTO,
-  RevisaoFlashcardDTO
+  RevisaoFlashcardDTO,
+  TarefaEstudoRequestDTO,
+  TarefaEstudoResponseDTO,
+  TarefaStatus
 } from '../models/estudos.models';
 
 @Injectable({
@@ -126,6 +129,28 @@ export class EstudosService {
 
   excluirFlashcard(id: number): Observable<void> {
     return this.http.delete<void>(`${this.getApiUrl()}/flashcards/${id}`);
+  }
+
+  getTarefas(): Observable<TarefaEstudoResponseDTO[]> {
+    return this.http.get<TarefaEstudoResponseDTO[]>(`${this.getApiUrl()}/tarefas`);
+  }
+
+  criarTarefa(request: TarefaEstudoRequestDTO): Observable<TarefaEstudoResponseDTO> {
+    return this.http.post<TarefaEstudoResponseDTO>(`${this.getApiUrl()}/tarefas`, request);
+  }
+
+  atualizarTarefa(id: number, request: TarefaEstudoRequestDTO): Observable<TarefaEstudoResponseDTO> {
+    return this.http.put<TarefaEstudoResponseDTO>(`${this.getApiUrl()}/tarefas/${id}`, request);
+  }
+
+  atualizarStatusTarefa(id: number, status: TarefaStatus): Observable<TarefaEstudoResponseDTO> {
+    return this.http.patch<TarefaEstudoResponseDTO>(`${this.getApiUrl()}/tarefas/${id}/status`, null, {
+      params: { status }
+    });
+  }
+
+  deletarTarefa(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.getApiUrl()}/tarefas/${id}`);
   }
 
   // Utilitários
