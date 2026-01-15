@@ -203,3 +203,11 @@ export interface TarefaEstudoResponseDTO {
   ordem?: number;
   xpRecompensa?: number;
 }
+
+export interface CertificadoResponseDTO {
+  id: number;
+  titulo: string;
+  nomeArquivo: string;
+  tipoConteudo: string;
+  dataUpload: string;
+}

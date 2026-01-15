@@ -26,7 +26,8 @@ import {
   RevisaoFlashcardDTO,
   TarefaEstudoRequestDTO,
   TarefaEstudoResponseDTO,
-  TarefaStatus
+  TarefaStatus,
+  CertificadoResponseDTO
 } from '../models/estudos.models';
 
 @Injectable({
@@ -151,6 +152,27 @@ export class EstudosService {
 
   deletarTarefa(id: number): Observable<void> {
     return this.http.delete<void>(`${this.getApiUrl()}/tarefas/${id}`);
+  }
+
+  getCertificados(): Observable<CertificadoResponseDTO[]> {
+    return this.http.get<CertificadoResponseDTO[]>(`${this.getApiUrl()}/certificados`);
+  }
+
+  uploadCertificado(titulo: string, arquivo: File): Observable<CertificadoResponseDTO> {
+    const formData = new FormData();
+    formData.append('titulo', titulo);
+    formData.append('arquivo', arquivo);
+    return this.http.post<CertificadoResponseDTO>(`${this.getApiUrl()}/certificados`, formData);
+  }
+
+  downloadCertificado(id: number): Observable<Blob> {
+    return this.http.get(`${this.getApiUrl()}/certificados/${id}/download`, {
+      responseType: 'blob'
+    });
+  }
+
+  deletarCertificado(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.getApiUrl()}/certificados/${id}`);
   }
 
   // Utilitários

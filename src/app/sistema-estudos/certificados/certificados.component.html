@@ -1,0 +1,107 @@
+<div class="certificados-container">
+  <div class="certificados-header">
+    <div>
+      <h1>Certificados e Diplomas</h1>
+      <p>Armazene e acesse seus certificados de cursos e faculdades em um só lugar.</p>
+    </div>
+  </div>
+
+  <p-card class="upload-card">
+    <div class="upload-form">
+      <div class="form-field">
+        <label for="titulo">Título do certificado</label>
+        <input
+          id="titulo"
+          type="text"
+          pInputText
+          [(ngModel)]="novoTitulo"
+          placeholder="Ex: Graduação em Sistemas de Informação"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="arquivo">Arquivo PDF</label>
+        <input
+          id="arquivo"
+          type="file"
+          accept="application/pdf"
+          (change)="onArquivoSelecionado($event)"
+        />
+      </div>
+
+      <div class="actions">
+        <button
+          pButton
+          type="button"
+          label="Enviar Certificado"
+          icon="pi pi-upload"
+          (click)="uploadCertificado()"
+        ></button>
+      </div>
+    </div>
+  </p-card>
+
+  <p-card class="lista-card">
+    <ng-template pTemplate="header">
+      <div class="lista-header">
+        <h2>Meus Certificados</h2>
+      </div>
+    </ng-template>
+
+    <div *ngIf="loading" class="loading-section">
+      <i class="pi pi-spin pi-spinner loading-icon"></i>
+      <p>Carregando certificados...</p>
+    </div>
+
+    <div *ngIf="!loading && certificados.length === 0" class="empty-state">
+      <i class="pi pi-file-pdf"></i>
+      <p>Nenhum certificado cadastrado ainda.</p>
+      <span>Envie seus certificados em PDF para organizar seu histórico de estudos.</span>
+    </div>
+
+    <div *ngIf="!loading && certificados.length > 0" class="tabela-wrapper">
+      <table class="certificados-tabela">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Data de upload</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cert of certificados">
+            <td>{{ cert.titulo }}</td>
+            <td>{{ cert.dataUpload | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td class="acoes">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-download"
+                class="p-button-text"
+                (click)="baixar(cert)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-eye"
+                class="p-button-text"
+                (click)="visualizar(cert)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-trash"
+                class="p-button-text p-button-danger"
+                (click)="deletar(cert)"
+              ></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </p-card>
+
+  <p-toast position="top-right"></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+</div>
+

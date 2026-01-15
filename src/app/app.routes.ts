@@ -32,6 +32,7 @@ import { FlashcardsComponent } from './sistema-estudos/flashcards/flashcards.com
 import { AgendaComponent } from './sistema-estudos/agenda/agenda.component';
 import { PerfilComponent } from './sistema-estudos/perfil/perfil.component';
 import { TarefasComponent } from './sistema-estudos/tarefas/tarefas.component';
+import { CertificadosComponent } from './sistema-estudos/certificados/certificados.component';
 
 export const routes: Routes = [
   // Public Routes
@@ -61,6 +62,7 @@ export const routes: Routes = [
       { path: 'estudos/perfil', component: PerfilComponent },
       { path: 'estudos/cronograma', component: CronogramaComponent },
       { path: 'estudos/tarefas', component: TarefasComponent },
+      { path: 'estudos/certificados', component: CertificadosComponent },
       
       // Restricted
       { path: 'conta', component: ContaComponent, canActivate: [contaAccessGuard] },
