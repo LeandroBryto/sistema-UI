@@ -36,6 +36,7 @@ import { CertificadosComponent } from './sistema-estudos/certificados/certificad
 import { LojaComponent } from './sistema-estudos/loja/loja.component';
 
 export const routes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   // Public Routes
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
