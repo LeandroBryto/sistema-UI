@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, BehaviorSubject } from 'rxjs';
+import { Observable, tap, BehaviorSubject, retry } from 'rxjs';
 import { LoginPayload, RegisterPayload, PasswordResetPayload, ForgotPasswordRequestDTO, ChangePasswordPayload } from '../models/auth.models';
 import { EnvService } from './env.service';
 
@@ -32,6 +32,7 @@ export class AuthService {
 
   login(payload: LoginPayload): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.env.apiAuthBase()}/api/v1/auth/login`, payload).pipe(
+      retry(2),
       tap((res) => {
         const authData = {
           accessToken: res.access_token,
