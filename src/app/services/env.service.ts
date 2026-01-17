@@ -4,10 +4,10 @@ import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class EnvService {
   apiBase(): string {
-    return environment.apiBaseAuth || 'https://nexus-auth.fly.dev';// 'http://localhost:8084';
+    return environment.apiBase || 'http://localhost:8080';
   }
   apiAuthBase(): string {
-    return environment.apiBaseAuth || 'https://nexus-auth.fly.dev';
+    return environment.apiBaseAuth || 'http://localhost:8084';
   }
   apiEstudosBase(): string {
     return environment.apiEstudosBase || 'http://localhost:8083';
